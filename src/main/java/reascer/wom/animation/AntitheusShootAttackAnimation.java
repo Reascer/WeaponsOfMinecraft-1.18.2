@@ -5,8 +5,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.mojang.math.Vector3f;
-
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -27,11 +25,11 @@ import yesman.epicfight.api.animation.JointTransform;
 import yesman.epicfight.api.animation.Keyframe;
 import yesman.epicfight.api.animation.Pose;
 import yesman.epicfight.api.animation.TransformSheet;
-import yesman.epicfight.api.animation.property.MoveCoordFunctions;
 import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.StaticAnimationProperty;
+import yesman.epicfight.api.animation.property.MoveCoordFunctions;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
@@ -40,6 +38,7 @@ import yesman.epicfight.api.collider.Collider;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.math.MathUtils;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
+import yesman.epicfight.api.utils.math.QuaternionUtils;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
@@ -87,15 +86,15 @@ public class AntitheusShootAttackAnimation extends AttackAnimation {
 				float pitch = (float) Math.toDegrees(entitypatch.getOriginal().getViewVector(1.0f).y);
 				
 				JointTransform armR = pose.getOrDefaultTransform("Arm_R");
-				armR.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
+				armR.frontResult(JointTransform.getRotation(QuaternionUtils.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
 				
 				if (((AttackAnimation) self).getPhaseByTime(1).getColliders().get(0).getFirst() != Armatures.BIPED.armR) {
 					JointTransform armL = pose.getOrDefaultTransform("Arm_L");
-					armL.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
+					armL.frontResult(JointTransform.getRotation(QuaternionUtils.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
 				}
 				
 				JointTransform chest = pose.getOrDefaultTransform("Chest");
-				chest.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees((float) (pitch > 35f ? (-pitch + 35f):0f))), OpenMatrix4f::mulAsOriginFront);	
+				chest.frontResult(JointTransform.getRotation(QuaternionUtils.XP.rotationDegrees((float) (pitch > 35f ? (-pitch + 35f):0f))), OpenMatrix4f::mulAsOriginFront);	
 			}
 		});
 	}
@@ -163,7 +162,7 @@ public class AntitheusShootAttackAnimation extends AttackAnimation {
 			if (prevState.attacking() || state.attacking() || (prevState.getLevel() < 2 && state.getLevel() > 2)) {
 				if (!prevState.attacking() || (phase != this.getPhaseByTime(prevElapsedTime) && (state.attacking() || (prevState.getLevel() < 2 && state.getLevel() > 2)))) {
 					
-					Level worldIn = entitypatch.getOriginal().getLevel();
+					Level worldIn = entitypatch.getOriginal().level();
 					entitypatch.getArmature().initializeTransform();
 					float prevPoseTime = prevElapsedTime;
 					float poseTime = elapsedTime;
@@ -220,9 +219,9 @@ public class AntitheusShootAttackAnimation extends AttackAnimation {
 								}
 							}
 							entitypatch.getOriginal().addTag("antitheus_pull:"+entityId);
-							((ServerLevel) entitypatch.getOriginal().level).playSound(null, entitypatch.getOriginal().getX(), entitypatch.getOriginal().getY(), entitypatch.getOriginal().getZ(),
+							((ServerLevel) entitypatch.getOriginal().level()).playSound(null, entitypatch.getOriginal().getX(), entitypatch.getOriginal().getY(), entitypatch.getOriginal().getZ(),
 				        			SoundEvents.WITHER_AMBIENT, (list2.get(list2.size()-1)).getSoundSource(), 0.4F, 2.0F);
-							((ServerLevel) entitypatch.getOriginal().level).sendParticles(ParticleTypes.LARGE_SMOKE,
+							((ServerLevel) entitypatch.getOriginal().level()).sendParticles(ParticleTypes.LARGE_SMOKE,
 					      			(list2.get(list2.size()-1).getX()),
 					      			(list2.get(list2.size()-1).getY() + list2.get(list2.size()-1).getBbHeight()/2),
 					      			(list2.get(list2.size()-1).getZ()),
@@ -257,19 +256,19 @@ public class AntitheusShootAttackAnimation extends AttackAnimation {
 			
 			float pitch = (float) Math.toDegrees(entitypatch.getOriginal().getViewVector(1.0f).y);
 			JointTransform armR = pose.getOrDefaultTransform("Arm_R");
-			armR.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
+			armR.frontResult(JointTransform.getRotation(QuaternionUtils.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
 			
 			if (this.getPhaseByTime(partialTicks).getColliders().get(0).getFirst() != Armatures.BIPED.armR) {
 				JointTransform armL = pose.getOrDefaultTransform("Arm_L");
-				armL.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
+				armL.frontResult(JointTransform.getRotation(QuaternionUtils.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
 			}
 			
 			JointTransform chest = pose.getOrDefaultTransform("Chest");
-			chest.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees((float) (pitch > 35f ? (-pitch + 35f):0f))), OpenMatrix4f::mulAsOriginFront);
+			chest.frontResult(JointTransform.getRotation(QuaternionUtils.XP.rotationDegrees((float) (pitch > 35f ? (-pitch + 35f):0f))), OpenMatrix4f::mulAsOriginFront);
 			
 			if (entitypatch instanceof PlayerPatch) {
 				JointTransform head = pose.getOrDefaultTransform("Head");
-				MathUtils.mulQuaternion(Vector3f.XP.rotationDegrees(-entitypatch.getAttackDirectionPitch()), head.rotation(), head.rotation());
+				MathUtils.mulQuaternion(QuaternionUtils.XP.rotationDegrees(-entitypatch.getAttackDirectionPitch()), head.rotation(), head.rotation());
 			}
 			
 			return pose;

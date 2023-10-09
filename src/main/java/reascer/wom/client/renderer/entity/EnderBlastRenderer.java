@@ -2,7 +2,6 @@ package reascer.wom.client.renderer.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
 
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -18,6 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.client.model.EnderBlastModel;
 import reascer.wom.main.WeaponsOfMinecraft;
 import reascer.wom.world.entity.projectile.EnderBullet;
+import yesman.epicfight.api.utils.math.QuaternionUtils;
 
 @OnlyIn(Dist.CLIENT)
 public class EnderBlastRenderer extends EntityRenderer<EnderBullet> {
@@ -39,8 +39,8 @@ public class EnderBlastRenderer extends EntityRenderer<EnderBullet> {
       float f = Mth.lerp(1, enderBullet.yRotO, enderBullet.getYRot());
       float f1 = Mth.lerp(1, enderBullet.xRotO, enderBullet.getXRot());
       VertexConsumer vertexconsumer = p_116488_.getBuffer(this.model.renderType(this.getTextureLocation(enderBullet)));
-      poseStack.mulPose(Vector3f.YP.rotationDegrees(f));
-      poseStack.mulPose(Vector3f.XP.rotationDegrees(f1));
+      poseStack.mulPose(QuaternionUtils.YP.rotationDegrees(f));	
+      poseStack.mulPose(QuaternionUtils.XP.rotationDegrees(f1));
       this.model.renderToBuffer(poseStack, vertexconsumer, p_116489_, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
       poseStack.popPose();
       super.render(enderBullet, p_116485_, p_116486_, poseStack, p_116488_, p_116489_);
