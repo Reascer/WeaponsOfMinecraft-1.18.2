@@ -24,7 +24,7 @@ repositories {
         }
     }
 }
-version = '18.1.7.16'
+version = '19.1.7.16'
 group = 'com.reascer.wom'
 archivesBaseName = 'WeaponsOfMiracles'
 
@@ -33,25 +33,10 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println "Java: ${System.getProperty 'java.version'}, JVM: ${System.getProperty 'java.vm.version'} (${System.getProperty 'java.vendor'}), Arch: ${System.getProperty 'os.arch'}"
 minecraft {
-    // The mappings can be changed at any time and must be in the following format.
-    // Channel:   Version:
-    // official   MCVersion             Official field/method names from Mojang mapping files
-    // parchment  YYYY.MM.DD-MCVersion  Open community-sourced parameter names and javadocs layered on top of official
-    //
-    // You must be aware of the Mojang license when using the 'official' or 'parchment' mappings.
-    // See more information here: https://github.com/MinecraftForge/MCPConfig/blob/master/Mojang.md
-    //
-    // Parchment is an unofficial project maintained by ParchmentMC, separate from MinecraftForge
-    // Additional setup is needed to use their mappings: https://github.com/ParchmentMC/Parchment/wiki/Getting-Started
-    //
-    // Use non-default mappings at your own risk. They may not always work.
-    // Simply re-run your setup task after changing the mappings to update your workspace.
-    mappings channel: 'official', version: '1.18.2'
-	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Currently, this location cannot be changed from the default.
 
-    // Default run configurations.
-    // These can be tweaked, removed, or duplicated as needed.
+    mappings channel: 'official', version: '1.19.2'
+	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+	
     runs {
         client {
             workingDirectory project.file('run')
@@ -161,10 +146,10 @@ dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.18.2-40.2.10'
+    minecraft 'net.minecraftforge:forge:1.19.2-43.3.2'
     // EpicFight-18.3.2.jar
     //implementation fg.deobf("curse.maven:efm-405076:4018756")
-    implementation fg.deobf("curse.maven:epic-fight-mod-405076:4785517")
+    implementation fg.deobf("curse.maven:epic-fight-mod-405076:4787581")
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
     // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency

@@ -1,8 +1,7 @@
 package reascer.wom.world.damagesources;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -17,16 +16,16 @@ public class WOMExtraDamageInstance extends ExtraDamageInstance {
 	public static final ExtraDamage WOM_TARGET_MAX_HEALTH = new ExtraDamage((attacker, itemstack, target, baseDamage, params) -> {
 		return target.getMaxHealth() * (float)params[0];
 	}, (itemstack, tooltips, baseDamage, params) -> {
-		tooltips.append(new TranslatableComponent("damage.wom.target_max_health", 
-				new TextComponent(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(params[0] * 100F) + "%").withStyle(ChatFormatting.RED)
+		tooltips.append(Component.translatable("damage.wom.target_max_health", 
+				Component.literal(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(params[0] * 100F) + "%").withStyle(ChatFormatting.RED)
 			).withStyle(ChatFormatting.DARK_GRAY));
 	});
 	
 	public static final ExtraDamage WOM_TARGET_CURRENT_HEALTH = new ExtraDamage((attacker, itemstack, target, baseDamage, params) -> {
 		return target.getHealth() * (float)params[0];
 	}, (itemstack, tooltips, baseDamage, params) -> {
-		tooltips.append(new TranslatableComponent("damage.wom.target_current_health", 
-				new TextComponent(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(params[0] * 100F) + "%").withStyle(ChatFormatting.RED)
+		tooltips.append(Component.translatable("damage.wom.target_current_health", 
+				Component.literal(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(params[0] * 100F) + "%").withStyle(ChatFormatting.RED)
 			).withStyle(ChatFormatting.DARK_GRAY));
 	});
 	
@@ -42,8 +41,8 @@ public class WOMExtraDamageInstance extends ExtraDamageInstance {
 			double modifier = (double)i / (double)(i + 1.0D);
 			double damage = baseDamage * modifier * (float)params[0];
 			
-			tooltips.append(new TranslatableComponent("damage.wom.sweeping_edge_enchant", 
-						new TextComponent(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage)).withStyle(ChatFormatting.DARK_PURPLE),
+			tooltips.append(Component.translatable("damage.wom.sweeping_edge_enchant", 
+						Component.literal(ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(damage)).withStyle(ChatFormatting.DARK_PURPLE),
 					i).withStyle(ChatFormatting.DARK_GRAY));
 		}
 	});

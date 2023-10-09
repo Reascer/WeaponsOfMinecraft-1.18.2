@@ -775,7 +775,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 				if (container.getDataManager().getDataValue(BLACKHOLE_ACTIVE)) {
 					if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) == 100) {
 						container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
-								WOMSounds.ANTITHEUS_BLACKKHOLE, container.getExecuter().getOriginal().getSoundSource(), 0.8F, 0.9F);
+								WOMSounds.ANTITHEUS_BLACKKHOLE.get(), container.getExecuter().getOriginal().getSoundSource(), 0.8F, 0.9F);
 					}
 					if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) < 100 && container.getDataManager().getDataValue(BLACKHOLE_TIMER) > 0) {
 						Vec3 blackhole_pos = new Vec3(

@@ -6,16 +6,11 @@ import java.util.Map;
 import java.util.Random;
 import java.util.UUID;
 
-import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -27,26 +22,20 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.AbstractSkeleton;
 import net.minecraft.world.entity.monster.Skeleton;
-import net.minecraft.world.entity.monster.WitherSkeleton;
 import net.minecraft.world.entity.npc.Npc;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ItemAttributeModifierEvent;
-import net.minecraftforge.event.entity.EntityLeaveWorldEvent;
+import net.minecraftforge.event.entity.EntityLeaveLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingEquipmentChangeEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
-import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
-import net.minecraftforge.eventbus.api.Event.Result;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -56,26 +45,16 @@ import reascer.wom.main.WeaponsOfMinecraft;
 import reascer.wom.particle.WOMParticles;
 import reascer.wom.wold.gamerules.WOMGamerules;
 import yesman.epicfight.gameasset.EpicFightSounds;
-import yesman.epicfight.main.EpicFightMod;
-import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.EntityPatch;
-import yesman.epicfight.world.capabilities.entitypatch.HurtableEntityPatch;
-import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
-import yesman.epicfight.world.capabilities.projectile.ProjectilePatch;
-import yesman.epicfight.world.damagesource.EpicFightDamageSource;
 import yesman.epicfight.world.damagesource.EpicFightEntityDamageSource;
-import yesman.epicfight.world.damagesource.ExtraDamageInstance;
 import yesman.epicfight.world.damagesource.SourceTags;
 import yesman.epicfight.world.damagesource.StunType;
-import yesman.epicfight.world.effect.EpicFightMobEffects;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
-import yesman.epicfight.world.entity.eventlistener.HurtEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
-import yesman.epicfight.world.gamerule.EpicFightGamerules;
 import yesman.epicfight.world.item.EpicFightItems;
 
 @Mod.EventBusSubscriber(modid = WeaponsOfMinecraft.MODID , bus = EventBusSubscriber.Bus.FORGE)
@@ -95,11 +74,11 @@ public class WOMLivingEntityEvents {
 	public static void onSpawnEvent(LivingSpawnEvent event) {
 		EntityPatch<Entity> entitypatch = EpicFightCapabilities.getEntityPatch(event.getEntity(), EntityPatch.class);
 		
-		if (entitypatch != null && entitypatch.isInitialized() && !event.getEntityLiving().getTags().contains("wom-bow-replaced")) {
-			if ((event.getEntityLiving() instanceof Skeleton) && (event.getEntityLiving().getMainHandItem().getItem() == Items.BOW) && !event.getEntityLiving().getTags().contains("wom-bow-replaced")) {
+		if (entitypatch != null && entitypatch.isInitialized() && !event.getEntity().getTags().contains("wom-bow-replaced")) {
+			if ((event.getEntity() instanceof Skeleton) && (event.getEntity().getMainHandItem().getItem() == Items.BOW) && !event.getEntity().getTags().contains("wom-bow-replaced")) {
 				ItemStack weapon = Items.BOW.getDefaultInstance();
 				boolean no_change = true;
-				if (new Random().nextInt() % 100 < event.getEntityLiving().level.getGameRules().getInt(WOMGamerules.SKELETON_MELEE_PERCENTAGE)) {
+				if (new Random().nextInt() % 100 < event.getEntity().level.getGameRules().getInt(WOMGamerules.SKELETON_MELEE_PERCENTAGE)) {
 					no_change = false;
 					switch (Math.abs(new Random().nextInt()) % 4) {
 						case 0:
@@ -118,46 +97,46 @@ public class WOMLivingEntityEvents {
 				}
 				
 				if (!no_change) {
-					event.getEntityLiving().setItemInHand(InteractionHand.MAIN_HAND, weapon);
+					event.getEntity().setItemInHand(InteractionHand.MAIN_HAND, weapon);
 				}
-				event.getEntityLiving().addTag("wom-bow-replaced");
+				event.getEntity().addTag("wom-bow-replaced");
 			}
 			float distance_from_zero = (float) Math.sqrt(Math.pow(event.getX(), 2) + Math.pow(event.getZ(), 2));
-			if (distance_from_zero / 1000 > 1 && !(event.getEntityLiving() instanceof Player) && !event.getEntityLiving().getTags().contains("wom-stronger-mob") && event.getEntityLiving().level.getGameRules().getBoolean(WOMGamerules.SPAWN_STONGER_MOB_OVER_DISTANCE)) {
-				AttributeInstance entity_max_health = event.getEntityLiving().getAttribute(Attributes.MAX_HEALTH);
+			if (distance_from_zero / 1000 > 1 && !event.getEntity().getTags().contains("wom-stronger-mob") && event.getEntity().level.getGameRules().getBoolean(WOMGamerules.SPAWN_STONGER_MOB_OVER_DISTANCE)) {
+				AttributeInstance entity_max_health = event.getEntity().getAttribute(Attributes.MAX_HEALTH);
 				AttributeModifier boosted_health = new AttributeModifier(UUID.fromString("5a70f02c-7ca0-43c5-a766-2be3d68461a2"), "wom.wom_stronger_health", Math.round(Math.pow(1.5D, (distance_from_zero / 1000))-1) , Operation.MULTIPLY_TOTAL);
 				if (entity_max_health != null) {
 					entity_max_health.addPermanentModifier(boosted_health);
 				}
-				AttributeInstance entity_attack_damage = event.getEntityLiving().getAttribute(Attributes.ATTACK_DAMAGE);
+				AttributeInstance entity_attack_damage = event.getEntity().getAttribute(Attributes.ATTACK_DAMAGE);
 				AttributeModifier boosted_damage = new AttributeModifier(UUID.fromString("5a70f02c-7ca0-43c5-a766-2be3d68461a2"), "wom.wom_stronger_damage", Math.round(Math.pow(1.2D, (distance_from_zero / 1000))-1), Operation.MULTIPLY_TOTAL);
 				if (entity_attack_damage != null) {
 					entity_attack_damage.addPermanentModifier(boosted_damage);
 				}
 				
-				event.getEntityLiving().heal(event.getEntityLiving().getMaxHealth());
-				event.getEntityLiving().addTag("wom-stronger-mob");
+				event.getEntity().heal(event.getEntity().getMaxHealth());
+				event.getEntity().addTag("wom-stronger-mob");
 			}
 		}
 	}
 	
 	@SubscribeEvent
 	public static void onkillEvent(LivingDeathEvent event) {
-		if (!(event.getEntityLiving() instanceof Player) && !(event.getEntityLiving() instanceof Animal) && !(event.getEntityLiving() instanceof Npc) && event.getEntityLiving().level.getGameRules().getBoolean(WOMGamerules.STONGER_MOB_DROP_EMERALDS)) {
-			for (int i = 1; i < event.getEntityLiving().getMaxHealth()/20; i++) {
+		if (!(event.getEntity() instanceof Player) && !(event.getEntity() instanceof Animal) && !(event.getEntity() instanceof Npc) && event.getEntity().level.getGameRules().getBoolean(WOMGamerules.STONGER_MOB_DROP_EMERALDS)) {
+			for (int i = 1; i < event.getEntity().getMaxHealth()/20; i++) {
 				if (new Random().nextInt() % 4 == 0) {
 					double d0 = (double)EntityType.ITEM.getWidth();
 					double d1 = 1.0D - d0;
   					double d2 = d0 / 2.0D;
-  					double d3 = Math.floor(event.getEntityLiving().getX()) + new Random().nextDouble() * d1 + d2;
-  					double d4 = Math.floor(event.getEntityLiving().getY()) + new Random().nextDouble() * d1;
-  					double d5 = Math.floor(event.getEntityLiving().getZ()) + new Random().nextDouble() * d1 + d2;
+  					double d3 = Math.floor(event.getEntity().getX()) + new Random().nextDouble() * d1 + d2;
+  					double d4 = Math.floor(event.getEntity().getY()) + new Random().nextDouble() * d1;
+  					double d5 = Math.floor(event.getEntity().getZ()) + new Random().nextDouble() * d1 + d2;
   					
   					ItemStack itemStack = Items.EMERALD.getDefaultInstance();
-			    	ItemEntity itementity = new ItemEntity(event.getEntityLiving().level, d3, d4, d5, itemStack);
+			    	ItemEntity itementity = new ItemEntity(event.getEntity().level, d3, d4, d5, itemStack);
 			       	itementity.setDefaultPickUpDelay();
 			       	itementity.setDeltaMovement( new Random().nextGaussian() * (double)0.05F,  new Random().nextGaussian() * (double)0.05F + (double)0.2F,  new Random().nextGaussian() * (double)0.05F);
-			       	event.getEntityLiving().level.addFreshEntity(itementity);
+			       	event.getEntity().level.addFreshEntity(itementity);
 			    }
 			}
 		}
@@ -165,8 +144,8 @@ public class WOMLivingEntityEvents {
 	
 	@SubscribeEvent
 	public static void onDropedExpPoint(LivingExperienceDropEvent event) {
-		if (!(event.getEntityLiving() instanceof Player) && event.getEntityLiving().level.getGameRules().getBoolean(WOMGamerules.STONGER_MOB_GIVE_MORE_EXP)) {
-			event.setDroppedExperience((int) (event.getDroppedExperience() * (event.getEntityLiving().getMaxHealth()/20)));
+		if (!(event.getEntity() instanceof Player) && event.getEntity().level.getGameRules().getBoolean(WOMGamerules.STONGER_MOB_GIVE_MORE_EXP)) {
+			event.setDroppedExperience((int) (event.getDroppedExperience() * (event.getEntity().getMaxHealth()/20)));
 		}
 	}
 	
@@ -178,7 +157,7 @@ public class WOMLivingEntityEvents {
 		EquipmentSlot slot = event.getSlotType();
 		if (slot == LivingEntity.getEquipmentSlotForItem(stack)) {
 			// boost from enchant
-			invigoration += EnchantmentHelper.getItemEnchantmentLevel(WOMEnchantment.INVIGORATION.get(), stack);
+			invigoration += stack.getEnchantmentLevel(WOMEnchantment.INVIGORATION.get());
 			//System.out.println("in. \n invig lvl = "+ invigoration);
 		}
 		//System.out.println("out. \n Stack:"+LivingEntity.getEquipmentSlotForItem(stack)+" Slot:"+slot.getName()+"\n");
@@ -187,24 +166,24 @@ public class WOMLivingEntityEvents {
 	}
 	
 	@SubscribeEvent
-	public static void onUpdateEvent(LivingUpdateEvent event) {
+	public static void onUpdateEvent(LivingEvent.LivingTickEvent event) {
 		Entity e = event.getEntity();
 		
 		if (e instanceof Player) {
-			for (String tag : event.getEntityLiving().getTags()) {
+			for (String tag : event.getEntity().getTags()) {
 				if (tag.contains("wom_health_fix:")) {
-					if (Float.valueOf(tag.substring(15)) <= event.getEntityLiving().getMaxHealth()) {
-						event.getEntityLiving().setHealth(Float.valueOf(tag.substring(15)));
-						event.getEntityLiving().getTags().remove(tag);
+					if (Float.valueOf(tag.substring(15)) <= event.getEntity().getMaxHealth()) {
+						event.getEntity().setHealth(Float.valueOf(tag.substring(15)));
+						event.getEntity().getTags().remove(tag);
 					}
 					break;
 				}
 			}
-			if (event.getEntityLiving().getHealth() > event.getEntityLiving().getMaxHealth()) {
-				event.getEntityLiving().setHealth(event.getEntityLiving().getMaxHealth());
+			if (event.getEntity().getHealth() > event.getEntity().getMaxHealth()) {
+				event.getEntity().setHealth(event.getEntity().getMaxHealth());
 			}
 		}
-		for (String tag : event.getEntityLiving().getTags()) {
+		for (String tag : event.getEntity().getTags()) {
 			if (tag.contains("anti_stunlock:")) {
 				if (e.tickCount - Float.valueOf(tag.split(":")[2]) > 40) {
 					e.removeTag(tag);
@@ -212,7 +191,7 @@ public class WOMLivingEntityEvents {
 				}
 			}
 		}
-		for (String tag : event.getEntityLiving().getTags()) {
+		for (String tag : event.getEntity().getTags()) {
 			if (tag.contains("timed_katana_slashes:")) {
 				if (e != null) {
 					if(e.isAlive()) {
@@ -256,7 +235,11 @@ public class WOMLivingEntityEvents {
 									e.invulnerableTime = 0;
 									if (e.hurt(damage,(float) Math.max(1.0f, Float.valueOf(replacetag.split(":")[5]) * 0.25f))) {
 										player.getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent(player, (LivingEntity) e, epicFightDamageSource, (float) Math.max(1.0f, Float.valueOf(replacetag.split(":")[5]) * 0.25f)));
-										e.playSound(EpicFightSounds.BLADE_HIT, 1, 1);
+										((ServerLevel) event.getEntity().level).playSound(null,
+												event.getEntity().getX(),
+												event.getEntity().getY()+0.75f,
+												event.getEntity().getZ(),
+												EpicFightSounds.BLADE_HIT.get(), event.getEntity().getSoundSource(), 1.0F, 1.0F);
 										WOMParticles.KATANA_SHEATHED_HIT.get().spawnParticleWithArgument(((ServerLevel) e.level), null, null, e, player.getOriginal());
 									}
 									e.addTag("timed_katana_slashes:"+
@@ -280,12 +263,12 @@ public class WOMLivingEntityEvents {
 			}
 		}
 		
-		for (String tag : event.getEntityLiving().getTags()) {
+		for (String tag : event.getEntity().getTags()) {
 			if (tag.contains("lunar_eclipse:")) {
-				if (event.getEntityLiving().hasEffect(MobEffects.BLINDNESS)) {
-					int blindness_amp = event.getEntityLiving().getEffect(MobEffects.BLINDNESS).getAmplifier();
-					if (event.getEntityLiving().getEffect(MobEffects.BLINDNESS).getDuration() == 1 || event.getEntityLiving().isDeadOrDying()) {
-						Entity player = event.getEntityLiving().level.getEntity(Integer.valueOf(tag.substring(14)));
+				if (event.getEntity().hasEffect(MobEffects.BLINDNESS)) {
+					int blindness_amp = event.getEntity().getEffect(MobEffects.BLINDNESS).getAmplifier();
+					if (event.getEntity().getEffect(MobEffects.BLINDNESS).getDuration() == 1 || event.getEntity().isDeadOrDying()) {
+						Entity player = event.getEntity().level.getEntity(Integer.valueOf(tag.substring(14)));
 						PlayerPatch<?> playerpatch = EpicFightCapabilities.getEntityPatch(player, PlayerPatch.class);
 						ServerPlayerPatch serverPlayerPatch = (ServerPlayerPatch) playerpatch;
 						EpicFightEntityDamageSource epicFightDamageSource = new EpicFightEntityDamageSource("lunar_eclipse", player,WOMAnimations.MOONLESS_LUNAR_ECHO);
@@ -293,36 +276,36 @@ public class WOMLivingEntityEvents {
 						epicFightDamageSource.setStunType(StunType.HOLD);
 						epicFightDamageSource.addTag(SourceTags.WEAPON_INNATE);
 						DamageSource damage = epicFightDamageSource;
-						((ServerLevel) event.getEntityLiving().level).sendParticles(ParticleTypes.END_ROD,
-								event.getEntityLiving().getX(),
-								event.getEntityLiving().getY()+ 0.25 * blindness_amp,
-								event.getEntityLiving().getZ(),
+						((ServerLevel) event.getEntity().level).sendParticles(ParticleTypes.END_ROD,
+								event.getEntity().getX(),
+								event.getEntity().getY()+ 0.25 * blindness_amp,
+								event.getEntity().getZ(),
 								5 * blindness_amp,
 								0.1,
 								0.5 * blindness_amp,
 								0.1,
 								0);
-						((ServerLevel) event.getEntityLiving().level).sendParticles(ParticleTypes.FLASH,
-								event.getEntityLiving().getX(),
-								event.getEntityLiving().getY(),
-								event.getEntityLiving().getZ(),
+						((ServerLevel) event.getEntity().level).sendParticles(ParticleTypes.FLASH,
+								event.getEntity().getX(),
+								event.getEntity().getY(),
+								event.getEntity().getZ(),
 								1,
 								0.0,
 								0.0,
 								0.0,
 								0);
-						((ServerLevel) event.getEntityLiving().level).playSound(null,
-								event.getEntityLiving().getX(),
-								event.getEntityLiving().getY()+0.75f,
-								event.getEntityLiving().getZ(),
-								blindness_amp == 0 ? SoundEvents.BEACON_ACTIVATE : SoundEvents.BEACON_DEACTIVATE, event.getEntityLiving().getSoundSource(), 4.0F, 2.0F);
+						((ServerLevel) event.getEntity().level).playSound(null,
+								event.getEntity().getX(),
+								event.getEntity().getY()+0.75f,
+								event.getEntity().getZ(),
+								blindness_amp == 0 ? SoundEvents.BEACON_ACTIVATE : SoundEvents.BEACON_DEACTIVATE, event.getEntity().getSoundSource(), 4.0F, 2.0F);
 						int glowing_amp = 0;
-						if (event.getEntityLiving().hasEffect(MobEffects.GLOWING)) {
-							glowing_amp = event.getEntityLiving().getEffect(MobEffects.GLOWING).getAmplifier();
+						if (event.getEntity().hasEffect(MobEffects.GLOWING)) {
+							glowing_amp = event.getEntity().getEffect(MobEffects.GLOWING).getAmplifier();
 						}
-						AABB box = AABB.ofSize(event.getEntityLiving().position(),10 + (Math.min(90, 1 * glowing_amp)), 10, 10 + (Math.min(90, 1 * glowing_amp)));
+						AABB box = AABB.ofSize(event.getEntity().position(),10 + (Math.min(90, 1 * glowing_amp)), 10, 10 + (Math.min(90, 1 * glowing_amp)));
 						
-						List<Entity> list = event.getEntityLiving().level.getEntities(event.getEntityLiving().level.getEntity(Integer.valueOf(tag.substring(14))),box);
+						List<Entity> list = event.getEntity().level.getEntities(event.getEntity().level.getEntity(Integer.valueOf(tag.substring(14))),box);
 						for (Entity entity : list) {
 							if (entity instanceof LivingEntity) {
 								LivingEntity livingEntity = (LivingEntity) entity;
@@ -340,7 +323,7 @@ public class WOMLivingEntityEvents {
 												0.2,
 												0.2);
 										
-										((ServerLevel) event.getEntityLiving().level).sendParticles(ParticleTypes.END_ROD,
+										((ServerLevel) event.getEntity().level).sendParticles(ParticleTypes.END_ROD,
 												livingEntity.getX(),
 												livingEntity.getY()+1,
 												livingEntity.getZ(),
@@ -353,14 +336,14 @@ public class WOMLivingEntityEvents {
 									if (serverPlayerPatch != null) {
 										serverPlayerPatch.getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent(serverPlayerPatch, livingEntity, epicFightDamageSource, 1 * blindness_amp));
 									} else {
-										event.getEntityLiving().getTags().remove(tag);
+										event.getEntity().getTags().remove(tag);
 										break;
 									}
 								}
 							}
 						}
-						event.getEntityLiving().removeEffect(MobEffects.BLINDNESS);
-						event.getEntityLiving().getTags().remove(tag);
+						event.getEntity().removeEffect(MobEffects.BLINDNESS);
+						event.getEntity().getTags().remove(tag);
 					}
 				}
 				break;
@@ -369,7 +352,7 @@ public class WOMLivingEntityEvents {
 	}
 	
 	@SubscribeEvent
-	public static void onleaveEvent(EntityLeaveWorldEvent event) {
+	public static void onleaveEvent(EntityLeaveLevelEvent event) {
 		Entity e = event.getEntity();
 		if (e instanceof Player) {
 			Player p = (Player) e;

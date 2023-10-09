@@ -7,7 +7,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
@@ -316,7 +315,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 							container.getExecuter().getOriginal().getX(),
 							container.getExecuter().getOriginal().getY(),
 							container.getExecuter().getOriginal().getZ(),
-							EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS,
+							EpicFightSounds.WHOOSH_BIG.get(), SoundSource.PLAYERS,
 							1.0F, 1.2F);
 					if (!container.getExecuter().getOriginal().isCreative()) {
 						if (!container.getExecuter().consumeStamina(3)) {
@@ -337,7 +336,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 								container.getExecuter().getOriginal().getX(),
 								container.getExecuter().getOriginal().getY(),
 								container.getExecuter().getOriginal().getZ(),
-								EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS,
+								EpicFightSounds.WHOOSH_BIG.get(), SoundSource.PLAYERS,
 								1.0F, 1.2F);
 						if (!container.getExecuter().getOriginal().isCreative()) {
 							if (!container.getExecuter().consumeStamina(3)) {
@@ -350,7 +349,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 								container.getExecuter().getOriginal().getX(),
 								container.getExecuter().getOriginal().getY(),
 								container.getExecuter().getOriginal().getZ(),
-								EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS,
+								EpicFightSounds.WHOOSH_BIG.get(), SoundSource.PLAYERS,
 								1.0F, 1.2F);
 						float stamina = container.getExecuter().getStamina();
 						float maxStamina = container.getExecuter().getMaxStamina();

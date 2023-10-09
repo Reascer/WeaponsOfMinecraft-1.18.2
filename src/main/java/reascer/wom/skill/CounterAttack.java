@@ -157,7 +157,7 @@ public class CounterAttack extends GuardSkill {
 						event.getPlayerPatch().setStamina(0);
 					}
 					event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
-			    			EpicFightSounds.CLASH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
+			    			EpicFightSounds.CLASH.get(), container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 					event.getPlayerPatch().playAnimationSynchronized(animation, convert);
 					event.getPlayerPatch().currentLivingMotion = LivingMotions.BLOCK;
 						container.getDataManager().setDataSync(LAST_ACTIVE, event.getPlayerPatch().getOriginal().tickCount,event.getPlayerPatch().getOriginal());
@@ -268,7 +268,7 @@ public class CounterAttack extends GuardSkill {
 				boolean successParrying = timing < 10;
 				
 				float penalty = container.getDataManager().getDataValue(PENALTY);
-				event.getPlayerPatch().playSound(EpicFightSounds.CLASH, -0.05F, 0.1F);
+				event.getPlayerPatch().playSound(EpicFightSounds.CLASH.get(), -0.05F, 0.1F);
 				EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)playerentity.level), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, playerentity, damageSource.getDirectEntity());
 				
 				if (successParrying) {
@@ -310,7 +310,7 @@ public class CounterAttack extends GuardSkill {
 				}
 				
 				if (blockType == BlockType.GUARD_BREAK) {
-					event.getPlayerPatch().playSound(EpicFightSounds.NEUTRALIZE_MOBS, 3.0F, 0.0F, 0.1F);
+					event.getPlayerPatch().playSound(EpicFightSounds.NEUTRALIZE_MOBS.get(), 3.0F, 0.0F, 0.1F);
 				}
 				
 				this.dealEvent(event.getPlayerPatch(), event,advanced);

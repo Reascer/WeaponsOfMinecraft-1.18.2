@@ -13,7 +13,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.selector.EntitySelector;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.server.SPChangeSkill;
@@ -27,9 +27,9 @@ import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 
 public class PlayerSkillCommand {
-	private static final SimpleCommandExceptionType ERROR_ADD_FAILED = new SimpleCommandExceptionType(new TranslatableComponent("commands.epicfight.skill.add.failed"));
-	private static final SimpleCommandExceptionType ERROR_REMOVE_FAILED = new SimpleCommandExceptionType(new TranslatableComponent("commands.epicfight.skill.remove.failed"));
-	private static final SimpleCommandExceptionType ERROR_CLEAR_FAILED = new SimpleCommandExceptionType(new TranslatableComponent("commands.epicfight.skill.clear.failed"));
+	private static final SimpleCommandExceptionType ERROR_ADD_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.epicfight.skill.add.failed"));
+	private static final SimpleCommandExceptionType ERROR_REMOVE_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.epicfight.skill.remove.failed"));
+	private static final SimpleCommandExceptionType ERROR_CLEAR_FAILED = new SimpleCommandExceptionType(Component.translatable("commands.epicfight.skill.clear.failed"));
 	
 	public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
 		RequiredArgumentBuilder<CommandSourceStack, EntitySelector> addCommandBuilder = Commands.argument("targets", EntityArgument.players());
@@ -79,9 +79,9 @@ public class PlayerSkillCommand {
 		
 		if (i > 0) {
 			if (i == 1) {
-				commandSourceStack.sendSuccess(new TranslatableComponent("commands.epicfight.skill.clear.success.single", targets.iterator().next().getDisplayName()), true);
+				commandSourceStack.sendSuccess(Component.translatable("commands.epicfight.skill.clear.success.single", targets.iterator().next().getDisplayName()), true);
 			} else {
-				commandSourceStack.sendSuccess(new TranslatableComponent("commands.epicfight.skill.clear.success.multiple", i), true);
+				commandSourceStack.sendSuccess(Component.translatable("commands.epicfight.skill.clear.success.multiple", i), true);
 			}
 		} else {
 			throw ERROR_CLEAR_FAILED.create();
@@ -108,9 +108,9 @@ public class PlayerSkillCommand {
 		
 		if (i > 0) {
 			if (i == 1) {
-				commandSourceStack.sendSuccess(new TranslatableComponent("commands.epicfight.skill.add.success.single", skill.getDisplayName(), targets.iterator().next().getDisplayName()), true);
+				commandSourceStack.sendSuccess(Component.translatable("commands.epicfight.skill.add.success.single", skill.getDisplayName(), targets.iterator().next().getDisplayName()), true);
 			} else {
-				commandSourceStack.sendSuccess(new TranslatableComponent("commands.epicfight.skill.add.success.multiple", skill.getDisplayName(), i), true);
+				commandSourceStack.sendSuccess(Component.translatable("commands.epicfight.skill.add.success.multiple", skill.getDisplayName(), i), true);
 			}
 		} else {
 			throw ERROR_ADD_FAILED.create();
@@ -151,9 +151,9 @@ public class PlayerSkillCommand {
 		
 		if (i > 0) {
 			if (i == 1) {
-				commandSourceStack.sendSuccess(new TranslatableComponent("commands.epicfight.skill.remove.success.single", skill.getDisplayName(), targets.iterator().next().getDisplayName()), true);
+				commandSourceStack.sendSuccess(Component.translatable("commands.epicfight.skill.remove.success.single", skill.getDisplayName(), targets.iterator().next().getDisplayName()), true);
 			} else {
-				commandSourceStack.sendSuccess(new TranslatableComponent("commands.epicfight.skill.remove.success.multiple", skill.getDisplayName(), i), true);
+				commandSourceStack.sendSuccess(Component.translatable("commands.epicfight.skill.remove.success.multiple", skill.getDisplayName(), i), true);
 			}
 		} else {
 			throw ERROR_REMOVE_FAILED.create();

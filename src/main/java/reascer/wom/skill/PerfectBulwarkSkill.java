@@ -165,7 +165,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 				}
 				
 				event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
-						EpicFightSounds.CLASH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 0.5F);
+						EpicFightSounds.CLASH.get(), container.getExecuter().getOriginal().getSoundSource(), 1.0F, 0.5F);
 				((ServerLevel) event.getPlayerPatch().getOriginal().level).sendParticles(ParticleTypes.CLOUD, 
 						container.getExecuter().getOriginal().getX(), 
 						container.getExecuter().getOriginal().getY() + 0.75D, 
@@ -250,7 +250,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		
 		if (this.isBlockableSource(damageSource, advanced)) {
 			event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
-					EpicFightSounds.CLASH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 0.9F + (0.15f * container.getDataManager().getDataValue(CHARGE)));
+					EpicFightSounds.CLASH.get(), container.getExecuter().getOriginal().getSoundSource(), 1.0F, 0.9F + (0.15f * container.getDataManager().getDataValue(CHARGE)));
 			
 			ServerPlayer serveerPlayer = event.getPlayerPatch().getOriginal();
 			EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)serveerPlayer.level), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, serveerPlayer, damageSource.getDirectEntity());
@@ -271,7 +271,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 			}
 			
 			if (blockType == BlockType.GUARD_BREAK) {
-				event.getPlayerPatch().playSound(EpicFightSounds.NEUTRALIZE_MOBS, 3.0F, 0.0F, 0.1F);
+				event.getPlayerPatch().playSound(EpicFightSounds.NEUTRALIZE_MOBS.get(), 3.0F, 0.0F, 0.1F);
 			}
 			
 			this.dealEvent(event.getPlayerPatch(), event, advanced);

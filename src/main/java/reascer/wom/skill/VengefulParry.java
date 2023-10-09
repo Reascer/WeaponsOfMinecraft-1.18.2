@@ -154,7 +154,7 @@ public class VengefulParry extends GuardSkill {
 					event.getPlayerPatch().setStamina(0);
 				}
 				event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
-		    			EpicFightSounds.CLASH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
+		    			EpicFightSounds.CLASH.get(), container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 				event.getPlayerPatch().playAnimationSynchronized(animation, convert);
 				event.getPlayerPatch().currentLivingMotion = LivingMotions.BLOCK;
 				
@@ -250,7 +250,7 @@ public class VengefulParry extends GuardSkill {
 			DamageSource damageSource = event.getDamageSource();
 			
 			if (this.isBlockableSource(damageSource, true)) {
-				event.getPlayerPatch().playSound(EpicFightSounds.CLASH, -0.05F, 0.1F);
+				event.getPlayerPatch().playSound(EpicFightSounds.CLASH.get(), -0.05F, 0.1F);
 				ServerPlayer serveerPlayer = event.getPlayerPatch().getOriginal();
 				EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)serveerPlayer.level), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, serveerPlayer, damageSource.getDirectEntity());
 				

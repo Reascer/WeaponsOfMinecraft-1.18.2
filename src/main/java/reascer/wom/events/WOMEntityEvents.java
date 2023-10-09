@@ -2,9 +2,7 @@ package reascer.wom.events;
 
 import java.util.UUID;
 
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.UseAnim;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;

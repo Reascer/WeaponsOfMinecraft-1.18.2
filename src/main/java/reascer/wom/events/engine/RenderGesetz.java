@@ -36,7 +36,7 @@ public class RenderGesetz extends RenderItemBase {
 		poseStack.pushPose();
 		this.mulPoseStack(poseStack, modelMatrix);
 		TransformType transformType = isInMainhand ? TransformType.THIRD_PERSON_RIGHT_HAND : TransformType.THIRD_PERSON_LEFT_HAND;
-		Minecraft.getInstance().getItemInHandRenderer().renderItem(entitypatch.getOriginal(), stack, transformType, !isInMainhand, poseStack, buffer, packedLight);
+		Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(entitypatch.getOriginal(), stack, transformType, !isInMainhand, poseStack, buffer, packedLight);
 		
 		poseStack.popPose();
 		
@@ -46,7 +46,7 @@ public class RenderGesetz extends RenderItemBase {
 		
 		poseStack.pushPose();
 		this.mulPoseStack(poseStack, modelMatrix);
-		Minecraft.getInstance().getItemInHandRenderer().renderItem(entitypatch.getOriginal(), Secondmodel, transformType, !isInMainhand, poseStack, buffer, packedLight);
+		Minecraft.getInstance().gameRenderer.itemInHandRenderer.renderItem(entitypatch.getOriginal(), Secondmodel, transformType, !isInMainhand, poseStack, buffer, packedLight);
 		
 		poseStack.popPose();
     }
