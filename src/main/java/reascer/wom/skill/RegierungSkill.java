@@ -146,7 +146,7 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 					}
 					ServerPlayer playerentity = event.getPlayerPatch().getOriginal();
 					event.getPlayerPatch().playSound(EpicFightSounds.CLASH.get(), -0.05F, 0.1F);
-					EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)playerentity.level), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, playerentity, damageSource.getDirectEntity());
+					EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)playerentity.level()), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, playerentity, damageSource.getDirectEntity());
 					
 					StaticAnimation animation = Animations.BIPED_HIT_SHIELD;;
 					float convert = -0.05f;
@@ -222,7 +222,7 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		ServerPlayer player = executer.getOriginal();
-		if ((!player.isOnGround() && !player.isInWater()) && (player.level.isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
+		if ((!player.onGround() && !player.isInWater()) && (player.level().isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
 			if (!executer.consumeStamina(3)) {
 				executer.setStamina(0);
 			} else {

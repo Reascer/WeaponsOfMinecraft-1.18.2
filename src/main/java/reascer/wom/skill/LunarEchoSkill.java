@@ -5,8 +5,6 @@ import java.util.UUID;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
@@ -16,18 +14,13 @@ import reascer.wom.gameasset.WOMAnimations;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
-import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
-import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
-import yesman.epicfight.world.damagesource.StunType;
-import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 

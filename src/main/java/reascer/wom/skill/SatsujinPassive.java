@@ -5,6 +5,7 @@ import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
+import reascer.wom.skill.passive.MeditationSkill;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.network.EpicFightNetworkManager;

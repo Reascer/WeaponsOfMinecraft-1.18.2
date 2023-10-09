@@ -5,22 +5,13 @@ import java.util.UUID;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
 import yesman.epicfight.api.animation.LivingMotions;
-import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.client.gui.BattleModeGui;
@@ -28,11 +19,10 @@ import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
+import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.passive.PassiveSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
-import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class LunarEclipsePassiveSkill extends PassiveSkill {
 	public static final SkillDataKey<Boolean> IDLE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
@@ -69,13 +59,14 @@ public class LunarEclipsePassiveSkill extends PassiveSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack poseStack, float x, float y) {
+	public void drawOnGui(BattleModeGui gui, SkillContainer container, GuiGraphics guiGraphics, float x, float y) {
+		PoseStack poseStack = guiGraphics.pose();
 		poseStack.pushPose();
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, WOMSkills.LUNAR_ECHO.getSkillTexture());
-		GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
+		guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEchoSkill.TIMER) > 0) {
-			gui.font.drawShadow(poseStack, String.valueOf((container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEchoSkill.TIMER)/20)+1), x+7, y+13, 16777215);
+			guiGraphics.drawString(gui.font, String.valueOf((container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEchoSkill.TIMER)/20)+1), x+7, y+13, 16777215,true);
 		}
 		poseStack.popPose();
 	}
@@ -100,7 +91,7 @@ public class LunarEclipsePassiveSkill extends PassiveSkill {
 				transformMatrix.translate(new Vec3f(0,0.0F,0.0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
 				for (int j = 0; j < 1; j++) {
-					entitypatch.getOriginal().level.addParticle(ParticleTypes.END_ROD,
+					entitypatch.getOriginal().level().addParticle(ParticleTypes.END_ROD,
 						(transformMatrix.m30 + entitypatch.getOriginal().getX()+(new Random().nextFloat() - 0.5F)*0.35f),
 						(transformMatrix.m31 + entitypatch.getOriginal().getY()+(new Random().nextFloat() - 0.5F)*0.35f),
 						(transformMatrix.m32 + entitypatch.getOriginal().getZ()+(new Random().nextFloat() - 0.5F)*0.35f),
@@ -109,7 +100,7 @@ public class LunarEclipsePassiveSkill extends PassiveSkill {
 						(new Random().nextFloat() - 0.5F)*0.05f);
 				}
 				for (int j = 0; j < 1; j++) {
-					entitypatch.getOriginal().level.addParticle(ParticleTypes.END_ROD,
+					entitypatch.getOriginal().level().addParticle(ParticleTypes.END_ROD,
 						(transformMatrix.m30 + entitypatch.getOriginal().getX()),
 						(transformMatrix.m31 + entitypatch.getOriginal().getY()),
 						(transformMatrix.m32 + entitypatch.getOriginal().getZ()),

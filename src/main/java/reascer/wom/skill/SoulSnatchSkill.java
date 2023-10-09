@@ -86,17 +86,17 @@ public class SoulSnatchSkill extends WeaponInnateSkill{
 					}
 					event.getPlayerPatch().setStamina(event.getPlayerPatch().getStamina() + (event.getPlayerPatch().getMaxStamina() * 0.05f));
 					event.getPlayerPatch().getOriginal().heal(1 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()));
-					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles(ParticleTypes.REVERSE_PORTAL, 
+					((ServerLevel) container.getExecuter().getOriginal().level()).sendParticles(ParticleTypes.REVERSE_PORTAL, 
 							event.getTarget().xo, 
 							event.getTarget().yo + 0.2f, 
 							event.getTarget().zo, 
 							20, 0, 0, 0, 0.4);
-					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles(ParticleTypes.PORTAL, 
+					((ServerLevel) container.getExecuter().getOriginal().level()).sendParticles(ParticleTypes.PORTAL, 
 							event.getTarget().xo, 
 							event.getTarget().yo+ 0.2f, 
 							event.getTarget().zo, 
 							20, 0, 0, 0, 0.4);
-					 event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+					 event.getPlayerPatch().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 				    			SoundEvents.CHAIN_BREAK, container.getExecuter().getOriginal().getSoundSource(), 2.0F, 0.5F);
 				}
 			}
@@ -223,13 +223,13 @@ public class SoulSnatchSkill extends WeaponInnateSkill{
 		if (container.getDataManager().getDataValue(BUFFED)) {
 			if (container.getDataManager().getDataValue(TIMER) > 0) {
 				if(!container.getExecuter().isLogicalClient()) {
-					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.REVERSE_PORTAL, 
+					((ServerLevel) container.getExecuter().getOriginal().level()).sendParticles( ParticleTypes.REVERSE_PORTAL, 
 							container.getExecuter().getOriginal().getX() - 0.15D, 
 							container.getExecuter().getOriginal().getY() + 1.05D, 
 							container.getExecuter().getOriginal().getZ() - 0.15D, 
 							4, 0.3D, 0.4D, 0.3D, 0.05);
 					if (container.getDataManager().getDataValue(TIMER) % 20 == 0) {
-						((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( container.getDataManager().getDataValue(STRENGHT) == 40 ? ParticleTypes.END_ROD : ParticleTypes.SOUL_FIRE_FLAME, 
+						((ServerLevel) container.getExecuter().getOriginal().level()).sendParticles( container.getDataManager().getDataValue(STRENGHT) == 40 ? ParticleTypes.END_ROD : ParticleTypes.SOUL_FIRE_FLAME, 
 								container.getExecuter().getOriginal().getX() - 0.15D, 
 								container.getExecuter().getOriginal().getY() + 1.05D, 
 								container.getExecuter().getOriginal().getZ() - 0.15D, 

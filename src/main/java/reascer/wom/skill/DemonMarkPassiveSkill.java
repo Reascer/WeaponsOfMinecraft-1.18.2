@@ -50,7 +50,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 		container.getDataManager().setData(IDLE,false);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID, (event) -> {
-			if (event.getDamageSource().cast().getMsgId() != "demon_fee") {
+			if (!event.getDamageSource().getAnimation().equals(WOMAnimations.ANTITHEUS_PULL)) {
 				if (container.getDataManager().getDataValue(WITHERCURSE)) {
 					int chance = Math.abs(new Random().nextInt()) % 100;
 					int sweping = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal());
@@ -134,7 +134,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				transformMatrix.translate(new Vec3f(0,0.0F,0.0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
 				for (int j = 0; j < 1; j++) {
-					entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+					entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 						(transformMatrix.m30 + entitypatch.getOriginal().getX()),
 						(transformMatrix.m31 + entitypatch.getOriginal().getY()),
 						(transformMatrix.m32 + entitypatch.getOriginal().getZ()),
@@ -143,7 +143,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 						(new Random().nextFloat() - 0.5F)*0.15f);
 				}
 				for (int j = 0; j < 1; j++) {
-					entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+					entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 						(transformMatrix.m30 + entitypatch.getOriginal().getX()),
 						(transformMatrix.m31 + entitypatch.getOriginal().getY()),
 						(transformMatrix.m32 + entitypatch.getOriginal().getZ()),
@@ -160,7 +160,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				transformMatrix2.translate(new Vec3f(0,0.0F,1.8F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 				transformMatrix2.translate(new Vec3f(0,0.0F,-(new Random().nextFloat() * 4.0f)));
-				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+				entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 					(transformMatrix2.m30 + entitypatch.getOriginal().getX()),
 					(transformMatrix2.m31 + entitypatch.getOriginal().getY()),
 					(transformMatrix2.m32 + entitypatch.getOriginal().getZ()),
@@ -168,7 +168,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 					(new Random().nextFloat() - 0.5F)*0.15f,
 					(new Random().nextFloat() - 0.5F)*0.15f);
 				
-				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+				entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 					(transformMatrix2.m30 + entitypatch.getOriginal().getX()),
 					(transformMatrix2.m31 + entitypatch.getOriginal().getY()),
 					(transformMatrix2.m32 + entitypatch.getOriginal().getZ()),
@@ -201,7 +201,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				    OpenMatrix4f.transform3v(rotation, direction, direction);
 				    
 				    // emit the particle in the calculated direction, with some random velocity added
-				    entitypatch.getOriginal().level.addParticle(ParticleTypes.LARGE_SMOKE,
+				    entitypatch.getOriginal().level().addParticle(ParticleTypes.LARGE_SMOKE,
 				        (entitypatch.getOriginal().getX()) + direction.x,
 				        (entitypatch.getOriginal().getY()) + direction.y + 1.25f,
 				        (entitypatch.getOriginal().getZ()) + direction.z,
@@ -212,7 +212,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 			}
 			
 			for (int j = 0; j < 14; j++) {
-				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+				entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 					(entitypatch.getOriginal().getX()),
 					(entitypatch.getOriginal().getY())+0.03f,
 					(entitypatch.getOriginal().getZ()),
@@ -230,7 +230,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.head);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
-				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+				entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 					(transformMatrix2.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(transformMatrix2.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() + 0.1F)*0.55f),
 					(transformMatrix2.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.55f),
@@ -245,7 +245,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.chest);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
-				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+				entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 					(transformMatrix2.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(transformMatrix2.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(transformMatrix2.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.55f),
@@ -260,7 +260,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.armL);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
-				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+				entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 					(transformMatrix2.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(transformMatrix2.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(transformMatrix2.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.55f),
@@ -275,7 +275,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.armR);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
-				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+				entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 					(transformMatrix2.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(transformMatrix2.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(transformMatrix2.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.55f),
@@ -290,7 +290,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.torso);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
-				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+				entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 					(transformMatrix2.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(transformMatrix2.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(transformMatrix2.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.55f),
@@ -305,7 +305,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.thighL);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
-				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+				entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 					(transformMatrix2.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(transformMatrix2.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(transformMatrix2.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.55f),
@@ -320,7 +320,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.thighR);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
-				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+				entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 					(transformMatrix2.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(transformMatrix2.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(transformMatrix2.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.55f),
@@ -335,7 +335,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.legL);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
-				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+				entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 					(transformMatrix2.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(transformMatrix2.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(transformMatrix2.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.55f),
@@ -350,7 +350,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.legR);
 				transformMatrix2.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
-				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+				entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 					(transformMatrix2.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(transformMatrix2.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.55f),
 					(transformMatrix2.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.55f),
@@ -371,7 +371,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.chest);
 				transformMatrix.translate(new Vec3f(0,0.0F,0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
-				entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+				entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 					(transformMatrix.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.05f),
 					(transformMatrix.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.05f),
 					(transformMatrix.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.05f),
@@ -394,7 +394,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
 				for (int j = 0; j < 1; j++) {
 					transformMatrix.translate(new Vec3f(0,0.0F,-(new Random().nextFloat() * 4.0f)));
-					entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+					entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 						(transformMatrix.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.25f),
 						(transformMatrix.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.25f),
 						(transformMatrix.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.25f),
@@ -409,7 +409,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				for (int j = 0; j < 1; j++) {
 					float blade = -(new Random().nextFloat() * 1.8f);
 					transformMatrix2.translate(new Vec3f(0,blade,-(new Random().nextFloat() * 0.4f)-(blade/4)));
-					entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+					entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 						(transformMatrix2.m30 + entitypatch.getOriginal().getX()),
 						(transformMatrix2.m31 + entitypatch.getOriginal().getY()),
 						(transformMatrix2.m32 + entitypatch.getOriginal().getZ()),
@@ -429,7 +429,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 					OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 					float blade = -(new Random().nextFloat() * 1.8f);
 					transformMatrix2.translate(new Vec3f(0,blade,-(new Random().nextFloat() * 0.4f)-(blade/4)));
-					entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+					entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 						(transformMatrix2.m30 + entitypatch.getOriginal().getX()),
 						(transformMatrix2.m31 + entitypatch.getOriginal().getY()),
 						(transformMatrix2.m32 + entitypatch.getOriginal().getZ()),
@@ -452,7 +452,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 					transformMatrix.translate(new Vec3f(0,0.0F,0.0F));
 					OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
 					for (int j = 0; j < 1; j++) {
-						entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+						entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 							(transformMatrix.m30 + entitypatch.getOriginal().getX()),
 							(transformMatrix.m31 + entitypatch.getOriginal().getY()),
 							(transformMatrix.m32 + entitypatch.getOriginal().getZ()),
@@ -461,7 +461,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 							(new Random().nextFloat() - 0.5F)*0.15f);
 					}
 					for (int j = 0; j < 1; j++) {
-						entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+						entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 							(transformMatrix.m30 + entitypatch.getOriginal().getX()),
 							(transformMatrix.m31 + entitypatch.getOriginal().getY()),
 							(transformMatrix.m32 + entitypatch.getOriginal().getZ()),
@@ -502,7 +502,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 					    OpenMatrix4f.transform3v(rotation, direction, direction);
 
 					    // emit the particle in the calculated direction, with some random velocity added
-					    entitypatch.getOriginal().level.addParticle(ParticleTypes.SMOKE,
+					    entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 					        (direction.x + transformMatrix.m30 + entitypatch.getOriginal().getX()),
 					        (direction.y + transformMatrix.m31 + entitypatch.getOriginal().getY()),
 					        (direction.z + transformMatrix.m32 + entitypatch.getOriginal().getZ()),

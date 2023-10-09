@@ -1,7 +1,6 @@
 package reascer.wom.skill;
 
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import org.lwjgl.opengl.GL11;
@@ -12,24 +11,17 @@ import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.math.Vector3f;
 
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -37,15 +29,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.main.WeaponsOfMinecraft;
-import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.api.model.Armature;
-import yesman.epicfight.api.utils.math.OpenMatrix4f;
-import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
-import yesman.epicfight.gameasset.Armatures;
-import yesman.epicfight.gameasset.EpicFightSounds;
-import yesman.epicfight.skill.Skill.ActivateType;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
@@ -54,11 +39,11 @@ import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
-import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
+import yesman.epicfight.world.damagesource.EpicFightDamageSource;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.effect.EpicFightMobEffects;
-import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
+import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 
 public class TrueBerserkSkill extends WeaponInnateSkill {
 	private static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
@@ -107,9 +92,9 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 			executer.modifyLivingMotionByCurrentItem();
 		} else {
 			executer.playAnimationSynchronized(this.activateAnimation, 0);
-			executer.getOriginal().level.playSound(null, executer.getOriginal().xo, executer.getOriginal().yo, executer.getOriginal().zo,
+			executer.getOriginal().level().playSound(null, executer.getOriginal().xo, executer.getOriginal().yo, executer.getOriginal().zo,
 	    			SoundEvents.DRAGON_FIREBALL_EXPLODE, executer.getOriginal().getSoundSource(), 1.0F, 0.5F);
-			((ServerLevel) executer.getOriginal().level).sendParticles( ParticleTypes.LARGE_SMOKE, 
+			((ServerLevel) executer.getOriginal().level()).sendParticles( ParticleTypes.LARGE_SMOKE, 
 					executer.getOriginal().getX() - 0.15D, 
 					executer.getOriginal().getY() + 1.2D, 
 					executer.getOriginal().getZ() - 0.15D, 
@@ -197,11 +182,12 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 						}
 					} else {
 						if (container.getExecuter().getOriginal().getHealth() - (container.getExecuter().getOriginal().getMaxHealth() * 0.04f) > 0f) {
-							DamageSource damage = new IndirectEpicFightDamageSource("Heartattack_from_wrath", container.getExecuter().getOriginal(), container.getExecuter().getOriginal(), StunType.NONE).bypassArmor().bypassMagic();
-							container.getExecuter().getOriginal().hurt(damage,(container.getExecuter().getOriginal().getMaxHealth() * 0.04f));
+							EpicFightDamageSource selfdamage = container.getExecuter().getDamageSource(WOMAnimations.ANTITHEUS_PULL, InteractionHand.MAIN_HAND);
+							selfdamage.setStunType(StunType.NONE);
+							container.getExecuter().getOriginal().hurt(selfdamage,(container.getExecuter().getOriginal().getMaxHealth() * 0.04f));
 							if(!container.getExecuter().isLogicalClient()) {
 								if (!container.getExecuter().getOriginal().isCreative()) {
-								((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.SMOKE, 
+								((ServerLevel) container.getExecuter().getOriginal().level()).sendParticles( ParticleTypes.SMOKE, 
 										container.getExecuter().getOriginal().getX() - 0.2D, 
 										container.getExecuter().getOriginal().getY() + 1.3D, 
 										container.getExecuter().getOriginal().getZ() - 0.2D, 

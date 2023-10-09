@@ -6,7 +6,9 @@ import java.util.UUID;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -18,12 +20,11 @@ import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
-import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
-import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
+import yesman.epicfight.world.damagesource.EpicFightDamageSource;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
@@ -93,9 +94,9 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 		//executer.getOriginal().sendMessage(new TextComponent("number of stack: " + executer.getSkill(this).getDataManager().getDataValue(STACK)), UUID.randomUUID());
 		//executer.setStamina(executer.getStamina() - (5f - EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));
 		if (!executer.getOriginal().isCreative()) {
-			executer.getOriginal().level.playSound(null, executer.getOriginal().xo, executer.getOriginal().yo, executer.getOriginal().zo,
+			executer.getOriginal().level().playSound(null, executer.getOriginal().xo, executer.getOriginal().yo, executer.getOriginal().zo,
 	    			SoundEvents.PLAYER_HURT, executer.getOriginal().getSoundSource(), 1.0F, 1.0F);
-			DamageSource damage = new IndirectEpicFightDamageSource("agonized_to_death", executer.getOriginal(), executer.getOriginal(), StunType.NONE).bypassArmor().bypassMagic();
+			EpicFightDamageSource damage = executer.getDamageSource(attackAnimations, InteractionHand.MAIN_HAND);
 			executer.getOriginal().hurt(damage, executer.getOriginal().getHealth() * (0.40f - (0.10f * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()))));
 			super.executeOnServer(executer, args);
 		}

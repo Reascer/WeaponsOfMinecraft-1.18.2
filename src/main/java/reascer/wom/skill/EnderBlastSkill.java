@@ -19,6 +19,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
+import reascer.wom.skill.passive.MeditationSkill;
 import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
@@ -197,7 +198,7 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 		int i = args.readInt();
 		boolean double_cost = false;
 		ServerPlayer player = executer.getOriginal();
-		if ((!player.isOnGround() && !player.isInWater()) && (player.level.isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
+		if ((!player.onGround() && !player.isInWater()) && (player.level().isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
 			executer.playAnimationSynchronized(this.attackAnimations[this.attackAnimations.length - 1], 0);
 		} else {
 			if(executer.getOriginal().isSprinting()) {

@@ -8,12 +8,9 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import reascer.wom.main.WeaponsOfMinecraft;
 import reascer.wom.skill.AgonyPlungeSkill;
-import reascer.wom.skill.ArrowTenacitySkill;
 import reascer.wom.skill.ChargeSkill;
 import reascer.wom.skill.CharybdisSkill;
 import reascer.wom.skill.CounterAttack;
-import reascer.wom.skill.CriticalKnowledgeSkill;
-import reascer.wom.skill.DancingBladeSkill;
 import reascer.wom.skill.DemonMarkPassiveSkill;
 import reascer.wom.skill.DemonicAscensionSkill;
 import reascer.wom.skill.DodgeMasterSkill;
@@ -22,12 +19,7 @@ import reascer.wom.skill.EnderBlastSkill;
 import reascer.wom.skill.EnderFusionSkill;
 import reascer.wom.skill.EnderObscurisSkill;
 import reascer.wom.skill.EnderStepSkill;
-import reascer.wom.skill.MeditationSkill;
-import reascer.wom.skill.MindSetSkill;
 import reascer.wom.skill.SakuraStateSkill;
-import reascer.wom.skill.HeartShieldSkill;
-import reascer.wom.skill.PainAnticipationSkill;
-import reascer.wom.skill.LatentRetributionSkill;
 import reascer.wom.skill.LunarEchoSkill;
 import reascer.wom.skill.LunarEclipsePassiveSkill;
 import reascer.wom.skill.PerfectBulwarkSkill;
@@ -37,9 +29,17 @@ import reascer.wom.skill.RuinePassive;
 import reascer.wom.skill.ShadowStepSkill;
 import reascer.wom.skill.TormentPassiveSkill;
 import reascer.wom.skill.TrueBerserkSkill;
-import reascer.wom.skill.VampirizeSkill;
 import reascer.wom.skill.VengefulParry;
 import reascer.wom.skill.passive.AdrenalineSkill;
+import reascer.wom.skill.passive.ArrowTenacitySkill;
+import reascer.wom.skill.passive.CriticalKnowledgeSkill;
+import reascer.wom.skill.passive.DancingBladeSkill;
+import reascer.wom.skill.passive.HeartShieldSkill;
+import reascer.wom.skill.passive.LatentRetributionSkill;
+import reascer.wom.skill.passive.MeditationSkill;
+import reascer.wom.skill.passive.MindSetSkill;
+import reascer.wom.skill.passive.PainAnticipationSkill;
+import reascer.wom.skill.passive.VampirizeSkill;
 import reascer.wom.world.damagesources.WOMExtraDamageInstance;
 import reascer.wom.world.item.WOMCreativeTabs;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
@@ -114,7 +114,7 @@ public class WOMSkills {
 				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/enderstep_forward"),
 				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/enderstep_backward"),
 				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/enderstep_left"),
-				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/enderstep_right")).setCreativeTab(WOMCreativeTabs.ITEMS), 
+				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/enderstep_right")), 
 				WeaponsOfMinecraft.MODID,"ender_step");
 		
 		SkillManager.register(EnderObscurisSkill::new, DodgeSkill.createDodgeBuilder().setAnimations(
@@ -122,14 +122,14 @@ public class WOMSkills {
 				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/enderstep_backward"),
 				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/enderstep_left"),
 				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/enderstep_right"), 
-				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/ender_obscuris")).setCreativeTab(WOMCreativeTabs.ITEMS),
+				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/ender_obscuris")),
 				WeaponsOfMinecraft.MODID,"ender_obscuris");
 		
 		SkillManager.register(DodgeMasterSkill::new, DodgeSkill.createDodgeBuilder().setAnimations(
 				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/dodgemaster_back"),
 				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/dodgemaster_back"),
 				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/dodgemaster_right"),
-				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/dodgemaster_left")).setCreativeTab(WOMCreativeTabs.ITEMS),
+				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/dodgemaster_left")),
 				WeaponsOfMinecraft.MODID,"dodge_master");
 		
 		SkillManager.register(DodgeSkill::new, DodgeSkill.createDodgeBuilder().setAnimations(
@@ -141,11 +141,11 @@ public class WOMSkills {
 		
 		SkillManager.register(ShadowStepSkill::new, DodgeSkill.createDodgeBuilder().setAnimations(
 				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/shadow_step_forward"),
-				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/shadow_step_backward")).setCreativeTab(WOMCreativeTabs.ITEMS),
+				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/shadow_step_backward")),
 				WeaponsOfMinecraft.MODID,"shadow_step");
 		
 		SkillManager.register(ChargeSkill::new, ChargeSkill.createChargeBuilder().setAnimations(
-				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/bull_charge")).setCreativeTab(WOMCreativeTabs.ITEMS),
+				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/bull_charge")),
 				WeaponsOfMinecraft.MODID,"bull_charge");		
 		
 		// WEAPON PASSIVE --------------------------------------------------------
@@ -220,45 +220,45 @@ public class WOMSkills {
 		
 		//  GUARD --------------------------------------------------------
 		
-		SkillManager.register(CounterAttack::new, CounterAttack.createCounterAttackBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
+		SkillManager.register(CounterAttack::new, CounterAttack.createCounterAttackBuilder(),
 				WeaponsOfMinecraft.MODID,"counter_attack");
 		
-		SkillManager.register(PerfectBulwarkSkill::new, PerfectBulwarkSkill.createCounterAttackBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
+		SkillManager.register(PerfectBulwarkSkill::new, PerfectBulwarkSkill.createCounterAttackBuilder(),
 				WeaponsOfMinecraft.MODID,"perfect_bulwark");
 		
-		SkillManager.register(VengefulParry::new, VengefulParry.createCounterAttackBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
+		SkillManager.register(VengefulParry::new, VengefulParry.createCounterAttackBuilder(),
 				WeaponsOfMinecraft.MODID,"vengeful_parry");
 		
 		//  PASSIVE --------------------------------------------------------
 		
-		SkillManager.register(ArrowTenacitySkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
+		SkillManager.register(ArrowTenacitySkill::new, PassiveSkill.createPassiveBuilder(),
 				WeaponsOfMinecraft.MODID,"arrow_tenacity");
 
-		SkillManager.register(PainAnticipationSkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
+		SkillManager.register(PainAnticipationSkill::new, PassiveSkill.createPassiveBuilder(),
 				WeaponsOfMinecraft.MODID,"pain_anticipation");
 
-		SkillManager.register(LatentRetributionSkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
+		SkillManager.register(LatentRetributionSkill::new, PassiveSkill.createPassiveBuilder(),
 				WeaponsOfMinecraft.MODID,"pain_retribution");
 
-		SkillManager.register(VampirizeSkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
+		SkillManager.register(VampirizeSkill::new, PassiveSkill.createPassiveBuilder(),
 				WeaponsOfMinecraft.MODID,"vampirize");
 
-		SkillManager.register(CriticalKnowledgeSkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
+		SkillManager.register(CriticalKnowledgeSkill::new, PassiveSkill.createPassiveBuilder(),
 				WeaponsOfMinecraft.MODID,"critical_knowledge");
 		
-		SkillManager.register(HeartShieldSkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
+		SkillManager.register(HeartShieldSkill::new, PassiveSkill.createPassiveBuilder(),
 				WeaponsOfMinecraft.MODID,"heart_shield");
 		
-		SkillManager.register(MindSetSkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
+		SkillManager.register(MindSetSkill::new, PassiveSkill.createPassiveBuilder(),
 				WeaponsOfMinecraft.MODID,"mindset");
 		
-		SkillManager.register(AdrenalineSkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
+		SkillManager.register(AdrenalineSkill::new, PassiveSkill.createPassiveBuilder(),
 				WeaponsOfMinecraft.MODID,"adrenaline");
 		
-		SkillManager.register(DancingBladeSkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
+		SkillManager.register(DancingBladeSkill::new, PassiveSkill.createPassiveBuilder(),
 				WeaponsOfMinecraft.MODID,"dancing_blade");
 		
-		SkillManager.register(MeditationSkill::new, PassiveSkill.createPassiveBuilder().setCreativeTab(WOMCreativeTabs.ITEMS),
+		SkillManager.register(MeditationSkill::new, PassiveSkill.createPassiveBuilder(),
 				WeaponsOfMinecraft.MODID,"meditation");
 	}
 	

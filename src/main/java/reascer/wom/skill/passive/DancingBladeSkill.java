@@ -1,4 +1,4 @@
-package reascer.wom.skill;
+package reascer.wom.skill.passive;
 
 import java.util.Random;
 import java.util.UUID;
@@ -6,12 +6,11 @@ import java.util.UUID;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import yesman.epicfight.api.animation.AnimationPlayer;
@@ -94,7 +93,7 @@ public class DancingBladeSkill extends PassiveSkill {
 			
 			if (tag) {
 				container.getDataManager().setDataSync(SAVED_ELAPSED_TIME,elapsedTime, event.getPlayerPatch().getOriginal());
-				((ServerLevel) event.getPlayerPatch().getOriginal().level).sendParticles(ParticleTypes.NOTE,
+				((ServerLevel) event.getPlayerPatch().getOriginal().level()).sendParticles(ParticleTypes.NOTE,
 						event.getPlayerPatch().getOriginal().getX(),
 						event.getPlayerPatch().getOriginal().getY() + event.getTarget().getBbHeight()/2,
 						event.getPlayerPatch().getOriginal().getZ(),
@@ -106,30 +105,30 @@ public class DancingBladeSkill extends PassiveSkill {
 				if (container.getDataManager().getDataValue(STEP) < 3) {
 					container.getDataManager().setDataSync(STEP,container.getDataManager().getDataValue(STEP)+1, event.getPlayerPatch().getOriginal());
 				} else {
-					((ServerLevel) container.getExecuter().getOriginal().level).playSound(null,
+					((ServerLevel) container.getExecuter().getOriginal().level()).playSound(null,
 							event.getPlayerPatch().getOriginal().getX(),
 							event.getPlayerPatch().getOriginal().getY(),
 							event.getPlayerPatch().getOriginal().getZ(),
-			    			SoundEvents.NOTE_BLOCK_SNARE, event.getTarget().getSoundSource(), 2.0F, 2.0f);
-					((ServerLevel) container.getExecuter().getOriginal().level).playSound(null,
+			    			SoundEvents.NOTE_BLOCK_SNARE.get(), event.getTarget().getSoundSource(), 2.0F, 2.0f);
+					((ServerLevel) container.getExecuter().getOriginal().level()).playSound(null,
 							event.getPlayerPatch().getOriginal().getX(),
 							event.getPlayerPatch().getOriginal().getY(),
 							event.getPlayerPatch().getOriginal().getZ(),
-			    			SoundEvents.NOTE_BLOCK_BELL, event.getTarget().getSoundSource(), 2.0F, melody[container.getDataManager().getDataValue(MELODY_INDEX)]);
+			    			SoundEvents.NOTE_BLOCK_BELL.get(), event.getTarget().getSoundSource(), 2.0F, melody[container.getDataManager().getDataValue(MELODY_INDEX)]);
 					container.getDataManager().setDataSync(STEP,0, event.getPlayerPatch().getOriginal());
 				}
 				
 				if (container.getDataManager().getDataValue(MELODY_INDEX) < melody.length-1) {
-					((ServerLevel) container.getExecuter().getOriginal().level).playSound(null,
+					((ServerLevel) container.getExecuter().getOriginal().level()).playSound(null,
 							event.getPlayerPatch().getOriginal().getX(),
 							event.getPlayerPatch().getOriginal().getY(),
 							event.getPlayerPatch().getOriginal().getZ(),
-			    			SoundEvents.NOTE_BLOCK_SNARE, event.getTarget().getSoundSource(), 2.0F, 0.5f * (container.getDataManager().getDataValue(STEP)+1));
-					((ServerLevel) container.getExecuter().getOriginal().level).playSound(null,
+			    			SoundEvents.NOTE_BLOCK_SNARE.get(), event.getTarget().getSoundSource(), 2.0F, 0.5f * (container.getDataManager().getDataValue(STEP)+1));
+					((ServerLevel) container.getExecuter().getOriginal().level()).playSound(null,
 							event.getPlayerPatch().getOriginal().getX(),
 							event.getPlayerPatch().getOriginal().getY(),
 							event.getPlayerPatch().getOriginal().getZ(),
-			    			SoundEvents.NOTE_BLOCK_BIT, SoundSource.MUSIC, 1.5F, melody[container.getDataManager().getDataValue(MELODY_INDEX)]);
+			    			SoundEvents.NOTE_BLOCK_BIT.get(), SoundSource.MUSIC, 1.5F, melody[container.getDataManager().getDataValue(MELODY_INDEX)]);
 					container.getDataManager().setDataSync(MELODY_INDEX,container.getDataManager().getDataValue(MELODY_INDEX)+1, event.getPlayerPatch().getOriginal());
 				} else {
 					container.getDataManager().setDataSync(MELODY_INDEX,0, event.getPlayerPatch().getOriginal());
@@ -152,11 +151,12 @@ public class DancingBladeSkill extends PassiveSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack poseStack, float x, float y) {
+	public void drawOnGui(BattleModeGui gui, SkillContainer container, GuiGraphics guiGraphics, float x, float y) {
+		PoseStack poseStack = guiGraphics.pose();
 		poseStack.pushPose();
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, this.getSkillTexture());
-		GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
+		guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		poseStack.popPose();
 	}
 }

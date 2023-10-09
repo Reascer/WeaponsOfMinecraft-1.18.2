@@ -19,6 +19,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
+import reascer.wom.skill.passive.MeditationSkill;
 import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
@@ -179,7 +180,7 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 		int i = args.readInt();
 		boolean double_cost = false;
 		ServerPlayer player = executer.getOriginal();
-		if ((!player.isOnGround() && !player.isInWater()) && player.fallDistance < 0.1f && (player.level.isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
+		if ((!player.onGround() && !player.isInWater()) && player.fallDistance < 0.1f && (player.level().isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
 			executer.playAnimationSynchronized(this.attackAnimations[this.attackAnimations.length - 1], 0);
 			executer.getSkill(this).getDataManager().setDataSync(NOFALLDAMAGE, true, executer.getOriginal());
 			executer.getSkill(this).getDataManager().setDataSync(COOLDOWN, cooldown+40, executer.getOriginal());
@@ -256,7 +257,7 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 				double_cost = true;
 			}
 			ServerPlayer player = (ServerPlayer) executer.getOriginal();
-			if ((!player.isOnGround() && !player.isInWater()) && player.fallDistance < 0.1f && (player.level.isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
+			if ((!player.onGround() && !player.isInWater()) && player.fallDistance < 0.1f && (player.level().isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
 				double_cost = true;
 			}
 			int combo = executer.getSkill(this).getDataManager().getDataValue(COMBO);

@@ -16,7 +16,9 @@ import reascer.wom.gameasset.WOMSounds;
 import reascer.wom.particle.WOMParticles;
 import reascer.wom.wold.gamerules.WOMGamerules;
 import reascer.wom.world.entity.projectile.WOMEntities;
+import reascer.wom.world.item.WOMCreativeTabs;
 import reascer.wom.world.item.WOMItems;
+import yesman.epicfight.world.item.EpicFightCreativeTabs;
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("wom")
 public class WeaponsOfMinecraft
@@ -45,6 +47,7 @@ public class WeaponsOfMinecraft
     	WOMEnchantment.ENCHANTEMENTS.register(bus);
     	WOMEntities.ENTITIES.register(bus);
     	WOMSounds.SOUNDS.register(bus);
+    	WOMCreativeTabs.TABS.register(bus);
     	WOMSkills.registerSkills();
     	
     	MinecraftForge.EVENT_BUS.register(this);

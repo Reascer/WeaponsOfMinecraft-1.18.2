@@ -1,20 +1,12 @@
-package reascer.wom.skill;
+package reascer.wom.skill.passive;
 
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -74,7 +66,8 @@ public class HeartShieldSkill extends PassiveSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack poseStack, float x, float y) {
+	public void drawOnGui(BattleModeGui gui, SkillContainer container, GuiGraphics guiGraphics, float x, float y) {
+		PoseStack poseStack = guiGraphics.pose();
 		poseStack.pushPose();
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, this.getSkillTexture());
@@ -83,9 +76,9 @@ public class HeartShieldSkill extends PassiveSkill {
 		} else {
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		}
-		GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
+		guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		if (container.getDataManager().getDataValue(RECOVERY_COOLDOWN) > 0) {
-			gui.font.drawShadow(poseStack, String.valueOf((container.getDataManager().getDataValue(RECOVERY_COOLDOWN)/20)+1), x+7, y+13, 16777215);
+			guiGraphics.drawString(gui.font, String.valueOf((container.getDataManager().getDataValue(RECOVERY_COOLDOWN)/20)+1), x+7, y+13, 16777215,true);
 		}
 		poseStack.popPose();
 	}

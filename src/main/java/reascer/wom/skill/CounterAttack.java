@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.phys.Vec3;
@@ -156,7 +157,7 @@ public class CounterAttack extends GuardSkill {
 					if(!event.getPlayerPatch().consumeStamina(3)){
 						event.getPlayerPatch().setStamina(0);
 					}
-					event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+					event.getPlayerPatch().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 			    			EpicFightSounds.CLASH.get(), container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 					event.getPlayerPatch().playAnimationSynchronized(animation, convert);
 					event.getPlayerPatch().currentLivingMotion = LivingMotions.BLOCK;
@@ -166,7 +167,7 @@ public class CounterAttack extends GuardSkill {
 					
 				} else {
 					if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.ADVANCED_GUARD) && event.getPlayerPatch().getEntityState().canBasicAttack()) {
-						event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+						event.getPlayerPatch().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 								SoundEvents.LAVA_EXTINGUISH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 						container.getDataManager().setDataSync(LAST_ACTIVE, event.getPlayerPatch().getOriginal().tickCount - 4,event.getPlayerPatch().getOriginal());
 					}
@@ -175,7 +176,7 @@ public class CounterAttack extends GuardSkill {
 			
 			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.ADVANCED_GUARD)) {
 				if ((event.getPlayerPatch().getStamina() == 0 || event.getPlayerPatch().getOriginal().tickCount - container.getDataManager().getDataValue(LAST_ACTIVE) > 10) && event.getPlayerPatch().getEntityState().canBasicAttack()) {
-					event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+					event.getPlayerPatch().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 							SoundEvents.LAVA_EXTINGUISH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 					container.getDataManager().setDataSync(LAST_ACTIVE, event.getPlayerPatch().getOriginal().tickCount - 4,event.getPlayerPatch().getOriginal());
 				}
@@ -269,7 +270,7 @@ public class CounterAttack extends GuardSkill {
 				
 				float penalty = container.getDataManager().getDataValue(PENALTY);
 				event.getPlayerPatch().playSound(EpicFightSounds.CLASH.get(), -0.05F, 0.1F);
-				EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)playerentity.level), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, playerentity, damageSource.getDirectEntity());
+				EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)playerentity.level()), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, playerentity, damageSource.getDirectEntity());
 				
 				if (successParrying) {
 					penalty = 0.1F;
@@ -324,7 +325,7 @@ public class CounterAttack extends GuardSkill {
 	
 	@Override
 	protected boolean isBlockableSource(DamageSource damageSource, boolean advanced) {
-		return (damageSource.isProjectile() && advanced) || super.isBlockableSource(damageSource, false);
+		return (damageSource.is(DamageTypes.MOB_PROJECTILE) && advanced) || super.isBlockableSource(damageSource, false);
 	}
 	
 	@Nullable

@@ -1,4 +1,4 @@
-package reascer.wom.skill;
+package reascer.wom.skill.passive;
 
 import java.util.UUID;
 

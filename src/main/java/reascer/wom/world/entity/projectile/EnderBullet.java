@@ -20,10 +20,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.particle.WOMParticles;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
-import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
+import yesman.epicfight.world.damagesource.EpicFightDamageSource;
 import yesman.epicfight.world.damagesource.SourceTags;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
@@ -46,12 +47,12 @@ public class EnderBullet extends AbstractHurtingProjectile {
    @Override
    public void tick() {
       Entity entity = this.getOwner();
-      if (this.level.isClientSide || (entity == null || !entity.isRemoved())) {
+      if (this.level().isClientSide || (entity == null || !entity.isRemoved())) {
          if (this.shouldBurn()) {
             this.setSecondsOnFire(1);
          }
 
-         HitResult hitresult = ProjectileUtil.getHitResult(this, this::canHitEntity);
+         HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
          if (hitresult.getType() != HitResult.Type.MISS && !net.minecraftforge.event.ForgeEventFactory.onProjectileImpact(this, hitresult)) {
             this.onHit(hitresult);
          }
@@ -65,14 +66,14 @@ public class EnderBullet extends AbstractHurtingProjectile {
          float f = this.getInertia();
          if (this.isInWater()) {
             for(int i = 0; i < 4; ++i) {
-               this.level.addParticle(ParticleTypes.BUBBLE, d0 - vec3.x * 0.25D, d1 - vec3.y * 0.25D, d2 - vec3.z * 0.25D, vec3.x, vec3.y, vec3.z);
+               this.level().addParticle(ParticleTypes.BUBBLE, d0 - vec3.x * 0.25D, d1 - vec3.y * 0.25D, d2 - vec3.z * 0.25D, vec3.x, vec3.y, vec3.z);
             }
 
             f = 0.8F;
          }
 
          this.setDeltaMovement(vec3.add(this.xPower, this.yPower, this.zPower).scale((double)f));
-         this.level.addParticle(this.getTrailParticle(), d0 + ((new Random().nextFloat() - 0.5f)*0.1f), d1 + ((new Random().nextFloat() - 0.5f)*0.17f), d2 + ((new Random().nextFloat() - 0.5f)*0.1f), 0.0D, 0.0D, 0.0D);
+         this.level().addParticle(this.getTrailParticle(), d0 + ((new Random().nextFloat() - 0.5f)*0.1f), d1 + ((new Random().nextFloat() - 0.5f)*0.17f), d2 + ((new Random().nextFloat() - 0.5f)*0.1f), 0.0D, 0.0D, 0.0D);
          this.setPos(d0, d1, d2);
          if ( Math.abs(getDeltaMovement().x) + Math.abs(getDeltaMovement().y) + Math.abs(getDeltaMovement().z) > 100.0 || Math.abs(getDeltaMovement().x) + Math.abs(getDeltaMovement().y) + Math.abs(getDeltaMovement().z) < 1.0) {
         	 this.discard();
@@ -91,13 +92,15 @@ public class EnderBullet extends AbstractHurtingProjectile {
    
    protected void onHitEntity(EntityHitResult p_37626_) {
       super.onHitEntity(p_37626_);
-      if (!this.level.isClientSide) {
+      if (!this.level().isClientSide) {
          Entity entity = p_37626_.getEntity();
          Entity entity1 = this.getOwner();
          boolean flag;
          if (entity1 instanceof LivingEntity) {
             LivingEntity livingentity = (LivingEntity)entity1;
-            IndirectEpicFightDamageSource damage = new IndirectEpicFightDamageSource("ender_bullet", entity1, this, StunType.SHORT);
+            EpicFightDamageSource damage = new EpicFightDamageSource(this.damageSources().magic());
+            damage.setAnimation(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT);
+            damage.setStunType(StunType.SHORT);
             damage.addTag(SourceTags.WEAPON_INNATE);
             int prevInvulTime = entity.invulnerableTime;
             entity.invulnerableTime = 0;
@@ -109,7 +112,7 @@ public class EnderBullet extends AbstractHurtingProjectile {
             }
             flag = entity.hurt(damage, (entity1damage) * (1 +(EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, livingentity) / 4)));
             if (enchantmentDamage != 0) {
-            	((ServerLevel) this.level).sendParticles(ParticleTypes.ENCHANTED_HIT,
+            	((ServerLevel) this.level()).sendParticles(ParticleTypes.ENCHANTED_HIT,
             			(p_37626_.getLocation().x),
             			(p_37626_.getLocation().y),
             			(p_37626_.getLocation().z),
@@ -120,7 +123,7 @@ public class EnderBullet extends AbstractHurtingProjectile {
             			0.5f);
             }
             
-            ((ServerLevel) this.level).playSound(null,
+            ((ServerLevel) this.level()).playSound(null,
             		entity1.getX(),
             		entity1.getY(),
             		entity1.getZ(),
@@ -139,7 +142,7 @@ public class EnderBullet extends AbstractHurtingProjectile {
             	}
             }
          } else {
-            flag = entity.hurt(DamageSource.MAGIC, 6.0F);
+            flag = entity.hurt(this.damageSources().magic(), 6.0F);
          }
       }
    }
@@ -151,8 +154,8 @@ public class EnderBullet extends AbstractHurtingProjectile {
    
    protected void onHit(HitResult hitResult) {
       super.onHit(hitResult);
-      if (!this.level.isClientSide) {
-    	  ((ServerLevel) this.level).sendParticles(WOMParticles.ENDERBLASTER_BULLET.get(),
+      if (!this.level().isClientSide) {
+    	  ((ServerLevel) this.level()).sendParticles(WOMParticles.ENDERBLASTER_BULLET.get(),
     			(this.getX()),
       			(this.getY()),
       			(this.getZ()),
@@ -161,7 +164,7 @@ public class EnderBullet extends AbstractHurtingProjectile {
   		        0,
   		        0,
   		        0);
-        ((ServerLevel) this.level).playSound(null,
+        ((ServerLevel) this.level()).playSound(null,
         		(hitResult.getLocation().x),
       			(this.getY()),
       			(hitResult.getLocation().z),
