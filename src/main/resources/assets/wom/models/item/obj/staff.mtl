@@ -1,4 +1,4 @@
-# Blender MTL File: 'staff.blend'
+# Blender MTL File: 'staff_blender_model.blend'
 # Material Count: 1
 
 newmtl None
@@ -10,4 +10,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd wom:item/wooden_staff
+map_Kd C:\Users\leonr\eclipse-workspace\WeaponsOfMinecraft-1.18.2\src\main\resources\assets\wom\textures\item\wooden_staff.png

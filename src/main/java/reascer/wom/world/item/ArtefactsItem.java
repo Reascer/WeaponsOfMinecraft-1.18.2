@@ -30,13 +30,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.phys.AABB;
 
-public class ArtefactsItem extends Item implements Equipable {
-   private static final EnumMap<ArtefactsItem.Type, UUID> ARMOR_MODIFIER_UUID_PER_TYPE = Util.make(new EnumMap<>(ArtefactsItem.Type.class), (p_266744_) -> {
-      p_266744_.put(ArtefactsItem.Type.BOOTS, UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B"));
-      p_266744_.put(ArtefactsItem.Type.LEGGINGS, UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D"));
-      p_266744_.put(ArtefactsItem.Type.CHESTPLATE, UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"));
-      p_266744_.put(ArtefactsItem.Type.HELMET, UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150"));
+public class ArtefactsItem extends ArmorItem {
+   private static final EnumMap<ArmorItem.Type, UUID> ARMOR_MODIFIER_UUID_PER_TYPE = Util.make(new EnumMap<>(ArmorItem.Type.class), (p_266744_) -> {
+      p_266744_.put(ArmorItem.Type.BOOTS, UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B"));
+      p_266744_.put(ArmorItem.Type.LEGGINGS, UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D"));
+      p_266744_.put(ArmorItem.Type.CHESTPLATE, UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"));
+      p_266744_.put(ArmorItem.Type.HELMET, UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150"));
    });
+   
    public static final DispenseItemBehavior DISPENSE_ITEM_BEHAVIOR = new DefaultDispenseItemBehavior() {
       protected ItemStack execute(BlockSource p_40408_, ItemStack p_40409_) {
          return ArtefactsItem.dispenseArmor(p_40408_, p_40409_) ? p_40409_ : super.execute(p_40408_, p_40409_);
@@ -70,7 +71,7 @@ public class ArtefactsItem extends Item implements Equipable {
    }
 
    public ArtefactsItem(WomArmorMaterials p_40386_, ArmorItem.Type p_266831_, Item.Properties p_40388_) {
-      super(p_40388_.defaultDurability(p_40386_.getDurabilityForType(p_266831_)));
+      super(p_40386_,p_266831_,p_40388_);
       this.material = p_40386_;
       this.type = p_266831_;
       this.health = p_40386_.getAddHealthAmountArray(getEquipmentSlot());

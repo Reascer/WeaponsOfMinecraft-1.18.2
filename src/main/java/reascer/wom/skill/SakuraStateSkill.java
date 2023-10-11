@@ -96,8 +96,9 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 					container.getDataManager().setDataSync(TIMER, 20,serverPlayer);
 					
 					if (staticAnimation.equals(WOMAnimations.KATANA_FATAL_DRAW)) {
-						container.getDataManager().setDataSync(SECOND_DRAW, false,serverPlayer);
+						container.getDataManager().setDataSync(SECOND_DRAW, true,serverPlayer);
 					}
+					
 					if (staticAnimation.equals(WOMAnimations.KATANA_FATAL_DRAW) ||
 						staticAnimation.equals(WOMAnimations.KATANA_FATAL_DRAW_SECOND)	) {
 						container.getDataManager().setDataSync(FREQUENCY, 0,serverPlayer);

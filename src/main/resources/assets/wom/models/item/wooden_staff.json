@@ -1,11 +1,11 @@
 {
-	"loader": "forge:separate-perspective",
+	"loader": "forge:separate_transforms",
 	"base":
 	{
 		"loader": "forge:obj",
   		"model": "wom:models/item/obj/staff.obj",
   		"flip-v": true,
-  		"materialLibraryOverride": "wooden_staff.mtl",
+  		"mtl_override": "wooden_staff.mtl",
   		"display":
   		{
     		"thirdperson_righthand":

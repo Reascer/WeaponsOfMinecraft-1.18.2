@@ -1,11 +1,11 @@
 {
-	"loader": "forge:separate-perspective",
+	"loader": "forge:separate_transforms",
 	"base":
 	{
 		"loader": "forge:obj",
   		"model": "wom:models/item/obj/staff.obj",
   		"flip-v": true,
-  		"materialLibraryOverride": "netherite_staff.mtl",
+  		"mtl_override": "netherite_staff.mtl",
 		"display":
   		{
     		"thirdperson_righthand":
