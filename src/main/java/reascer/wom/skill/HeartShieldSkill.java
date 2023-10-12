@@ -53,7 +53,7 @@ public class HeartShieldSkill extends PassiveSkill {
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			int protection = 0;
 			for (ItemStack ArmorPiece : container.getExecuter().getOriginal().getArmorSlots()) {
-				protection += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION, ArmorPiece);
+				protection += ArmorPiece.getEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION);
 			}
 			container.getDataManager().setDataSync(RECOVERY_COOLDOWN, 100 / (1 + (protection/4)), ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 		});
@@ -101,13 +101,13 @@ public class HeartShieldSkill extends PassiveSkill {
 	@Override
 	public void updateContainer(SkillContainer container) {
 		super.updateContainer(container);
+		int protection = 0;
+		for (ItemStack ArmorPiece : container.getExecuter().getOriginal().getArmorSlots()) {
+			protection +=  ArmorPiece.getEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION);
+		}
+		recovery_delay = (100 / (1 + (protection/4)))/20f;
+		recovery_rate = (40 / (1 + (protection/4)))/20f;
 		if (!container.getExecuter().isLogicalClient()) {
-			int protection = 0;
-			for (ItemStack ArmorPiece : container.getExecuter().getOriginal().getArmorSlots()) {
-				protection += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION, ArmorPiece);
-			}
-			recovery_delay = (100 / (1 + (protection/4)))/20f;
-			recovery_rate = (40 / (1 + (protection/4)))/20f;
 			container.getDataManager().setDataSync(MAX_SHIELD, 20, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 			if (container.getDataManager().getDataValue(RECOVERY_COOLDOWN) > 0) {
 				container.getDataManager().setDataSync(RECOVERY_COOLDOWN, container.getDataManager().getDataValue(RECOVERY_COOLDOWN) -1, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
