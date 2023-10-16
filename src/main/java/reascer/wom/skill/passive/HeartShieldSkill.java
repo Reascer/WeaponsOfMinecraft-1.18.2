@@ -3,10 +3,13 @@ package reascer.wom.skill.passive;
 import java.util.List;
 import java.util.UUID;
 
+import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
+import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -70,7 +73,6 @@ public class HeartShieldSkill extends PassiveSkill {
 		PoseStack poseStack = guiGraphics.pose();
 		poseStack.pushPose();
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
-		RenderSystem.setShaderTexture(0, this.getSkillTexture());
 		if (container.getDataManager().getDataValue(RECOVERY_COOLDOWN) > 0) {
 			RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.5F);
 		} else {
@@ -78,7 +80,8 @@ public class HeartShieldSkill extends PassiveSkill {
 		}
 		guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		if (container.getDataManager().getDataValue(RECOVERY_COOLDOWN) > 0) {
-			guiGraphics.drawString(gui.font, String.valueOf((container.getDataManager().getDataValue(RECOVERY_COOLDOWN)/20)+1), x+7, y+13, 16777215,true);
+			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+			guiGraphics.drawString(gui.font, String.valueOf((container.getDataManager().getDataValue(RECOVERY_COOLDOWN)/20)+1), x+9, y+10, 16777215,true);
 		}
 		poseStack.popPose();
 	}

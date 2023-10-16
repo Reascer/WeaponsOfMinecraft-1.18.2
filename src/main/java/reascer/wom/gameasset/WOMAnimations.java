@@ -794,7 +794,42 @@ public class WOMAnimations {
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, false)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 0.30F))
-				.addEvents(TimePeriodEvent.create(0.30F, 0.50F, ReuseableEvents.ANGLED_FALLING, Side.BOTH))
+				.addProperty(StaticAnimationProperty.PLAY_SPEED_MODIFIER, (self, entitypatch, speed, elapsedTime) -> {
+					if (elapsedTime >= 0.35F && elapsedTime < 0.45F) {
+						float dpx = (float) entitypatch.getOriginal().getX();
+						float dpy = (float) entitypatch.getOriginal().getY();
+						float dpz = (float) entitypatch.getOriginal().getZ();
+						BlockState block = entitypatch.getOriginal().level().getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
+						
+						while ((block.getBlock() instanceof BushBlock || block.isAir()) && !block.is(Blocks.VOID_AIR)) {
+							dpy--;
+							block = entitypatch.getOriginal().level().getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
+						}
+						
+						float distanceToGround = (float) Math.max(Math.abs(entitypatch.getOriginal().getY() - dpy)-1, 0.0F);
+						
+						LivingEntity livingentity = entitypatch.getOriginal();
+						
+						Vec3f direction = new Vec3f(1,-0.2f, 0.0f);
+					    OpenMatrix4f rotation = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO+90), new Vec3f(0, 1, 0));
+					    OpenMatrix4f.transform3v(rotation, direction, direction);
+					    
+					    if (distanceToGround > 0.5F) {
+					    	direction = new Vec3f(3,-0.25f, 0.0f);
+						    rotation = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO+90), new Vec3f(0, 1, 0));
+						    OpenMatrix4f.transform3v(rotation, direction, direction);
+						    
+					    	livingentity.move(MoverType.SELF, direction.toDoubleVector());
+					    	return 0.05f;
+						} else {
+							
+							livingentity.move(MoverType.SELF, direction.toDoubleVector());
+							return 1;
+						}
+					}
+					
+					return 1.0F;
+				})
 				.addEvents(TimeStampedEvent.create(0.25F, ReuseableEvents.RUINE_COMET_AIRBURST, Side.CLIENT),
 						TimeStampedEvent.create(0.50F, ReuseableEvents.RUINE_COMET_GROUNDTHRUST, Side.CLIENT));
 		
@@ -2074,7 +2109,42 @@ public class WOMAnimations {
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, false)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 0.30F))
-				.addEvents(TimePeriodEvent.create(0.35F, 0.50F, ReuseableEvents.ANGLED_FALLING, Side.BOTH))
+				.addProperty(StaticAnimationProperty.PLAY_SPEED_MODIFIER, (self, entitypatch, speed, elapsedTime) -> {
+					if (elapsedTime >= 0.35F && elapsedTime < 0.45F) {
+						float dpx = (float) entitypatch.getOriginal().getX();
+						float dpy = (float) entitypatch.getOriginal().getY();
+						float dpz = (float) entitypatch.getOriginal().getZ();
+						BlockState block = entitypatch.getOriginal().level().getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
+						
+						while ((block.getBlock() instanceof BushBlock || block.isAir()) && !block.is(Blocks.VOID_AIR)) {
+							dpy--;
+							block = entitypatch.getOriginal().level().getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
+						}
+						
+						float distanceToGround = (float) Math.max(Math.abs(entitypatch.getOriginal().getY() - dpy)-1, 0.0F);
+						
+						LivingEntity livingentity = entitypatch.getOriginal();
+						
+						Vec3f direction = new Vec3f(1,-0.2f, 0.0f);
+					    OpenMatrix4f rotation = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO+90), new Vec3f(0, 1, 0));
+					    OpenMatrix4f.transform3v(rotation, direction, direction);
+					    
+					    if (distanceToGround > 0.5F) {
+					    	direction = new Vec3f(3,-0.25f, 0.0f);
+						    rotation = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO+90), new Vec3f(0, 1, 0));
+						    OpenMatrix4f.transform3v(rotation, direction, direction);
+						    
+					    	livingentity.move(MoverType.SELF, direction.toDoubleVector());
+					    	return 0.05f;
+						} else {
+							
+							livingentity.move(MoverType.SELF, direction.toDoubleVector());
+							return 1;
+						}
+					}
+					
+					return 1.0F;
+				})
 				.addEvents(TimeStampedEvent.create(0.3F, ReuseableEvents.RUINE_COMET_AIRBURST, Side.CLIENT),
 					TimeStampedEvent.create(0.50F, ReuseableEvents.GROUND_BODYSCRAPE_LAND, Side.CLIENT));
 		

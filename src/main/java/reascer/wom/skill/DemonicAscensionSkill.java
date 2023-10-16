@@ -257,7 +257,8 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 					event.getPlayerPatch().getOriginal().level().playSound(null, event.getPlayerPatch().getOriginal().xo, event.getPlayerPatch().getOriginal().yo, event.getPlayerPatch().getOriginal().zo,
 			    			SoundEvents.PLAYER_HURT, event.getPlayerPatch().getOriginal().getSoundSource(), 1.0F, 1.0F);
 					*/
-					DamageSource damage = event.getPlayerPatch().getDamageSource(WOMAnimations.ANTITHEUS_PULL, InteractionHand.MAIN_HAND);;
+					EpicFightDamageSource damage = event.getPlayerPatch().getDamageSource(WOMAnimations.ANTITHEUS_PULL, InteractionHand.MAIN_HAND);
+					damage.setStunType(StunType.NONE);
 					event.getPlayerPatch().getOriginal().hurt(damage, event.getPlayerPatch().getOriginal().getHealth() * 0.1F);
 					//event.getPlayerPatch().getOriginal().setHealth(event.getPlayerPatch().getOriginal().getHealth() * 0.9F);
 				}
@@ -287,7 +288,8 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 			    			SoundEvents.PLAYER_HURT, event.getPlayerPatch().getOriginal().getSoundSource(), 1.0F, 1.0F);
 					event.getPlayerPatch().getOriginal().setHealth(event.getPlayerPatch().getOriginal().getHealth()-container.getDataManager().getDataValue(WITHERAFTEREFFECT));
 					*/
-					DamageSource damage = event.getPlayerPatch().getDamageSource(WOMAnimations.ANTITHEUS_PULL, InteractionHand.MAIN_HAND);;
+					EpicFightDamageSource damage = event.getPlayerPatch().getDamageSource(WOMAnimations.ANTITHEUS_PULL, InteractionHand.MAIN_HAND);
+					damage.setStunType(StunType.NONE);
 					event.getPlayerPatch().getOriginal().hurt(damage, container.getDataManager().getDataValue(WITHERAFTEREFFECT));
 				}
 				container.getDataManager().setDataSync(WITHERAFTEREFFECT,container.getDataManager().getDataValue(WITHERAFTEREFFECT)+4,event.getPlayerPatch().getOriginal());

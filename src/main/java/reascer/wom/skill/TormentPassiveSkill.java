@@ -213,8 +213,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 		poseStack.pushPose();
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, WOMSkills.TRUE_BERSERK.getSkillTexture());
-		
-		guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
+		guiGraphics.blit(WOMSkills.TRUE_BERSERK.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		int charge = 0;
 		if (container.getDataManager().getDataValue(SAVED_CHARGE) > 0) {
 			charge = (container.getDataManager().getDataValue(SAVED_CHARGE)+10)/30;
@@ -223,10 +222,10 @@ public class TormentPassiveSkill extends PassiveSkill {
 		}
 			
 		if (container.getDataManager().getDataValue(CHARGED)) {
-			guiGraphics.drawString(gui.font, String.valueOf(charge), x+8, y+4, 16777215,true);
-			guiGraphics.drawString(gui.font, "x3", x+5, y+13, 16777215,true);
+			guiGraphics.drawString(gui.font, String.valueOf(charge), x+10, y+4, 16777215,true);
+			guiGraphics.drawString(gui.font, "x3", x+7, y+13, 16777215,true);
 		} else {
-			guiGraphics.drawString(gui.font, String.valueOf(charge), x+8, y+6, 16777215,true);
+			guiGraphics.drawString(gui.font, String.valueOf(charge), x+10, y+6, 16777215,true);
 		}
 		poseStack.popPose();
 	}

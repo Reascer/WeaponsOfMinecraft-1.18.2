@@ -34,7 +34,7 @@ public class RuinePassive extends PassiveSkill {
 		poseStack.pushPose();
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, WOMSkills.SOUL_SNATCH.getSkillTexture());
-		guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
+		guiGraphics.blit(WOMSkills.SOUL_SNATCH.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		guiGraphics.drawString(gui.font, String.valueOf((container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(SoulSnatchSkill.TIMER)/20)+1), x+4, y+13, 16777215,true);
 		float strenght = (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(SoulSnatchSkill.STRENGHT)/40.0f)*100f;
 		guiGraphics.drawString(gui.font, String.valueOf(String.format("%.0f", strenght) + "%"), x+4, y+4, 16777215,true);

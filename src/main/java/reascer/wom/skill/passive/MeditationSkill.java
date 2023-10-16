@@ -132,6 +132,7 @@ public class MeditationSkill extends PassiveSkill {
 			}
 			
 			guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
+			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 			guiGraphics.drawString(gui.font,(((container.getDataManager().getDataValue(DUREE)/20)/60) / 10 == 0 ? "0" : "") + String.valueOf((container.getDataManager().getDataValue(DUREE)/20)/60)+":"+ (((container.getDataManager().getDataValue(DUREE)/20)%60) / 10 == 0 ? "0" : "")+String.valueOf((container.getDataManager().getDataValue(DUREE)/20)%60), x, y+17, 16777215,true);
 		} else {
 			RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.5F);
@@ -151,6 +152,7 @@ public class MeditationSkill extends PassiveSkill {
 			
 			guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 			if (container.getDataManager().getDataValue(TIMER) > 0) {
+				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 				guiGraphics.drawString(gui.font,(((container.getDataManager().getDataValue(TIMER)/20)/60) / 10 == 0 ? "0" : "") + String.valueOf((container.getDataManager().getDataValue(TIMER)/20)/60)+":"+ (((container.getDataManager().getDataValue(TIMER)/20)%60) / 10 == 0 ? "0" : "")+String.valueOf((container.getDataManager().getDataValue(TIMER)/20)%60), x, y+17, 16777215,true);
 			}
 		}

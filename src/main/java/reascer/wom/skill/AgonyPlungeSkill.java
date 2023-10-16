@@ -97,6 +97,7 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 			executer.getOriginal().level().playSound(null, executer.getOriginal().xo, executer.getOriginal().yo, executer.getOriginal().zo,
 	    			SoundEvents.PLAYER_HURT, executer.getOriginal().getSoundSource(), 1.0F, 1.0F);
 			EpicFightDamageSource damage = executer.getDamageSource(attackAnimations, InteractionHand.MAIN_HAND);
+			damage.setStunType(StunType.NONE);
 			executer.getOriginal().hurt(damage, executer.getOriginal().getHealth() * (0.40f - (0.10f * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()))));
 			super.executeOnServer(executer, args);
 		}
