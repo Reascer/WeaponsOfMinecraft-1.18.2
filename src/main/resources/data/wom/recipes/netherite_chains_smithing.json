@@ -1,13 +1,13 @@
 {
     "type": "minecraft:smithing_transform",
     "base": {
-        "item": "epicfight:uchigatana"
-    },
+		"item" : "wom:diamond_legbottomseal"
+	},
     "addition": {
-        "item" : "wom:demon_seal"
+        "item" : "minecraft:netherite_ingot"
     },
     "result": {
-        "item": "wom:satsujin"
+        "item": "wom:netherite_chains"
     },
 	"template": {
 		"item": "minecraft:netherite_upgrade_smithing_template"

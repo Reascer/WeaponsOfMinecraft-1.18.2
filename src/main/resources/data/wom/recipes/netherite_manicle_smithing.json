@@ -1,13 +1,13 @@
 {
- 	"type": "minecraft:smithing_transform",
+   	"type": "minecraft:smithing_transform",
     "base": {
-		"item" : "wom:diamond_crown"
+		"item" : "wom:diamond_armbracelet"
 	},
     "addition": {
         "item" : "minecraft:netherite_ingot"
     },
     "result": {
-        "item": "wom:netherite_mask"
+        "item": "wom:netherite_manicle"
     },
 	"template": {
 		"item": "minecraft:netherite_upgrade_smithing_template"
