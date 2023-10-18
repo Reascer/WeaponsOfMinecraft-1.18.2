@@ -77,12 +77,12 @@ public class CriticalKnowledgeSkill extends PassiveSkill {
 	public void updateContainer(SkillContainer container) {
 		super.updateContainer(container);
 		int fire = 0;
-		int projectile = 0;
+		int blast = 0;
 		for (ItemStack ArmorPiece : container.getExecuter().getOriginal().getArmorSlots()) {
 			fire += ArmorPiece.getEnchantmentLevel(Enchantments.FIRE_PROTECTION);
-			projectile += ArmorPiece.getEnchantmentLevel(Enchantments.PROJECTILE_PROTECTION);
+			blast += ArmorPiece.getEnchantmentLevel(Enchantments.BLAST_PROTECTION);
 		}
 		critRate = ((fire/16f)*80f)+20f;
-		critDamage = ( 1 + (0.15f * projectile)) * 100;
+		critDamage = ( 1 + (0.15f * blast)) * 100;
 	}
 }

@@ -1,5 +1,6 @@
 package reascer.wom.gameasset;
 
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
@@ -22,6 +23,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.StructureVoidBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -799,7 +801,41 @@ public class WOMAnimations {
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, false)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 0.30F))
-				.addEvents(TimePeriodEvent.create(0.30F, 0.50F, ReuseableEvents.ANGLED_FALLING, Side.BOTH))
+				.addProperty(StaticAnimationProperty.PLAY_SPEED_MODIFIER, (self, entitypatch, speed, elapsedTime) -> {
+					if (elapsedTime >= 0.35F && elapsedTime < 0.45F) {
+						float dpx = (float) entitypatch.getOriginal().getX();
+						float dpy = (float) entitypatch.getOriginal().getY();
+						float dpz = (float) entitypatch.getOriginal().getZ();
+						BlockState block = entitypatch.getOriginal().level.getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
+						
+						while ((block.getBlock() instanceof BushBlock || block.isAir()) && !block.is(Blocks.VOID_AIR)) {
+							dpy--;
+							block = entitypatch.getOriginal().level.getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
+						}
+						
+						float distanceToGround = (float) Math.max(Math.abs(entitypatch.getOriginal().getY() - dpy)-1, 0.0F);
+						
+						LivingEntity livingentity = entitypatch.getOriginal();
+						
+						Vec3f direction = new Vec3f(2.5F,-0.25f, 0.0f);
+					    OpenMatrix4f rotation = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO+90), new Vec3f(0, 1, 0));
+					    OpenMatrix4f.transform3v(rotation, direction, direction);
+					    
+					    AABB box = AABB.ofSize(entitypatch.getOriginal().getPosition(1.0f),3, 3, 3);
+						
+						List<Entity> list = entitypatch.getOriginal().level.getEntities(entitypatch.getOriginal(),box);
+					    
+					    if (distanceToGround > 0.5F && list.size() == 0) {
+					    	livingentity.move(MoverType.SELF, direction.toDoubleVector());
+					    	
+					    	return 0.05f;
+						} else {
+							return 1;
+						}
+					}
+					
+					return 1.0F;
+				})
 				.addEvents(TimeStampedEvent.create(0.25F, ReuseableEvents.RUINE_COMET_AIRBURST, Side.CLIENT),
 						TimeStampedEvent.create(0.50F, ReuseableEvents.RUINE_COMET_GROUNDTHRUST, Side.CLIENT));
 		
@@ -2037,7 +2073,7 @@ public class WOMAnimations {
 					}
 				});
 		
-		ENDERBLASTER_TWOHAND_TISHNAW = new BasicMultipleAttackAnimation(0.05F, 0.3F, 0.5F, 0.65F, WOMColliders.ENDER_TISHNAW, biped.legR, "biped/combat/enderblaster_twohand_tishnaw", biped)
+		ENDERBLASTER_TWOHAND_TISHNAW = new BasicMultipleAttackAnimation(0.05F, 0.3F, 0.5F, 0.65F, WOMColliders.KICK_HUGE, biped.legR, "biped/combat/enderblaster_twohand_tishnaw", biped)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.65F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(3.2F))
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.multiplier(4.0F))
@@ -2051,7 +2087,41 @@ public class WOMAnimations {
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, false)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 0.30F))
-				.addEvents(TimePeriodEvent.create(0.35F, 0.50F, ReuseableEvents.ANGLED_FALLING, Side.BOTH))
+				.addProperty(StaticAnimationProperty.PLAY_SPEED_MODIFIER, (self, entitypatch, speed, elapsedTime) -> {
+					if (elapsedTime >= 0.35F && elapsedTime < 0.45F) {
+						float dpx = (float) entitypatch.getOriginal().getX();
+						float dpy = (float) entitypatch.getOriginal().getY();
+						float dpz = (float) entitypatch.getOriginal().getZ();
+						BlockState block = entitypatch.getOriginal().level.getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
+						
+						while ((block.getBlock() instanceof BushBlock || block.isAir()) && !block.is(Blocks.VOID_AIR)) {
+							dpy--;
+							block = entitypatch.getOriginal().level.getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
+						}
+						
+						float distanceToGround = (float) Math.max(Math.abs(entitypatch.getOriginal().getY() - dpy)-1, 0.0F);
+						
+						LivingEntity livingentity = entitypatch.getOriginal();
+						
+						Vec3f direction = new Vec3f(2.5F,-0.25f, 0.0f);
+					    OpenMatrix4f rotation = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO+90), new Vec3f(0, 1, 0));
+					    OpenMatrix4f.transform3v(rotation, direction, direction);
+					    
+					    AABB box = AABB.ofSize(entitypatch.getOriginal().getPosition(1.0f),3, 3, 3);
+						
+						List<Entity> list = entitypatch.getOriginal().level.getEntities(entitypatch.getOriginal(),box);
+					    
+					    if (distanceToGround > 0.5F && list.size() == 0) {
+					    	livingentity.move(MoverType.SELF, direction.toDoubleVector());
+					    	
+					    	return 0.05f;
+						} else {
+							return 1;
+						}
+					}
+					
+					return 1.0F;
+				})
 				.addEvents(TimeStampedEvent.create(0.3F, ReuseableEvents.RUINE_COMET_AIRBURST, Side.CLIENT),
 					TimeStampedEvent.create(0.50F, ReuseableEvents.GROUND_BODYSCRAPE_LAND, Side.CLIENT));
 		

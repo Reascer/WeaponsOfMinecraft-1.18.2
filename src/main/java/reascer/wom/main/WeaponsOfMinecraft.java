@@ -5,10 +5,15 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
+import reascer.wom.config.WOMConfigManager;
+import reascer.wom.config.WOMConfigurationIngame;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMEnchantment;
 import reascer.wom.gameasset.WOMSkills;
@@ -24,7 +29,7 @@ public class WeaponsOfMinecraft
 	public static final String MODID = "wom";
 	public static final String CONFIG_FILE_PATH = WeaponsOfMinecraft.MODID + ".toml";
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
-	//public static WOMConfigurationIngame CLIENT_INGAME_CONFIG;
+	public static WOMConfigurationIngame CLIENT_INGAME_CONFIG;
 	private static WeaponsOfMinecraft instance;
 	
 	public static WeaponsOfMinecraft getInstance() {
@@ -33,7 +38,7 @@ public class WeaponsOfMinecraft
 	
     public WeaponsOfMinecraft() {
     	instance = this;
-    	//ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, ConfigManager.CLIENT_CONFIG);
+    	ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, WOMConfigManager.CLIENT_CONFIG);
     	
     	IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
     	bus.addListener(this::doClientStuff);
@@ -48,13 +53,13 @@ public class WeaponsOfMinecraft
     	WOMSkills.registerSkills();
     	
     	MinecraftForge.EVENT_BUS.register(this);
-    	//ConfigManager.loadConfig(ConfigManager.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve(MODID + "-client.toml").toString());
-        //ConfigManager.loadConfig(ConfigManager.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(CONFIG_FILE_PATH).toString());
+    	WOMConfigManager.loadConfig(WOMConfigManager.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve(MODID + "-client.toml").toString());
+        WOMConfigManager.loadConfig(WOMConfigManager.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(CONFIG_FILE_PATH).toString());
         //ModLoadingContext.get().registerExtensionPoint(ConfigGuiHandler.ConfigGuiFactory.class, () -> new ConfigGuiHandler.ConfigGuiFactory(IngameConfigurationScreen::new));
     }
     
     private void doClientStuff(final FMLClientSetupEvent event) {
-    	//CLIENT_INGAME_CONFIG = new WOMConfigurationIngame();
+    	CLIENT_INGAME_CONFIG = new WOMConfigurationIngame();
     }
     
     private void doCommonStuff(final FMLCommonSetupEvent event) {
