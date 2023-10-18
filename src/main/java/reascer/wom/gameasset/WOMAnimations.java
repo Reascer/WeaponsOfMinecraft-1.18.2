@@ -195,7 +195,6 @@ public class WOMAnimations {
 	public static StaticAnimation TORMENT_AUTO_2;
 	public static StaticAnimation TORMENT_AUTO_3;
 	public static StaticAnimation TORMENT_AUTO_4;
-	public static StaticAnimation TORMENT_AIR_SLASH;
 	public static StaticAnimation TORMENT_DASH;
 	public static StaticAnimation TORMENT_AIRSLAM;
 	public static StaticAnimation TORMENT_IDLE;
@@ -334,6 +333,10 @@ public class WOMAnimations {
 	public static StaticAnimation MOONLESS_GUARD_HIT_2;
 	public static StaticAnimation MOONLESS_GUARD_HIT_3;
 	public static StaticAnimation MOONLESS_BYPASS;
+	
+	public static StaticAnimation SOLAR_IDLE;
+	public static StaticAnimation SOLAR_WALK;
+	public static StaticAnimation SOLAR_RUN;
 	
 	@SubscribeEvent
 	public static void registerAnimations(AnimationRegistryEvent event) {
@@ -4062,6 +4065,10 @@ public class WOMAnimations {
 							Entity entity = entitypatch.getOriginal();
 							entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 						},Side.CLIENT));
+				
+				SOLAR_IDLE = new StaticAnimation(0.1f,true, "biped/living/solar_idle", biped);
+				SOLAR_WALK = new MovementAnimation(0.1f, true, "biped/living/solar_walk", biped);
+				SOLAR_RUN = new MovementAnimation(0.1f, true, "biped/living/solar_run", biped);
 	}
 	
 	private static class ReuseableEvents {
