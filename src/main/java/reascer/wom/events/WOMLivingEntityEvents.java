@@ -142,8 +142,8 @@ public class WOMLivingEntityEvents {
 			    }
 			}
 		}
-		for (String tag : event.getEntityLiving().getTags()) {
-			event.getEntityLiving().removeTag(tag);
+		for (String tag : event.getEntity().getTags()) {
+			event.getEntity().removeTag(tag);
 			break;
 		}
 	}
@@ -318,7 +318,7 @@ public class WOMLivingEntityEvents {
 								
 								if (livingEntity.isAlive()) {
 									if (blindness_amp > 0) {
-										if (livingEntity.equals(event.getEntityLiving())){
+										if (livingEntity.equals(event.getEntity())){
 											livingEntity.hurt(damage,2 * blindness_amp);
 										} else {
 											livingEntity.hurt(damage,1 * blindness_amp);

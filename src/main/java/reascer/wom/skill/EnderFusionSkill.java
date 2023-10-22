@@ -238,7 +238,7 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 					this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()+1);
 				}
 				executer.getOriginal().level.playSound(null, executer.getOriginal().getX(),executer.getOriginal().getY(), executer.getOriginal().getZ(),
-		    			WOMSounds.ENDERBLASTER_RELOAD, executer.getOriginal().getSoundSource(), 1.0F, 2.0F);
+		    			WOMSounds.ENDERBLASTER_RELOAD.get(), executer.getOriginal().getSoundSource(), 1.0F, 2.0F);
 			}
 		}
 		executer.getSkill(this).activate();
@@ -319,7 +319,7 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 							if (Math.abs(new Random().nextInt()) % 100 < (100 * (-(1f/(Math.sqrt(sweeping_edge+1f)))+1))) {
 								this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()+1);
 								container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
-						    			WOMSounds.ENDERBLASTER_RELOAD, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
+						    			WOMSounds.ENDERBLASTER_RELOAD.get(), container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 							}
 						}
 						if (container.getExecuter().getOriginal().isVisuallySwimming()) {
