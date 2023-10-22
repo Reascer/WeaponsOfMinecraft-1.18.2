@@ -16,7 +16,7 @@ public class GuardHitAnimation extends MainFrameAnimation {
 			.newTimePair(0.0F, lockTime)
 			.addState(EntityState.TURNING_LOCKED, false)
 			.addState(EntityState.MOVEMENT_LOCKED, true)
-			.addState(EntityState.CAN_BASIC_ATTACK, true)
+			.addState(EntityState.CAN_BASIC_ATTACK, false)
 			.newTimePair(0.0F, Float.MAX_VALUE)
 			.addState(EntityState.INACTION, true);
 	}

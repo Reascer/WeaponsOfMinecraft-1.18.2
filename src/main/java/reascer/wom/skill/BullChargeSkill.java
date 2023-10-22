@@ -22,13 +22,13 @@ import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
-public class ChargeSkill extends Skill {
+public class BullChargeSkill extends Skill {
 	public static final SkillDataKey<Boolean> SUPER_ARMOR = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	private static final UUID EVENT_UUID = UUID.fromString("0c413ee2-663b-4d30-8e27-e3217fb45aa1");
 	
 	protected final StaticAnimation animations;
 	//0c413ee2-663b-4d30-8e27-e3217fb45aa1
-	public static class Builder extends Skill.Builder<ChargeSkill> {
+	public static class Builder extends Skill.Builder<BullChargeSkill> {
 		protected ResourceLocation animations;
 		
 		public Builder setCategory(SkillCategory category) {
@@ -61,7 +61,7 @@ public class ChargeSkill extends Skill {
 		return (new Builder()).setCategory(SkillCategories.DODGE).setActivateType(ActivateType.ONE_SHOT).setResource(Resource.STAMINA);
 	}
 	
-	public ChargeSkill(Builder builder) {
+	public BullChargeSkill(Builder builder) {
 		super(builder);
 		this.animations = EpicFightMod.getInstance().animationManager.findAnimationByPath(builder.animations.toString());
 	}

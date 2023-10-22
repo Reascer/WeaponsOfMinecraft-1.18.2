@@ -10,6 +10,7 @@ import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import yesman.epicfight.client.gui.BattleModeGui;
@@ -21,6 +22,7 @@ import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.passive.PassiveSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.StunType;
+import yesman.epicfight.world.effect.EpicFightMobEffects;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class PainAnticipationSkill extends PassiveSkill {
@@ -130,6 +132,7 @@ public class PainAnticipationSkill extends PassiveSkill {
 			}
 		}
 		if (container.getDataManager().getDataValue(ACTIVE)) {
+			container.getExecuter().getOriginal().addEffect(new MobEffectInstance(EpicFightMobEffects.STUN_IMMUNITY.get(), 5, 0,true,false,false));
 			if (container.getDataManager().getDataValue(DUREE) > 0) {
 				if(!container.getExecuter().isLogicalClient()) {
 					container.getDataManager().setDataSync(DUREE, container.getDataManager().getDataValue(DUREE)-1,((ServerPlayerPatch) container.getExecuter()).getOriginal());

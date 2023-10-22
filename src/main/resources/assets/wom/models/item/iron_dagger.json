@@ -1,7 +1,0 @@
-{
-    "parent": "wom:item/dagger",
-    "textures":
-    {
-        "layer0" : "wom:item/iron_dagger"
-    }
-}

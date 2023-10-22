@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import reascer.wom.main.WeaponsOfMinecraft;
 import reascer.wom.skill.AgonyPlungeSkill;
 import reascer.wom.skill.ArrowTenacitySkill;
-import reascer.wom.skill.ChargeSkill;
+import reascer.wom.skill.BullChargeSkill;
 import reascer.wom.skill.CharybdisSkill;
 import reascer.wom.skill.CounterAttack;
 import reascer.wom.skill.CriticalKnowledgeSkill;
@@ -144,7 +144,7 @@ public class WOMSkills {
 				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/shadow_step_backward")).setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponsOfMinecraft.MODID,"shadow_step");
 		
-		SkillManager.register(ChargeSkill::new, ChargeSkill.createChargeBuilder().setAnimations(
+		SkillManager.register(BullChargeSkill::new, BullChargeSkill.createChargeBuilder().setAnimations(
 				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/bull_charge")).setCreativeTab(WOMCreativeTabs.ITEMS),
 				WeaponsOfMinecraft.MODID,"bull_charge");		
 		
