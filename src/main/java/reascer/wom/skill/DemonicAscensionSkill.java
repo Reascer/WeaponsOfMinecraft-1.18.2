@@ -38,6 +38,7 @@ import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.animation.types.StaticAnimation;
+import yesman.epicfight.api.utils.AttackResult.ResultType;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.client.ClientEngine;
@@ -677,7 +678,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 				    			SoundEvents.WITHER_BREAK_BLOCK, container.getExecuter().getOriginal().getSoundSource(), 1.5F, 2.0F);
 						float WitherCatharsis = 0;
 						if (target.hasEffect(MobEffects.WITHER)) {
-							damage.setImpact(6f);
+							damage.setImpact(2f);
 							damage.addTag(SourceTags.WEAPON_INNATE);
 							int wither_lvl = target.getEffect(MobEffects.WITHER).getAmplifier()+1;
 							WitherCatharsis = (float) ((target.getEffect(MobEffects.WITHER).getDuration()/20) * ( wither_lvl == 0 ? 0.5f : wither_lvl));
@@ -699,7 +700,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 							}
 
 							float ressource = container.getExecuter().getSkill(this).getResource();
-							float ressource_after_consumption = ressource + (66.6f * (target.getEffect(MobEffects.WITHER).getAmplifier()+1));
+							float ressource_after_consumption = ressource + (33.3f * wither_lvl);
 							this.setConsumptionSynchronize((ServerPlayerPatch) executer,ressource_after_consumption);	
 							container.getExecuter().getOriginal().heal(WitherCatharsis*0.4f);
 							target.removeEffect(MobEffects.WITHER);
@@ -710,7 +711,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 						container.getDataManager().setDataSync(DARKNESS_TARGET_REAPED, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 						container.getDataManager().setDataSync(DARKNESS_ACTIVATE_PORTAL, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 						container.getDataManager().setDataSync(DARKNESS_PORTAL_TIMER, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-						if (target.hurt(damage,1 +((target.getMaxHealth() - target.getHealth()) * 0.1F) + (WitherCatharsis * 0.6f))) {
+						if (target.hurt(damage,1 + ((target.getMaxHealth() - target.getHealth()) * 0.1F) + (WitherCatharsis * 0.6f))) {
 							container.getExecuter().getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent((ServerPlayerPatch)container.getExecuter(), target, damage, 1 +((target.getMaxHealth() - target.getHealth()) * 0.1F) + (WitherCatharsis * 0.8f)));
 							if (target.isAlive()) {
 								target.teleportTo(dpx,(target instanceof Player ? 0:dpy - 100), dpz);
@@ -893,6 +894,10 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 			if(!container.getExecuter().isLogicalClient()) {
 				container.getDataManager().setDataSync(WITHERCATHARSIS, false ,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
+		}
+		
+		if (container.getDataManager().getDataValue(SUPERARMOR)) {
+			container.getExecuter().getOriginal().addEffect(new MobEffectInstance(EpicFightMobEffects.STUN_IMMUNITY.get(), 5, 0,true,false,false));
 		}
 	}
 

@@ -7,6 +7,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -25,6 +26,7 @@ import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
 import yesman.epicfight.world.damagesource.StunType;
+import yesman.epicfight.world.effect.EpicFightMobEffects;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 
@@ -42,10 +44,8 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		container.getDataManager().registerData(PLUNGING);
-		container.getDataManager().setData(PLUNGING, false);
 		
 		container.getDataManager().registerData(STACK);
-		container.getDataManager().setData(STACK, 0);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID, (event) -> {
 			//container.getExecuter().getOriginal().sendMessage(new TextComponent("Plunging: " + container.getDataManager().getDataValue(PLUNGING) + " | Stack: " + container.getDataManager().getDataValue(STACK) + " | Plunging: " + event.getAttackDamage() ), UUID.randomUUID());
@@ -131,6 +131,7 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 	public void updateContainer(SkillContainer container) {
 		super.updateContainer(container);
 		if (container.getDataManager().getDataValue(PLUNGING)) {
+			container.getExecuter().getOriginal().addEffect(new MobEffectInstance(EpicFightMobEffects.STUN_IMMUNITY.get(), 5, 0,true,false,false));
 			container.getExecuter().getOriginal().resetFallDistance();
 		}
 	}

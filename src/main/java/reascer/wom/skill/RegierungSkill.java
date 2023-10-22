@@ -12,6 +12,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -41,6 +42,9 @@ import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
+import yesman.epicfight.world.damagesource.StunType;
+import yesman.epicfight.world.effect.EpicFightMobEffects;
+import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class RegierungSkill extends WomMultipleAnimationSkill {
@@ -49,6 +53,7 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 	public static final SkillDataKey<Boolean> GUARD_POINT = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Integer> GUARD_POINT_RESULT = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	public static final SkillDataKey<Boolean> GESETZ_SPRENGKOPF = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
+	public static final SkillDataKey<Boolean> SUPER_ARMOR = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	
 	private static final UUID EVENT_UUID = UUID.fromString("63c38d4f-cc97-4339-bedf-d9bba36ba29f");
     
@@ -71,7 +76,13 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 		container.getDataManager().registerData(GUARD_POINT);
 		container.getDataManager().registerData(GUARD_POINT_RESULT);
 		container.getDataManager().registerData(GESETZ_SPRENGKOPF);
+		container.getDataManager().registerData(SUPER_ARMOR);
 		
+		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_POST, EVENT_UUID, (event) -> {
+			if (container.getDataManager().getDataValue(SUPER_ARMOR)) {
+				event.getDamageSource().setStunType(StunType.NONE);
+			}
+		});
 		if(!container.getExecuter().isLogicalClient()) {
 			container.getDataManager().setDataSync(COMBO, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			this.maxDuration += (200 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, ((ServerPlayerPatch)container.getExecuter()).getOriginal()));
@@ -93,25 +104,17 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 			if(!container.getExecuter().isLogicalClient()) {
 				container.getDataManager().setDataSync(GESETZ_SPRENGKOPF, false, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 				container.getDataManager().setDataSync(COOLDOWN, 40, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
-				container.getDataManager().setDataSync(GUARD_POINT, false, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
-				
-				if (event.getAnimation().equals(WOMAnimations.HERRSCHER_AUTO_2)) {
-					container.getDataManager().setDataSync(GUARD_POINT, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-					container.getDataManager().setDataSync(GUARD_POINT_RESULT, 2, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				}
-				
-				if (event.getAnimation().equals(WOMAnimations.HERRSCHER_BEFREIUNG)) {
-					container.getDataManager().setDataSync(GUARD_POINT, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-					container.getDataManager().setDataSync(GUARD_POINT_RESULT, 4, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				}
-				
-				if (event.getAnimation().equals(WOMAnimations.GESETZ_AUTO_1)) {
-					container.getDataManager().setDataSync(GUARD_POINT, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-					container.getDataManager().setDataSync(GUARD_POINT_RESULT, 5, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				if (!event.getAnimation().equals(WOMAnimations.HERRSCHER_AUTO_2) &&
+						!event.getAnimation().equals(WOMAnimations.GESETZ_AUTO_1)) {
+					container.getDataManager().setDataSync(GUARD_POINT, false, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 				}
 				
 				if (event.getAnimation().equals(WOMAnimations.HERRSCHER_GUARD_HIT)) {
 					this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +40);
+				}
+				
+				if (event.getAnimation().equals(WOMAnimations.GESETZ_SPRENGKOPF)) {
+					container.getDataManager().setDataSync(SUPER_ARMOR, true, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 				}
 				
 				if (event.getAnimation().equals(WOMAnimations.HERRSCHER_TRANE)) {
@@ -122,6 +125,8 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_PRE, EVENT_UUID, (event) -> {
+		
+			
 			if (container.getDataManager().getDataValue(GUARD_POINT)) {
 				DamageSource damageSource = event.getDamageSource();
 				boolean isFront = false;
@@ -211,6 +216,7 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 		container.getExecuter().getEventListener().removeListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_PRE, EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_POST, EVENT_UUID);
 		
 		if (container.getExecuter().getSkill(WOMSkills.COUNTER_ATTACK) != null) {
 			if(!container.getExecuter().isLogicalClient()) {
@@ -305,7 +311,10 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 				}
 			}
 		}
-
+		
+		if (container.getDataManager().getDataValue(SUPER_ARMOR)) {
+			container.getExecuter().getOriginal().addEffect(new MobEffectInstance(EpicFightMobEffects.STUN_IMMUNITY.get(), 5, 0,true,false,false));
+		}
 		container.setResource(10.0f);
 	}
 }

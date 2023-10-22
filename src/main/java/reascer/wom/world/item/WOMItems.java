@@ -3,13 +3,11 @@ package reascer.wom.world.item;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import reascer.wom.main.WeaponsOfMinecraft;
-import yesman.epicfight.main.EpicFightMod;
 
 public class WOMItems {
 	public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, WeaponsOfMinecraft.MODID);
@@ -26,6 +24,7 @@ public class WOMItems {
 	public static final RegistryObject<Item> GESETZ_HANDLE = ITEMS.register("gesetz_handle", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> MOONLESS = ITEMS.register("moonless", () -> new MoonlessItem(new Item.Properties().tab(WOMCreativeTabs.ITEMS).rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> MOONLESS_HANDLE = ITEMS.register("moonless_handle", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
+	//public static final RegistryObject<Item> SOLAR = ITEMS.register("solar", () -> new SolarItem(new Item.Properties().tab(WOMCreativeTabs.ITEMS).rarity(Rarity.EPIC)));
 	
 	public static final RegistryObject<Item> IRON_GREATAXE = ITEMS.register("iron_greataxe", () -> new GreataxeItem(new Item.Properties().tab(WOMCreativeTabs.ITEMS), Tiers.IRON));
 	public static final RegistryObject<Item> GOLDEN_GREATAXE = ITEMS.register("golden_greataxe", () -> new GreataxeItem(new Item.Properties().tab(WOMCreativeTabs.ITEMS), Tiers.GOLD));

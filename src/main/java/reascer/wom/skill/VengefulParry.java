@@ -356,9 +356,9 @@ public class VengefulParry extends GuardSkill {
 	@Override
 	public void updateContainer(SkillContainer container) {
 		super.updateContainer(container);
-		if (container.getDataManager().getDataValue(TIMER) > 0) {
-			container.getExecuter().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
-				if(!container.getExecuter().isLogicalClient()) {
+		if(!container.getExecuter().isLogicalClient()) {
+			if (container.getDataManager().getDataValue(TIMER) > 0) {
+				container.getExecuter().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 				if (container.getDataManager().getDataValue(TIMER) > 5) {
 					container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 5 , 10, true,false,false));
 				}
@@ -368,7 +368,15 @@ public class VengefulParry extends GuardSkill {
 					container.getExecuter().getOriginal().stopUsingItem();
 				}
 			}
+		} else {
+			if (container.getDataManager().getDataValue(TIMER) > 0) {
+				container.getExecuter().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
+			}
+			if (container.getDataManager().getDataValue(TIMER) == 1) {
+				container.getExecuter().getOriginal().stopUsingItem();
+			}
 		}
+		
 		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
 			container.getDataManager().setData(COOLDOWN, container.getDataManager().getDataValue(COOLDOWN)-1);
 		}

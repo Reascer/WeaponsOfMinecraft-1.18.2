@@ -9,6 +9,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.RateKickingConnection;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.damagesource.DamageSource;
@@ -49,13 +50,12 @@ public class HeartShieldSkill extends PassiveSkill {
 		container.getDataManager().registerData(MAX_SHIELD);
 		container.getDataManager().registerData(RECOVERY_COOLDOWN);
 		container.getDataManager().registerData(RECOVERY_RATE);
+
+		recovery_delay = 5f;
+		recovery_rate = 2f;
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
-			int protection = 0;
-			for (ItemStack ArmorPiece : container.getExecuter().getOriginal().getArmorSlots()) {
-				protection += ArmorPiece.getEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION);
-			}
-			container.getDataManager().setDataSync(RECOVERY_COOLDOWN, 100 / (1 + (protection/4)), ((ServerPlayerPatch) container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(RECOVERY_COOLDOWN, 100, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 		});
 	}
 	
@@ -103,9 +103,8 @@ public class HeartShieldSkill extends PassiveSkill {
 		super.updateContainer(container);
 		int protection = 0;
 		for (ItemStack ArmorPiece : container.getExecuter().getOriginal().getArmorSlots()) {
-			protection +=  ArmorPiece.getEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION);
+			protection += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.ALL_DAMAGE_PROTECTION, ArmorPiece);
 		}
-		recovery_delay = (100 / (1 + (protection/4)))/20f;
 		recovery_rate = (40 / (1 + (protection/4)))/20f;
 		if (!container.getExecuter().isLogicalClient()) {
 			container.getDataManager().setDataSync(MAX_SHIELD, 20, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
