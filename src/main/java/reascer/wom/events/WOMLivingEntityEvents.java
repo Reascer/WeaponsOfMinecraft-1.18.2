@@ -233,7 +233,7 @@ public class WOMLivingEntityEvents {
 									String replacetag = new String(tag); 
 									e.removeTag(tag);
 									ServerPlayerPatch player = EpicFightCapabilities.getEntityPatch(e.level.getEntity(Integer.valueOf(replacetag.split(":")[6])), ServerPlayerPatch.class);
-									EpicFightEntityDamageSource epicFightDamageSource = new EpicFightEntityDamageSource("timed_katana_slashes", player.getOriginal() ,WOMAnimations.KATANA_SHEATHED_DASH);
+									EpicFightEntityDamageSource epicFightDamageSource = new EpicFightEntityDamageSource("timed_katana_slashes", player.getOriginal() ,WOMAnimations.KATANA_SAKURA_TIMED_SLASH);
 									epicFightDamageSource.setImpact(2.0f);
 									epicFightDamageSource.setStunType(StunType.HOLD);
 									epicFightDamageSource.addTag(SourceTags.WEAPON_INNATE);

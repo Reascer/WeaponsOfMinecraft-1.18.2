@@ -298,7 +298,7 @@ public class WOMWeaponCapabilityPresets {
 			.comboCancel((style) -> {
 				return false;
 			})
-			.newStyleCombo(Styles.ONE_HAND, WOMAnimations.SWORD_ONEHAND_AUTO_1, WOMAnimations.SWORD_ONEHAND_AUTO_2, WOMAnimations.SWORD_ONEHAND_AUTO_3, WOMAnimations.SWORD_ONEHAND_AUTO_4, Animations.SWORD_DASH, Animations.SWORD_AIR_SLASH)
+			.newStyleCombo(Styles.ONE_HAND, Animations.SWORD_AUTO1, Animations.SWORD_AUTO2, Animations.SWORD_AUTO3, Animations.SWORD_DASH, Animations.SWORD_AIR_SLASH)
 			.newStyleCombo(Styles.TWO_HAND, Animations.SWORD_DUAL_AUTO1, Animations.SWORD_DUAL_AUTO2, Animations.SWORD_DUAL_AUTO3, Animations.SWORD_DUAL_DASH, Animations.SWORD_DUAL_AIR_SLASH)
 			.newStyleCombo(Styles.OCHS, WOMAnimations.HERRSCHER_AUTO_1, WOMAnimations.HERRSCHER_AUTO_2, WOMAnimations.HERRSCHER_AUTO_3, WOMAnimations.HERRSCHER_BEFREIUNG, WOMAnimations.HERRSCHER_AUSROTTUNG)
 			.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)

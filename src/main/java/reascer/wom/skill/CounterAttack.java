@@ -333,7 +333,7 @@ public class CounterAttack extends GuardSkill {
 			if (itemCapability.getWeaponCollider() == WOMColliders.AGONY) {
 				return WOMAnimations.AGONY_COUNTER;
 			} else if (itemCapability.getWeaponCollider() == WOMColliders.KATANA) {
-				return WOMAnimations.KATANA_SHEATHED_DASH;
+				return WOMAnimations.KATANA_SHEATHED_COUNTER;
 			} else if (itemCapability.getWeaponCollider() == WOMColliders.RUINE) {
 				return WOMAnimations.RUINE_COUNTER;
 			} else if (itemCapability.getWeaponCollider() == WOMColliders.MOONLESS) {

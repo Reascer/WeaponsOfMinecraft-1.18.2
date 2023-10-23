@@ -121,28 +121,6 @@ public class WOMAnimations {
 	public static StaticAnimation KICK_AUTO_2;
 	public static StaticAnimation KICK_AUTO_3;
 	
-	public static StaticAnimation SWORD_ONEHAND_AUTO_1;
-	public static StaticAnimation SWORD_ONEHAND_AUTO_2;
-	public static StaticAnimation SWORD_ONEHAND_AUTO_3;
-	public static StaticAnimation SWORD_ONEHAND_AUTO_4;
-	
-	public static StaticAnimation TACHI_TWOHAND_AUTO_1;
-	public static StaticAnimation TACHI_TWOHAND_AUTO_2;
-	public static StaticAnimation TACHI_TWOHAND_AUTO_3;
-	public static StaticAnimation TACHI_TWOHAND_AUTO_4;
-	public static StaticAnimation TACHI_TWOHAND_BLOSSOM_CHARGE;
-	public static StaticAnimation TACHI_TWOHAND_BLOSSOM_SLASHES;
-	public static StaticAnimation TACHI_TWOHAND_BLOSSOM_FINAL;
-	
-	public static StaticAnimation LONGSWORD_TWOHAND_AUTO_1;
-	public static StaticAnimation LONGSWORD_TWOHAND_AUTO_2;
-	public static StaticAnimation LONGSWORD_TWOHAND_AUTO_3;
-	public static StaticAnimation LONGSWORD_TWOHAND_AUTO_4;
-	
-	public static StaticAnimation GREATSWORD_TWOHAND_AUTO_1;
-	public static StaticAnimation GREATSWORD_TWOHAND_AUTO_2;
-	public static StaticAnimation GREATSWORD_TWOHAND_AUTO_3;
-	
 	public static StaticAnimation STAFF_AUTO_1;
 	public static StaticAnimation STAFF_AUTO_2;
 	public static StaticAnimation STAFF_AUTO_3;
@@ -228,6 +206,7 @@ public class WOMAnimations {
 	public static StaticAnimation KATANA_SHEATHED_AUTO_3;
 	public static StaticAnimation KATANA_SHEATHED_DASH;
 	public static StaticAnimation KATANA_SHEATHED_COUNTER;
+	public static StaticAnimation KATANA_SAKURA_TIMED_SLASH;
 	public static StaticAnimation KATANA_SHEATHE;
 	public static StaticAnimation KATANA_SHEATHED_IDLE;
 	public static StaticAnimation KATANA_SHEATHED_RUN;
@@ -464,58 +443,6 @@ public class WOMAnimations {
 		
 		MEDITATION_SITING = new StaticAnimation(0.2f,false, "biped/skill/meditation_siting", biped);
 		MEDITATION_BREATHING = new StaticAnimation(0.1f,true, "biped/skill/meditation_breathing", biped);
-		
-		SWORD_ONEHAND_AUTO_1 = new BasicMultipleAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, biped.toolR, "biped/combat/sword_onehand_auto_1", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
-		SWORD_ONEHAND_AUTO_2 = new BasicMultipleAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, biped.toolR, "biped/combat/sword_onehand_auto_2", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
-		SWORD_ONEHAND_AUTO_3 = new BasicMultipleAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, biped.toolR, "biped/combat/sword_onehand_auto_3", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
-		SWORD_ONEHAND_AUTO_4 = new BasicMultipleAttackAnimation(0.1F, 0.2F, 0.3F, 0.4F, null, biped.toolR, "biped/combat/sword_onehand_auto_4", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
-		
-		TACHI_TWOHAND_AUTO_1 = new BasicMultipleAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, biped.toolR, "biped/combat/tachi_twohand_auto_1", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F);
-		TACHI_TWOHAND_AUTO_2 = new BasicMultipleAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, biped.toolR, "biped/combat/tachi_twohand_auto_2", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F);
-		TACHI_TWOHAND_AUTO_3 = new BasicMultipleAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, biped.toolR, "biped/combat/tachi_twohand_auto_3", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F);
-		TACHI_TWOHAND_AUTO_4 = new BasicMultipleAttackAnimation(0.1F, 0.2F, 0.3F, 0.4F, null, biped.toolR, "biped/combat/tachi_twohand_auto_4", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F);
-		
-		TACHI_TWOHAND_BLOSSOM_CHARGE = new ActionAnimation(0.05F, "biped/skill/tachi_twohand_blossom_charge", biped);
-		TACHI_TWOHAND_BLOSSOM_SLASHES = new BasicMultipleAttackAnimation(0.05F, "biped/skill/tachi_twohand_blossom_slashes", biped,
-				new Phase(0.0F, 0.1F, 0.2F, 0.3F, 0.3F, biped.toolR, null),
-				new Phase(0.3F, 0.3F, 0.4F, 0.5F, 0.5F, biped.toolR, null),
-				new Phase(0.5F, 0.5F, 0.6F, 0.8F, 0.8F, biped.toolR, null),
-				new Phase(0.8F, 0.8F, 0.9F, 1.7F ,Float.MAX_VALUE, biped.toolR, null))
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.75F))
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.75F),1)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.75F),2)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.75F),3)
-				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
-		TACHI_TWOHAND_BLOSSOM_FINAL = new BasicMultipleAttackAnimation(0.1F, 0.05F, 0.2F, 0.3F, null, biped.toolR, "biped/skill/tachi_twohand_blossom_final", biped)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.25F))
-				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
-		
-		LONGSWORD_TWOHAND_AUTO_1 = new BasicMultipleAttackAnimation(0.1F, 0.2F, 0.3F, 0.4F, null, biped.toolR, "biped/combat/longsword_twohand_auto_1", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
-		LONGSWORD_TWOHAND_AUTO_2 = new BasicMultipleAttackAnimation(0.1F, 0.2F, 0.3F, 0.4F, null, biped.toolR, "biped/combat/longsword_twohand_auto_2", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
-		LONGSWORD_TWOHAND_AUTO_3 = new BasicMultipleAttackAnimation(0.1F, 0.2F, 0.3F, 0.4F, null, biped.toolR, "biped/combat/longsword_twohand_auto_3", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
-		LONGSWORD_TWOHAND_AUTO_4 = new BasicMultipleAttackAnimation(0.1F, 0.3F, 0.4F, 0.5F, null, biped.toolR, "biped/combat/longsword_twohand_auto_4", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
-		
-		GREATSWORD_TWOHAND_AUTO_1 = new BasicMultipleAttackAnimation(0.1F, 0.3F, 0.4F, 0.5F, null, biped.toolR, "biped/combat/greatsword_twohand_auto_1", biped)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F))
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.05F);
-		GREATSWORD_TWOHAND_AUTO_2 = new BasicMultipleAttackAnimation(0.1F, 0.3F, 0.4F, 0.5F, null, biped.toolR, "biped/combat/greatsword_twohand_auto_2", biped)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F))
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.05F);
-		GREATSWORD_TWOHAND_AUTO_3 = new BasicMultipleAttackAnimation(0.1F, 0.4F, 0.5F, 0.6F, null, biped.toolR, "biped/combat/greatsword_twohand_auto_3", biped)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F))
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.05F);
 		
 		AGONY_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, 0.05F, 0.15F, 0.2F, null, biped.toolR, "biped/combat/agony_auto_1", biped)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
@@ -1436,6 +1363,27 @@ public class WOMAnimations {
 					entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
 				}, Side.SERVER));
 		
+		KATANA_SHEATHED_COUNTER = new BasicMultipleAttackAnimation(0.15F, 0.16F, 0.4F, 0.6F,WOMColliders.KATANA_SHEATHED_DASH, biped.rootJoint, "biped/combat/katana_sheathed_counter", biped)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.5F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.95F))
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10F))
+				.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.KATANA_SHEATHED_HIT)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
+				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
+				.addEvents(TimeStampedEvent.create(0.12F, (entitypatch, self, params) -> {
+					Entity entity = entitypatch.getOriginal();
+					entitypatch.getOriginal().level.addParticle(WOMParticles.ENTITY_AFTER_IMAGE_WEAPON.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
+				}, Side.CLIENT),TimeStampedEvent.create(0.55F, (entitypatch, self, params) -> {
+					if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
+						entitypatch.updateMotion(true);
+					}
+					entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
+				}, Side.SERVER));
+		
 		KATANA_SHEATHE = new StaticAnimation(0.1f,false, "biped/living/katana_sheathe", biped)
 				.addEvents(TimeStampedEvent.create(0.2F, ReuseableEvents.KATANA_IN, Side.CLIENT));
 		
@@ -1545,6 +1493,7 @@ public class WOMAnimations {
 					entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
 				}, Side.SERVER));
 		
+		KATANA_SAKURA_TIMED_SLASH = new SpecialAttackAnimation(0.05F, 0.0F, 0.0F, 0.0F, 0.00F, null, biped.rootJoint, "biped/skill/katana_sakura_timed_slash", biped);
 		
 		ENDERBLASTER_ONEHAND_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/enderblaster_onehand_auto_1", biped,
 				new Phase(0.0F, 0.15F, 0.24F, 0.25F, 0.25F, biped.legL, WOMColliders.KICK),
