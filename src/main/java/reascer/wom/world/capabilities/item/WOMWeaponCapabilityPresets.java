@@ -20,11 +20,9 @@ import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.forgeevent.WeaponCapabilityPresetRegistryEvent;
 import yesman.epicfight.gameasset.Animations;
-import yesman.epicfight.gameasset.ColliderPreset;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.particle.EpicFightParticles;
-import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -352,8 +350,8 @@ public class WOMWeaponCapabilityPresets {
 				.category(WeaponCategories.GREATSWORD)
 				.styleProvider((playerpatch) -> Styles.TWO_HAND)
 				.collider(WOMColliders.SOLAR)
-				.hitSound(EpicFightSounds.BLADE_HIT)
-				.swingSound(EpicFightSounds.WHOOSH_BIG)
+				.hitSound(EpicFightSounds.BLADE_HIT.get())
+				.swingSound(EpicFightSounds.WHOOSH_BIG.get())
 				.canBePlacedOffhand(false)
 				.newStyleCombo(Styles.TWO_HAND, WOMAnimations.TORMENT_AUTO_1, WOMAnimations.TORMENT_AUTO_2, WOMAnimations.RUINE_AUTO_2, WOMAnimations.RUINE_AUTO_3, WOMAnimations.TORMENT_DASH, WOMAnimations.TORMENT_AIRSLAM)
 				.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)

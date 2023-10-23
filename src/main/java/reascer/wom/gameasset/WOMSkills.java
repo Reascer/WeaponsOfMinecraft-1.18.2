@@ -8,27 +8,25 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import reascer.wom.main.WeaponsOfMinecraft;
 import reascer.wom.skill.AgonyPlungeSkill;
-import reascer.wom.skill.ChargeSkill;
-import reascer.wom.skill.ArrowTenacitySkill;
 import reascer.wom.skill.BullChargeSkill;
 import reascer.wom.skill.CharybdisSkill;
 import reascer.wom.skill.CounterAttack;
 import reascer.wom.skill.DemonMarkPassiveSkill;
 import reascer.wom.skill.DemonicAscensionSkill;
 import reascer.wom.skill.DodgeMasterSkill;
-import reascer.wom.skill.SatsujinPassive;
 import reascer.wom.skill.EnderBlastSkill;
 import reascer.wom.skill.EnderFusionSkill;
 import reascer.wom.skill.EnderObscurisSkill;
 import reascer.wom.skill.EnderStepSkill;
-import reascer.wom.skill.SakuraStateSkill;
 import reascer.wom.skill.LunarEchoSkill;
 import reascer.wom.skill.LunarEclipsePassiveSkill;
 import reascer.wom.skill.PerfectBulwarkSkill;
-import reascer.wom.skill.SoulSnatchSkill;
 import reascer.wom.skill.RegierungSkill;
 import reascer.wom.skill.RuinePassive;
+import reascer.wom.skill.SakuraStateSkill;
+import reascer.wom.skill.SatsujinPassive;
 import reascer.wom.skill.ShadowStepSkill;
+import reascer.wom.skill.SoulSnatchSkill;
 import reascer.wom.skill.TormentPassiveSkill;
 import reascer.wom.skill.TrueBerserkSkill;
 import reascer.wom.skill.VengefulParry;
@@ -43,7 +41,6 @@ import reascer.wom.skill.passive.MindSetSkill;
 import reascer.wom.skill.passive.PainAnticipationSkill;
 import reascer.wom.skill.passive.VampirizeSkill;
 import reascer.wom.world.damagesources.WOMExtraDamageInstance;
-import reascer.wom.world.item.WOMCreativeTabs;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
 import yesman.epicfight.api.data.reloader.SkillManager;
 import yesman.epicfight.api.forgeevent.SkillBuildEvent;
@@ -146,7 +143,7 @@ public class WOMSkills {
 				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/shadow_step_backward")),
 				WeaponsOfMinecraft.MODID,"shadow_step");
 		
-		SkillManager.register(BullChargeSkill::new, ChargeSkill.createChargeBuilder().setAnimations(
+		SkillManager.register(BullChargeSkill::new, BullChargeSkill.createChargeBuilder().setAnimations(
 				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/bull_charge")),
 				WeaponsOfMinecraft.MODID,"bull_charge");		
 		

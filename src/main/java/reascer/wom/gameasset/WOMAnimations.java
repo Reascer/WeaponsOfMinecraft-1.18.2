@@ -408,7 +408,7 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.setter(5F),3)
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10F),3)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,3)
-				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT,3)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLUNT_HIT.get(),3)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,3)
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.5F)
@@ -743,7 +743,7 @@ public class WOMAnimations {
 					    
 					    AABB box = AABB.ofSize(entitypatch.getOriginal().getPosition(1.0f),3, 3, 3);
 						
-						List<Entity> list = entitypatch.getOriginal().level.getEntities(entitypatch.getOriginal(),box);
+						List<Entity> list = entitypatch.getOriginal().level().getEntities(entitypatch.getOriginal(),box);
 					    
 					    if (distanceToGround > 0.5F && list.size() == 0) {
 					    	livingentity.move(MoverType.SELF, direction.toDoubleVector());
@@ -796,7 +796,7 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,0)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2F),1)
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.0F),1)
-				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT,1)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT.get(),1)
 				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(0.5f)),1)
 				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE),1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
@@ -898,7 +898,7 @@ public class WOMAnimations {
 				TimeStampedEvent.create(0.05F, (entitypatch, self, params) -> {
 					if (entitypatch.getOriginal().getLastHurtMob() != null && ((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getStack() > 1) {
 						LivingEntity entity = entitypatch.getOriginal();
-						entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
+						entitypatch.getOriginal().level().addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 					}
 				}, Side.CLIENT));
 		
@@ -906,7 +906,7 @@ public class WOMAnimations {
 				new Phase(0.0F, 0.60F, 0.75F, 1.0F, Float.MAX_VALUE, biped.rootJoint, WOMColliders.RUINE_REDEMPTION))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.8F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.0F))
-				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT.get())
 				.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.RUINE_PLUNDER_SWORD)
 				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(0.5f)))
 				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE))
@@ -947,7 +947,7 @@ public class WOMAnimations {
 				TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 					if (!entitypatch.isLogicalClient() && entitypatch instanceof PlayerPatch) {
 						LivingEntity entity = entitypatch.getOriginal();
-						((ServerLevel) entity.level).sendParticles(ParticleTypes.REVERSE_PORTAL,
+						((ServerLevel) entity.level()).sendParticles(ParticleTypes.REVERSE_PORTAL,
 								entity.getX(), 
 								entity.getY() + 1, 
 								entity.getZ(),
@@ -956,14 +956,14 @@ public class WOMAnimations {
 							    0.05,
 								0.05,
 								0.5);
-						entity.level.playSound(null, 
+						entity.level().playSound(null, 
 								entity.xo, 
 								entity.yo + 1, 
 								entity.zo,
 				    			SoundEvents.ENDERMAN_TELEPORT, entity.getSoundSource(), 2.0F, 1.0F - ((new Random().nextFloat()-0.5f) * 0.2F));
 					} else {
 						LivingEntity entity = entitypatch.getOriginal();
-						entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
+						entitypatch.getOriginal().level().addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 					}
 				}, Side.BOTH),
 				TimeStampedEvent.create(0.75F, (entitypatch, self, params) -> {
@@ -1397,14 +1397,14 @@ public class WOMAnimations {
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addEvents(TimeStampedEvent.create(0.12F, (entitypatch, self, params) -> {
 					Entity entity = entitypatch.getOriginal();
-					entitypatch.getOriginal().level.addParticle(WOMParticles.ENTITY_AFTER_IMAGE_WEAPON.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
+					entitypatch.getOriginal().level().addParticle(WOMParticles.ENTITY_AFTER_IMAGE_WEAPON.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				}, Side.CLIENT),TimeStampedEvent.create(0.55F, (entitypatch, self, params) -> {
 					if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
 						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
 						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
 						entitypatch.updateMotion(true);
 					}
-					entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
+					entitypatch.playSound(EpicFightSounds.SWORD_IN.get(), 0, 0);
 				}, Side.SERVER));
 		
 		KATANA_SHEATHE = new StaticAnimation(0.1f,false, "biped/living/katana_sheathe", biped)
@@ -2159,7 +2159,7 @@ public class WOMAnimations {
 					    
 					    AABB box = AABB.ofSize(entitypatch.getOriginal().getPosition(1.0f),3, 3, 3);
 						
-						List<Entity> list = entitypatch.getOriginal().level.getEntities(entitypatch.getOriginal(),box);
+						List<Entity> list = entitypatch.getOriginal().level().getEntities(entitypatch.getOriginal(),box);
 					    
 					    if (distanceToGround > 0.5F && list.size() == 0) {
 					    	livingentity.move(MoverType.SELF, direction.toDoubleVector());
@@ -3137,8 +3137,8 @@ public class WOMAnimations {
 					((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.ASCENDING, true, (ServerPlayer)entitypatch.getOriginal());
 					((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, false, (ServerPlayer)entitypatch.getOriginal());
 					
-					entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), SoundEvents.WITHER_BREAK_BLOCK, SoundSource.PLAYERS, 1.0F, 0.5F);
-					entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), SoundEvents.WITHER_AMBIENT, SoundSource.PLAYERS, 1.0F, 0.5F);
+					entitypatch.getOriginal().level().playSound(null, entitypatch.getOriginal(), SoundEvents.WITHER_BREAK_BLOCK, SoundSource.PLAYERS, 1.0F, 0.5F);
+					entitypatch.getOriginal().level().playSound(null, entitypatch.getOriginal(), SoundEvents.WITHER_AMBIENT, SoundSource.PLAYERS, 1.0F, 0.5F);
 				}, Side.SERVER),TimeStampedEvent.create(1.75F, (entitypatch, self, params) -> {
 					
 					float target_x = (float) entitypatch.getOriginal().getX();
@@ -5123,10 +5123,10 @@ public class WOMAnimations {
 		float dpx = transformMatrix.m30 + (float) entitypatch.getOriginal().getX();
 		float dpy = transformMatrix.m31 + (float) entitypatch.getOriginal().getY();
 		float dpz = transformMatrix.m32 + (float) entitypatch.getOriginal().getZ();
-		BlockState block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+		BlockState block = entitypatch.getOriginal().level().getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
 		while ((block.getBlock() instanceof BushBlock || block.isAir()) && !block.is(Blocks.VOID_AIR)) {
 			dpy--;
-			block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+			block = entitypatch.getOriginal().level().getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
 		}
 		return new Vec3(dpx,dpy,dpz);
 	}

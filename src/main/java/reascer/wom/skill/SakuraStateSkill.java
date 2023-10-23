@@ -139,7 +139,7 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 					}
 				}
 			}
-			if (!event.getDamageSource().getAnimation().equals(WOMAnimations.KATANA_SHEATHED_COUNTER)) {
+			if (!event.getDamageSource().getAnimation().equals(WOMAnimations.KATANA_SAKURA_TIMED_SLASH)) {
 				if (container.getExecuter().getStamina() > 0) {
 					if(container.getDataManager().getDataValue(TIMEDSLASH)){
 						boolean tsa = false;

@@ -3,10 +3,11 @@ package reascer.wom.main;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraftforge.client.ConfigScreenHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -21,9 +22,6 @@ import reascer.wom.wold.gamerules.WOMGamerules;
 import reascer.wom.world.entity.projectile.WOMEntities;
 import reascer.wom.world.item.WOMCreativeTabs;
 import reascer.wom.world.item.WOMItems;
-import yesman.epicfight.client.gui.screen.IngameConfigurationScreen;
-import yesman.epicfight.config.ConfigManager;
-import yesman.epicfight.world.item.EpicFightCreativeTabs;
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("wom")
 public class WeaponsOfMinecraft

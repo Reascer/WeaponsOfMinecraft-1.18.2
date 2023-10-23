@@ -34,9 +34,6 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
-import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
-import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
-import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -52,7 +49,6 @@ import yesman.epicfight.world.capabilities.entitypatch.EntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
-import yesman.epicfight.world.damagesource.EpicFightEntityDamageSource;
 import yesman.epicfight.world.damagesource.SourceTags;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
@@ -145,8 +141,8 @@ public class WOMLivingEntityEvents {
 			    }
 			}
 		}
-		for (String tag : event.getEntityLiving().getTags()) {
-			event.getEntityLiving().removeTag(tag);
+		for (String tag : event.getEntity().getTags()) {
+			event.getEntity().removeTag(tag);
 			break;
 		}
 	}
@@ -236,7 +232,7 @@ public class WOMLivingEntityEvents {
 									String replacetag = new String(tag); 
 									e.removeTag(tag);
 									ServerPlayerPatch player = EpicFightCapabilities.getEntityPatch(e.level().getEntity(Integer.valueOf(replacetag.split(":")[6])), ServerPlayerPatch.class);
-									EpicFightDamageSource epicFightDamageSource = player.getDamageSource(WOMAnimations.KATANA_TIMED_SAKURA_SLASH, InteractionHand.MAIN_HAND);
+									EpicFightDamageSource epicFightDamageSource = player.getDamageSource(WOMAnimations.KATANA_SAKURA_TIMED_SLASH, InteractionHand.MAIN_HAND);
 									
 									epicFightDamageSource.setImpact(2.0f);
 									epicFightDamageSource.setStunType(StunType.HOLD);
@@ -322,20 +318,23 @@ public class WOMLivingEntityEvents {
 								
 								if (livingEntity.isAlive()) {
 									if (blindness_amp > 0) {
-										if (livingEntity.equals(event.getEntityLiving())){
-											livingEntity.hurt(damage,2 * blindness_amp);
+										boolean particle = true;
+										if (livingEntity.equals(event.getEntity())){
+											particle = livingEntity.hurt(damage,2 * blindness_amp);
 										} else {
-											livingEntity.hurt(damage,1 * blindness_amp);
+											particle = livingEntity.hurt(damage,1 * blindness_amp);
 										}
-										((ServerLevel) livingEntity.level).sendParticles(ParticleTypes.DAMAGE_INDICATOR,
-												livingEntity.getX(),
-												livingEntity.getY()+1,
-												livingEntity.getZ(),
-												(1 * blindness_amp),
-												0.2,
-												0.2,
-												0.2,
-												0.2);
+										if (particle) {
+											((ServerLevel) livingEntity.level()).sendParticles(ParticleTypes.DAMAGE_INDICATOR,
+													livingEntity.getX(),
+													livingEntity.getY()+1,
+													livingEntity.getZ(),
+													(1 * blindness_amp),
+													0.2,
+													0.2,
+													0.2,
+													0.2);
+										}
 										
 										((ServerLevel) event.getEntity().level()).sendParticles(ParticleTypes.END_ROD,
 												livingEntity.getX(),

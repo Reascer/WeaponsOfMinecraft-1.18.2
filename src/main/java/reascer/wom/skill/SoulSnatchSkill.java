@@ -198,7 +198,7 @@ public class SoulSnatchSkill extends WeaponInnateSkill{
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		ServerPlayer player = executer.getOriginal();
-		if ((!player.isOnGround() && !player.isInWater()) && player.fallDistance < 0.1f && (player.level.isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
+		if ((!player.onGround() && !player.isInWater()) && player.fallDistance < 0.1f && (player.level().isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
 			executer.playAnimationSynchronized(WOMAnimations.RUINE_REDEMPTION, 0);
 			executer.getSkill(this).getDataManager().setDataSync(REDEMPTION, true, executer.getOriginal());
 			if (executer.getSkill(this).getStack() > 1) {

@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
@@ -231,15 +232,15 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 					event.getResourceType().consumer.consume(this, executer, event.getAmount());
 				}
 			}
-			int sweeping_edge = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()) + EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.OFF_HAND));
+			int sweeping_edge = executer.getOriginal().getOffhandItem().getEnchantmentLevel(Enchantments.SWEEPING_EDGE) + executer.getOriginal().getMainHandItem().getEnchantmentLevel(Enchantments.SWEEPING_EDGE);
 			if (Math.abs(new Random().nextInt()) % 100 < (100 * (-(1f/(Math.sqrt(sweeping_edge+1f)))+1))) {
 				if (double_cost && stack == 1) {
 					
 				} else {
 					this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()+1);
 				}
-				executer.getOriginal().level.playSound(null, executer.getOriginal().getX(),executer.getOriginal().getY(), executer.getOriginal().getZ(),
-		    			WOMSounds.ENDERBLASTER_RELOAD, executer.getOriginal().getSoundSource(), 1.0F, 2.0F);
+				executer.getOriginal().level().playSound(null, executer.getOriginal().getX(),executer.getOriginal().getY(), executer.getOriginal().getZ(),
+		    			WOMSounds.ENDERBLASTER_RELOAD.get(), executer.getOriginal().getSoundSource(), 1.0F, 2.0F);
 			}
 		}
 		executer.getSkill(this).activate();
@@ -310,7 +311,7 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 						container.getExecuter().getSkill(this).getDataManager().setDataSync(NOFALLDAMAGE, false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 					}
 				}
-				int sweeping_edge = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()) + EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.OFF_HAND));
+				int sweeping_edge = executer.getOriginal().getOffhandItem().getEnchantmentLevel(Enchantments.SWEEPING_EDGE) + executer.getOriginal().getMainHandItem().getEnchantmentLevel(Enchantments.SWEEPING_EDGE);
 				if (container.getDataManager().getDataValue(SHOOT) && !container.getExecuter().getOriginal().isUsingItem() && container.getExecuter().getEntityState().canBasicAttack()) {
 					container.getExecuter().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 					container.getDataManager().setDataSync(SHOOT, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
@@ -319,8 +320,8 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 							this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()-1);
 							if (Math.abs(new Random().nextInt()) % 100 < (100 * (-(1f/(Math.sqrt(sweeping_edge+1f)))+1))) {
 								this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()+1);
-								container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
-						    			WOMSounds.ENDERBLASTER_RELOAD, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
+								executer.getOriginal().level().playSound(null, executer.getOriginal().getX(),executer.getOriginal().getY(), executer.getOriginal().getZ(),
+						    			WOMSounds.ENDERBLASTER_RELOAD.get(), executer.getOriginal().getSoundSource(), 1.0F, 2.0F);
 							}
 						}
 						if (container.getExecuter().getOriginal().isVisuallySwimming()) {
