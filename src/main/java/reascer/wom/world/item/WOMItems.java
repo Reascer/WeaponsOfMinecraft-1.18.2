@@ -24,6 +24,7 @@ public class WOMItems {
 	public static final RegistryObject<Item> GESETZ_HANDLE = ITEMS.register("gesetz_handle", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> MOONLESS = ITEMS.register("moonless", () -> new MoonlessItem(new Item.Properties().rarity(Rarity.EPIC)));
 	public static final RegistryObject<Item> MOONLESS_HANDLE = ITEMS.register("moonless_handle", () -> new Item(new Item.Properties().rarity(Rarity.EPIC)));
+	//public static final RegistryObject<Item> SOLAR = ITEMS.register("solar", () -> new SolarItem(new Item.Properties().tab(WOMCreativeTabs.ITEMS).rarity(Rarity.EPIC)));
 	
 	public static final RegistryObject<Item> IRON_GREATAXE = ITEMS.register("iron_greataxe", () -> new GreataxeItem(new Item.Properties(), Tiers.IRON));
 	public static final RegistryObject<Item> GOLDEN_GREATAXE = ITEMS.register("golden_greataxe", () -> new GreataxeItem(new Item.Properties(), Tiers.GOLD));

@@ -50,6 +50,7 @@ import yesman.epicfight.skill.passive.PassiveSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.StunType;
+import yesman.epicfight.world.effect.EpicFightMobEffects;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 import yesman.epicfight.world.level.block.FractureBlockState;
@@ -233,7 +234,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 	@Override
 	public void updateContainer(SkillContainer container) {
 		if(container.getExecuter().isLogicalClient()) {
-			if ((container.getExecuter().getCurrentLivingMotion() == LivingMotions.WALK || container.getExecuter().getCurrentLivingMotion() == LivingMotions.RUN)) {
+			if ((container.getExecuter().getCurrentLivingMotion() == LivingMotions.WALK || container.getExecuter().getCurrentLivingMotion() == LivingMotions.RUN) && !container.getExecuter().getOriginal().isUsingItem()) {
 				PlayerPatch<?> entitypatch = container.getExecuter();
 				float interpolation = 0.0F;
 				OpenMatrix4f transformMatrix;
@@ -378,6 +379,8 @@ public class TormentPassiveSkill extends PassiveSkill {
 				container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(charging_Movementspeed);
 			}
 			if (container.getDataManager().getDataValue(CHARGING)) {
+				container.getExecuter().getOriginal().addEffect(new MobEffectInstance(EpicFightMobEffects.STUN_IMMUNITY.get(), 5, 0,true,false,false));
+				
 				if (container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).getModifier(EVENT_UUID) == null && container.getDataManager().getDataValue(MOVESPEED)) {
 					container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).addPermanentModifier(charging_Movementspeed);
 				}

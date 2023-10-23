@@ -80,6 +80,14 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 				container.getDataManager().setDataSync(TIMER, 20,serverPlayer);
 			}
 			
+			if (event.getAnimation().equals(WOMAnimations.KATANA_SHEATHED_COUNTER)) {
+				container.getDataManager().setDataSync(TIMEDSLASH, true,serverPlayer);
+				container.getDataManager().setDataSync(FREQUENCY, 1,serverPlayer);
+				container.getDataManager().setDataSync(ATTACKS, 3 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()),serverPlayer);
+				container.getDataManager().setDataSync(SECOND_DRAW, false,serverPlayer);
+				container.getDataManager().setDataSync(TIMER, 20,serverPlayer);
+			}
+			
 			if (event.getAnimation().equals(WOMAnimations.KATANA_FATAL_DRAW_DASH)) {
 				container.getDataManager().setDataSync(TIMEDSLASH, true,serverPlayer);
 				container.getDataManager().setDataSync(FREQUENCY, 1,serverPlayer);
@@ -121,7 +129,7 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 				event.getDamageSource().getAnimation().equals(WOMAnimations.KATANA_FATAL_DRAW_SECOND)) {
 				for (String tag : event.getTarget().getTags()) {
 					if (tag.contains("anti_stunlock:")) {
-						String replaceTag = tag.split(":")[0] +":"+ Float.valueOf(tag.split(":")[1])*1.3 ;
+						String replaceTag = tag.split(":")[0] +":"+ Float.valueOf(tag.split(":")[1])*1.25 ;
 						for (int i = 2; i < tag.split(":").length; i++) {
 							replaceTag = replaceTag.concat(":"+tag.split(":")[i]);
 						}

@@ -34,6 +34,9 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.living.MobSpawnEvent;
+import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
+import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -49,6 +52,7 @@ import yesman.epicfight.world.capabilities.entitypatch.EntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
+import yesman.epicfight.world.damagesource.EpicFightEntityDamageSource;
 import yesman.epicfight.world.damagesource.SourceTags;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
@@ -105,11 +109,13 @@ public class WOMLivingEntityEvents {
 				AttributeInstance entity_max_health = event.getEntity().getAttribute(Attributes.MAX_HEALTH);
 				AttributeModifier boosted_health = new AttributeModifier(UUID.fromString("5a70f02c-7ca0-43c5-a766-2be3d68461a2"), "wom.wom_stronger_health", Math.round(Math.pow(1.5D, (distance_from_zero / 1000))-1) , Operation.MULTIPLY_TOTAL);
 				if (entity_max_health != null) {
+					entity_max_health.removeModifier(boosted_health);
 					entity_max_health.addPermanentModifier(boosted_health);
 				}
 				AttributeInstance entity_attack_damage = event.getEntity().getAttribute(Attributes.ATTACK_DAMAGE);
 				AttributeModifier boosted_damage = new AttributeModifier(UUID.fromString("5a70f02c-7ca0-43c5-a766-2be3d68461a2"), "wom.wom_stronger_damage", Math.round(Math.pow(1.2D, (distance_from_zero / 1000))-1), Operation.MULTIPLY_TOTAL);
 				if (entity_attack_damage != null) {
+					entity_attack_damage.removeModifier(boosted_damage);
 					entity_attack_damage.addPermanentModifier(boosted_damage);
 				}
 				
@@ -138,6 +144,10 @@ public class WOMLivingEntityEvents {
 			       	event.getEntity().level().addFreshEntity(itementity);
 			    }
 			}
+		}
+		for (String tag : event.getEntityLiving().getTags()) {
+			event.getEntityLiving().removeTag(tag);
+			break;
 		}
 	}
 	
@@ -226,7 +236,7 @@ public class WOMLivingEntityEvents {
 									String replacetag = new String(tag); 
 									e.removeTag(tag);
 									ServerPlayerPatch player = EpicFightCapabilities.getEntityPatch(e.level().getEntity(Integer.valueOf(replacetag.split(":")[6])), ServerPlayerPatch.class);
-									EpicFightDamageSource epicFightDamageSource = player.getDamageSource(WOMAnimations.KATANA_SHEATHED_COUNTER, InteractionHand.MAIN_HAND);
+									EpicFightDamageSource epicFightDamageSource = player.getDamageSource(WOMAnimations.KATANA_TIMED_SAKURA_SLASH, InteractionHand.MAIN_HAND);
 									
 									epicFightDamageSource.setImpact(2.0f);
 									epicFightDamageSource.setStunType(StunType.HOLD);
@@ -272,7 +282,7 @@ public class WOMLivingEntityEvents {
 						PlayerPatch<?> playerpatch = EpicFightCapabilities.getEntityPatch(player, PlayerPatch.class);
 						ServerPlayerPatch serverPlayerPatch = (ServerPlayerPatch) playerpatch;
 						EpicFightDamageSource epicFightDamageSource = serverPlayerPatch.getDamageSource(WOMAnimations.MOONLESS_LUNAR_ECHO, InteractionHand.MAIN_HAND);
-						epicFightDamageSource.setImpact(2.0f);
+						epicFightDamageSource.setImpact(4.0f);
 						epicFightDamageSource.setStunType(StunType.HOLD);
 						epicFightDamageSource.addTag(SourceTags.WEAPON_INNATE);
 						DamageSource damage = epicFightDamageSource;
@@ -312,8 +322,12 @@ public class WOMLivingEntityEvents {
 								
 								if (livingEntity.isAlive()) {
 									if (blindness_amp > 0) {
-										livingEntity.hurt(damage,1 * blindness_amp);
-										((ServerLevel) livingEntity.level()).sendParticles(ParticleTypes.DAMAGE_INDICATOR,
+										if (livingEntity.equals(event.getEntityLiving())){
+											livingEntity.hurt(damage,2 * blindness_amp);
+										} else {
+											livingEntity.hurt(damage,1 * blindness_amp);
+										}
+										((ServerLevel) livingEntity.level).sendParticles(ParticleTypes.DAMAGE_INDICATOR,
 												livingEntity.getX(),
 												livingEntity.getY()+1,
 												livingEntity.getZ(),

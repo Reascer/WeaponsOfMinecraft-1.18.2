@@ -404,10 +404,10 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				}
 				
 				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.toolR);
-				transformMatrix2.translate(new Vec3f(0,0.7F,-1.8F));
+				transformMatrix2.translate(new Vec3f(0,1.2F,-2.0F));
 				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
 				for (int j = 0; j < 1; j++) {
-					float blade = -(new Random().nextFloat() * 1.8f);
+					float blade = -(new Random().nextFloat() * 3.0f);
 					transformMatrix2.translate(new Vec3f(0,blade,-(new Random().nextFloat() * 0.4f)-(blade/4)));
 					entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 						(transformMatrix2.m30 + entitypatch.getOriginal().getX()),
@@ -420,14 +420,14 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 				interpolation += partialScale;
 			}
 			if (container.getDataManager().getDataValue(BASIC_ATTACK)) {
-				int numberOf2 = 28;
+				int numberOf2 = 36;
 				float partialScale2 = 1.0F / (numberOf2 - 1);
 				float interpolation2 = 0.0F;
 				for (int i = 0; i < numberOf2; i++) {
 					transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation2), Armatures.BIPED.toolR);
-					transformMatrix2.translate(new Vec3f(0,0.7F,-1.8F));
+					transformMatrix2.translate(new Vec3f(0,1.2F,-2.0F));
 					OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
-					float blade = -(new Random().nextFloat() * 1.8f);
+					float blade = -(new Random().nextFloat() * 3.0f);
 					transformMatrix2.translate(new Vec3f(0,blade,-(new Random().nextFloat() * 0.4f)-(blade/4)));
 					entitypatch.getOriginal().level().addParticle(ParticleTypes.SMOKE,
 						(transformMatrix2.m30 + entitypatch.getOriginal().getX()),

@@ -1,6 +1,7 @@
 package reascer.wom.skill;
 
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 
 import com.google.common.collect.Lists;
@@ -20,6 +21,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.skill.passive.MeditationSkill;
+import reascer.wom.gameasset.WOMSounds;
 import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
@@ -226,71 +228,28 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 		executer.getSkill(this).getDataManager().setDataSync(COOLDOWN, 40, executer.getOriginal());
 		executer.getSkill(this).getDataManager().setDataSync(ZOOM, true, executer.getOriginal());
 		if (!executer.getOriginal().isCreative()) {
-			float ressource = executer.getSkill(this).getResource();
-			int sweeping_edge = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal());
-			sweeping_edge = 1/((sweeping_edge/3)+1);
-			float consumption = ((6f * (double_cost?2f:1f)) * sweeping_edge);
-			if (ressource - consumption < 0.0f) {
-				consumption = -consumption;
-				consumption += ressource;
-				//System.out.println("c :"+ consumption + " | r :"+ ressource );
-				while (consumption < 0.0f) {
-					SkillConsumeEvent event = new SkillConsumeEvent(executer, this, this.resource, true);
-					executer.getEventListener().triggerEvents(EventType.SKILL_CONSUME_EVENT, event);
-					if (!event.isCanceled()) {
-						event.getResourceType().consumer.consume(this, executer, event.getAmount());
-					}
-					consumption += 6.0f;
+			SkillConsumeEvent event = new SkillConsumeEvent(executer, this, this.resource, true);
+			executer.getEventListener().triggerEvents(EventType.SKILL_CONSUME_EVENT, event);
+			int stack = executer.getSkill(this).getStack();
+			if (!event.isCanceled()) {
+				event.getResourceType().consumer.consume(this, executer, event.getAmount());
+				if (double_cost) {
+					event.getResourceType().consumer.consume(this, executer, event.getAmount());
 				}
-				if (consumption == 0.0f) {
-					this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack() + 1);
+			}
+			int sweeping_edge = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()) + EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.OFF_HAND));
+			if (Math.abs(new Random().nextInt()) % 100 < (100 * (-(1f/(Math.sqrt(sweeping_edge+1)))+1))) {
+				if (double_cost && stack == 1) {
+					
+				} else {
+					this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()+1);
 				}
-				this.setConsumptionSynchronize((ServerPlayerPatch) executer,consumption);
-			} else {
-				this.setConsumptionSynchronize((ServerPlayerPatch) executer,ressource - consumption);				
+				executer.getOriginal().level.playSound(null, executer.getOriginal().getX(),executer.getOriginal().getY(), executer.getOriginal().getZ(),
+		    			WOMSounds.ENDERBLASTER_RELOAD, executer.getOriginal().getSoundSource(), 1.0F, 2.0F);
 			}
 		}
 		executer.getSkill(this).activate();
 	}
-	
-	@Override
-	public boolean canExecute(PlayerPatch<?> executer) {
-		if (executer.isLogicalClient()) {
-			return (executer.getSkill(this) != null ? executer.getSkill(this).getStack() >= 0 : true) || executer.getOriginal().isCreative();
-		} else {
-			ItemStack itemstack = executer.getOriginal().getMainHandItem();
-			boolean double_cost = false;
-			int combo = executer.getSkill(this).getDataManager().getDataValue(COMBO);
-			if (combo == 2 && executer.getSkill(this).getDataManager().getDataValue(COOLDOWN) > 0) {
-				double_cost = true;
-			}
-			float ressource = executer.getSkill(this).getResource();
-			int sweeping_edge = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()) + EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.OFF_HAND));
-			float skill_consumption = ((6f * (double_cost?2f:1f)) * (1f - sweeping_edge/6f));
-			float total_amount_of_ressources = ressource + 6f * executer.getSkill(this).getStack();
-			//System.out.println(total_amount_of_ressources + " | " + consumption + " | r :"+ ressource);
-			boolean Hypervitality = false;
-			if (executer.getSkill(EpicFightSkills.HYPERVITALITY) != null) {
-				float stamina_ressouce = executer.getStamina();
-				if (executer.getSkill(EpicFightSkills.HYPERVITALITY).getResource() == 0) {
-					if (total_amount_of_ressources - skill_consumption < 0) {
-						if (stamina_ressouce > 0) {
-							if (stamina_ressouce + total_amount_of_ressources > skill_consumption) {
-								Hypervitality = true;
-							}
-						} else {
-							if (executer.getSkill(EpicFightSkills.FORBIDDEN_STRENGTH) != null) {
-								Hypervitality = true;
-							}
-							
-						}
-					}
-				}
-			}
-			return (total_amount_of_ressources >= skill_consumption || executer.getOriginal().isCreative() || Hypervitality) && EpicFightCapabilities.getItemStackCapability(itemstack).getInnateSkill(executer, itemstack) == this && executer.getOriginal().getVehicle() == null && (!executer.getSkill(this).isActivated() || this.activateType == ActivateType.TOGGLE);
-		}
-	}
-	
 	@Override
 	public boolean isExecutableState(PlayerPatch<?> executer) {
 		executer.updateEntityState();
@@ -363,26 +322,12 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 					container.getDataManager().setDataSync(SHOOT, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 					if (((container.getResource() >= (6f * (1f - sweeping_edge/6f)) && container.getStack() == 0) || container.getStack() > 0) || container.getExecuter().getOriginal().isCreative() ) {
 						if (!container.getExecuter().getOriginal().isCreative()) {
-							float ressource = container.getExecuter().getSkill(this).getResource();
-							float ressource_after_consumption = ressource - (6f * (1f - sweeping_edge/6f));
-							if (ressource_after_consumption < 0.0f && ressource_after_consumption > -6.0f) {
-								this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()-1);
-								this.setConsumptionSynchronize((ServerPlayerPatch) executer,6.0f + ressource_after_consumption);
-							} else if (ressource_after_consumption == 0.0f){
+							this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()-1);
+							if (Math.abs(new Random().nextInt()) % 100 < (100 * (-(1f/(Math.sqrt(sweeping_edge+1)))+1))) {
 								this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()+1);
-								this.setConsumptionSynchronize((ServerPlayerPatch) executer,ressource_after_consumption);
-							} else if (ressource_after_consumption == -6.0f){
-								this.setConsumptionSynchronize((ServerPlayerPatch) executer,0.0f);
-							} else {
-								this.setConsumptionSynchronize((ServerPlayerPatch) executer,ressource_after_consumption);				
+								container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+						    			WOMSounds.ENDERBLASTER_RELOAD, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 							}
-							/*
-							this.setStackSynchronize((ServerPlayerPatch) container.getExecuter(), container.getExecuter().getSkill(this).getStack()-1);
-							if (container.getExecuter().getSkill(this).getResource() == 0 && EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()) == 0 ) {
-								this.setStackSynchronize((ServerPlayerPatch) container.getExecuter(), container.getExecuter().getSkill(this).getStack()+1);
-							}
-							this.setConsumptionSynchronize((ServerPlayerPatch) container.getExecuter(),container.getExecuter().getSkill(this).getResource() + (1.0F * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal())));			
-							*/
 						}
 						if (container.getExecuter().getOriginal().isVisuallySwimming()) {
 							container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_LAYED, 0);

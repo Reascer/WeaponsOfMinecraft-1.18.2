@@ -44,6 +44,7 @@ import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
 import yesman.epicfight.world.damagesource.StunType;
+import yesman.epicfight.world.effect.EpicFightMobEffects;
 import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 import yesman.epicfight.world.gamerule.EpicFightGamerules;
@@ -131,6 +132,10 @@ public class SpecialAttackAnimation extends AttackAnimation {
 										} else {
 											source.setStunType(StunType.NONE);
 										}
+									} else if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.HOLD && hitHurtableEntityPatch.getOriginal().hasEffect(EpicFightMobEffects.STUN_IMMUNITY.get())) {
+										source.setStunType(StunType.NONE);
+									} else if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.FALL && hitHurtableEntityPatch.getOriginal().hasEffect(EpicFightMobEffects.STUN_IMMUNITY.get())) {
+										source.setStunType(StunType.NONE);
 									} else {
 										source = this.getEpicFightDamageSource(entitypatch, hitten, phase);
 									}
@@ -197,9 +202,11 @@ public class SpecialAttackAnimation extends AttackAnimation {
 									ServerPlayerPatch playerpatch = ((ServerPlayerPatch) entitypatch);
 									playerpatch.getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent(playerpatch, trueEntity, source, attackResult.damage));
 								}
-								
-								hitten.level().playSound(null, hitten.getX(), hitten.getY(), hitten.getZ(), this.getHitSound(entitypatch, phase), hitten.getSoundSource(), 1.0F, 1.0F);
-								this.spawnHitParticle(((ServerLevel) hitten.level()), entitypatch, hitten, phase);
+								if (source.getStunType() == StunType.KNOCKDOWN) {
+									hitHurtableEntityPatch.getOriginal().addEffect(new MobEffectInstance(EpicFightMobEffects.STUN_IMMUNITY.get(), 60, 0,true,false,false));
+								}
+								hitten.level.playSound(null, hitten.getX(), hitten.getY(), hitten.getZ(), this.getHitSound(entitypatch, phase), hitten.getSoundSource(), 1.0F, 1.0F);
+								this.spawnHitParticle(((ServerLevel) hitten.level), entitypatch, hitten, phase);
 								if (hitHurtableEntityPatch != null) {
 									if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).isPresent()) {
 										if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.NONE && !(trueEntity instanceof Player)) {
