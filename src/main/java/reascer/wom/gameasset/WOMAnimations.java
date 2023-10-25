@@ -2719,7 +2719,7 @@ public class WOMAnimations {
 						   TimeStampedEvent.create(0.35F, ReuseableEvents.FAST_SPINING, Side.CLIENT),
 						   TimeStampedEvent.create(0.4F, ReuseableEvents.FAST_SPINING, Side.CLIENT),
 						   TimeStampedEvent.create(0.5F, ReuseableEvents.FAST_SPINING, Side.CLIENT),
-						   TimeStampedEvent.create(0.7F, ReuseableEvents.ENDERBLASTER_RELOAD_BOTH, Side.BOTH));
+						   TimeStampedEvent.create(0.7F, ReuseableEvents.ENDERBLASTER_RELOAD_BOTH, Side.SERVER));
 		
 		STAFF_AUTO_1 = new BasicMultipleAttackAnimation(0.15F, "biped/combat/staff_auto_1", biped,
 				new Phase(0.0F, 0.1F, 0.19F, 0.2F, 0.2F, biped.toolR, null),
