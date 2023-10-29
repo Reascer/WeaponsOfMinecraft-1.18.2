@@ -66,7 +66,7 @@ public class LunarEclipsePassiveSkill extends PassiveSkill {
 		PoseStack poseStack = guiGraphics.pose();
 		poseStack.pushPose();
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
-		RenderSystem.setShaderTexture(0, WOMSkills.LUNAR_ECHO.getSkillTexture());
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		guiGraphics.blit(WOMSkills.LUNAR_ECHO.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEchoSkill.TIMER) > 0) {
 			guiGraphics.drawString(gui.font, String.valueOf((container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEchoSkill.TIMER)/20)+1), x+7, y+13, 16777215,true);

@@ -3559,7 +3559,7 @@ public class WOMAnimations {
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 1.70F))
 				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
-							entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), WOMSounds.ANTITHEUS_BLACKKHOLE_CHARGEUP, SoundSource.PLAYERS, 2.0F, 1.0F);
+							entitypatch.getOriginal().level().playSound(null, entitypatch.getOriginal(), WOMSounds.ANTITHEUS_BLACKKHOLE_CHARGEUP.get(), SoundSource.PLAYERS, 2.0F, 1.0F);
 							if (entitypatch instanceof ServerPlayerPatch) {
 								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, true, (ServerPlayer)entitypatch.getOriginal());
 							}
@@ -3612,7 +3612,7 @@ public class WOMAnimations {
 								
 							}
 						
-							((ServerLevel) entitypatch.getOriginal().level).sendParticles( WOMParticles.ANTITHEUS_BLACKHOLE_START.get(),
+							((ServerLevel) entitypatch.getOriginal().level()).sendParticles( WOMParticles.ANTITHEUS_BLACKHOLE_START.get(),
 									transformMatrix.m30 + entitypatch.getOriginal().getX(), 
 									transformMatrix.m31 + entitypatch.getOriginal().getY(), 
 									transformMatrix.m32 + entitypatch.getOriginal().getZ(), 
@@ -3986,7 +3986,7 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
 				.addEvents(TimeStampedEvent.create(0.10F, (entitypatch, self, params) -> {
 					Entity entity = entitypatch.getOriginal();
-					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
+					entitypatch.getOriginal().level().addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				},Side.CLIENT),
 						TimeStampedEvent.create(0.50F, (entitypatch, self, params) -> {
 							if (entitypatch instanceof ServerPlayerPatch) {
@@ -4005,7 +4005,7 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
 				.addEvents(TimeStampedEvent.create(0.10F, (entitypatch, self, params) -> {
 						Entity entity = entitypatch.getOriginal();
-						entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
+						entitypatch.getOriginal().level().addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 					},Side.CLIENT),
 					TimeStampedEvent.create(0.50F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof ServerPlayerPatch) {
@@ -4044,7 +4044,7 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.4F)
 				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 					Entity entity = entitypatch.getOriginal();
-					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
+					entitypatch.getOriginal().level().addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				},Side.CLIENT));
 		
 		MOONLESS_AUTO_2_VERSO = new BasicMultipleAttackAnimation(0.25F, "biped/combat/moonless_auto_2_verso", biped,

@@ -215,6 +215,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 		poseStack.pushPose();
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, WOMSkills.TRUE_BERSERK.getSkillTexture());
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		guiGraphics.blit(WOMSkills.TRUE_BERSERK.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		int charge = 0;
 		if (container.getDataManager().getDataValue(SAVED_CHARGE) > 0) {

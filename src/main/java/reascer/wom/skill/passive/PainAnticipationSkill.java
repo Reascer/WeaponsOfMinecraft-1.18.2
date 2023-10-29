@@ -52,7 +52,7 @@ public class PainAnticipationSkill extends PassiveSkill {
 			if (container.getDataManager().getDataValue(TIMER) == 0 || container.getDataManager().getDataValue(ACTIVE)) {
                 event.getDamageSource().setStunType(StunType.NONE);
                 event.setAmount(event.getAmount()*damage_reduction);
-                event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+                event.getPlayerPatch().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 		    			SoundEvents.LARGE_AMETHYST_BUD_BREAK, container.getExecuter().getOriginal().getSoundSource(), 2.0F, 1.0F);
 				((ServerLevel) container.getExecuter().getOriginal().level()).sendParticles( ParticleTypes.SMOKE, 
 						container.getExecuter().getOriginal().getX() - 0.2D, 
@@ -105,11 +105,11 @@ public class PainAnticipationSkill extends PassiveSkill {
 			if (container.getDataManager().getDataValue(TIMER) > 0) {
 				RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.5F);
 			} else {
-
 				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 			}
 			guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 			if (container.getDataManager().getDataValue(TIMER) > 0) {
+				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 				guiGraphics.drawString(gui.font, String.valueOf((container.getDataManager().getDataValue(TIMER)/20)+1), x+7, y+13, 16777215,true);
 			}
 		}

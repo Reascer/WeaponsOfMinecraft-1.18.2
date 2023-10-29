@@ -6,7 +6,7 @@ import java.util.UUID;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -17,7 +17,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.skill.weaponinnate.DemonicAscensionSkill;
-import reascer.wom.skill.weaponinnate.SoulSnatchSkill;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
@@ -27,8 +26,8 @@ import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
+import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.passive.PassiveSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
@@ -67,7 +66,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 					int sweping = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal());
 					if (chance < ( (20f + (sweping*10f) ) * (container.getDataManager().getDataValue(BLINK) ? 2F : 1F) ) ) {
 						if (event.getTarget().hasEffect(MobEffects.WITHER)) {
-							int power = event.getTarget().getEffect(MobEffects.WITHER).getAmplifier();
+							int power = Math.min(event.getTarget().getEffect(MobEffects.WITHER).getAmplifier(), 4) ;
 							event.getTarget().removeEffect(MobEffects.WITHER);
 							event.getTarget().addEffect(new MobEffectInstance(MobEffects.WITHER, (6 + (2 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))) *20, ++power, false, true));
 						} else {
@@ -141,12 +140,14 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack poseStack, float x, float y) {
+	public void drawOnGui(BattleModeGui gui, SkillContainer container, GuiGraphics guiGraphics, float x, float y) {
+		PoseStack poseStack = guiGraphics.pose();
 		poseStack.pushPose();
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, WOMSkills.DEMONIC_ASCENSION.getSkillTexture());
-		GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
-		gui.font.drawShadow(poseStack, String.valueOf((container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(DemonicAscensionSkill.SHOOT_COOLDOWN)/20)+1), x+7, y+13, 16777215);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		guiGraphics.blit( WOMSkills.DEMONIC_ASCENSION.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
+		guiGraphics.drawString(gui.font,String.valueOf((container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(DemonicAscensionSkill.SHOOT_COOLDOWN)/20)+1), x+7, y+13, 16777215, true);
 		poseStack.popPose();
 	}
 	

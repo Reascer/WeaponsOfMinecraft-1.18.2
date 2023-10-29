@@ -41,6 +41,7 @@ import yesman.epicfight.config.ConfigurationIngame;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.HurtableEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
+import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
 import yesman.epicfight.world.damagesource.StunType;
@@ -239,7 +240,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 													Vec3 vec3 = hitten.getDeltaMovement();
 													Vec3 vec31 = (new Vec3(d1, 0.0D, d0)).normalize().scale(power);
 													if (!(trueEntity instanceof Player && entitypatch instanceof PlayerPatch)) {
-														hitten.setDeltaMovement(vec3.x / 2.0D - vec31.x, hitten.isOnGround() ? Math.min(0.4D, vec3.y / 2.0D) : vec3.y, vec3.z / 2.0D - vec31.z);
+														hitten.setDeltaMovement(vec3.x / 2.0D - vec31.x, hitten.onGround() ? Math.min(0.4D, vec3.y / 2.0D) : vec3.y, vec3.z / 2.0D - vec31.z);
 													}
 												}
 											}

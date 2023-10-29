@@ -60,7 +60,7 @@ public class CancelableDodgeAnimation extends ActionAnimation {
 			.addState(EntityState.INACTION, true)
 			.newTimePair(0.0F, Float.MAX_VALUE)
 			.addState(EntityState.ATTACK_RESULT, (damagesource) -> {
-				if (damagesource instanceof EntityDamageSource && !damagesource.isExplosion() && !damagesource.isMagic() && !damagesource.isBypassArmor() && !damagesource.isBypassInvul()) {
+				if (damagesource.getEntity() != null && !damagesource.is(DamageTypeTags.IS_EXPLOSION) && !damagesource.is(DamageTypes.MAGIC) && !damagesource.is(DamageTypeTags.BYPASSES_ARMOR) && !damagesource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
 					return AttackResult.ResultType.MISSED;
 				}
 				
