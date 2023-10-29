@@ -192,6 +192,8 @@ public class WOMAnimations {
 	public static StaticAnimation KATANA_AUTO_3;
 	public static StaticAnimation KATANA_DASH;
 	public static StaticAnimation KATANA_IDLE;
+	public static StaticAnimation KATANA_WALK;
+	public static StaticAnimation KATANA_RUN;
 	public static StaticAnimation KATANA_GUARD;
 	public static StaticAnimation KATANA_GUARD_HIT;
 	public static StaticAnimation KATANA_SHEATHED_AUTO_1;
@@ -1411,6 +1413,9 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.4F);
 		
 		KATANA_IDLE = new StaticAnimation(0.2f,true, "biped/living/katana_idle", biped);
+		KATANA_WALK = new MovementAnimation(0.1f,true, "biped/living/katana_walk", biped);
+		KATANA_RUN = new MovementAnimation(0.1f,true, "biped/living/katana_run", biped);
+		
 		KATANA_GUARD = new StaticAnimation(0.05F, true, "biped/skill/katana_guard", biped);
 		KATANA_GUARD_HIT = new GuardAnimation(0.05F, 0.5F, "biped/skill/katana_guard_hit", biped)
 			.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, self, params) -> {
@@ -3525,8 +3530,12 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 1.70F))
-				.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, self, params) -> {
+				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 							entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), WOMSounds.ANTITHEUS_BLACKKHOLE_CHARGEUP, SoundSource.PLAYERS, 2.0F, 1.0F);
+							if (entitypatch instanceof ServerPlayerPatch) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, false, (ServerPlayer)entitypatch.getOriginal());
+							}
+							
 						}, Side.SERVER),
 						TimeStampedEvent.create(0.05F, (entitypatch, self, params) -> {
 							OpenMatrix4f transformMatrix;
@@ -3565,12 +3574,16 @@ public class WOMAnimations {
 							OpenMatrix4f CORRECTION = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yRotO + 180F), new Vec3f(0, 1, 0));
 							CORRECTION.translate(new Vec3f(0.0f, 0.0F, -1.5F));
 							OpenMatrix4f.mul(CORRECTION,transformMatrix,transformMatrix);
-							
-							SkillContainer skill = ((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE);
-							skill.getDataManager().setDataSync(DemonicAscensionSkill.BLACKHOLE_X,(float) (transformMatrix.m30 + entitypatch.getOriginal().getX()), (ServerPlayer)entitypatch.getOriginal());
-							skill.getDataManager().setDataSync(DemonicAscensionSkill.BLACKHOLE_Y,(float) (transformMatrix.m31 + entitypatch.getOriginal().getY()), (ServerPlayer)entitypatch.getOriginal());
-							skill.getDataManager().setDataSync(DemonicAscensionSkill.BLACKHOLE_Z,(float) (transformMatrix.m32 + entitypatch.getOriginal().getZ()), (ServerPlayer)entitypatch.getOriginal());
-							
+							if (entitypatch instanceof ServerPlayerPatch) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, false, (ServerPlayer)entitypatch.getOriginal());
+
+								SkillContainer skill = ((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE);
+								skill.getDataManager().setDataSync(DemonicAscensionSkill.BLACKHOLE_X,(float) (transformMatrix.m30 + entitypatch.getOriginal().getX()), (ServerPlayer)entitypatch.getOriginal());
+								skill.getDataManager().setDataSync(DemonicAscensionSkill.BLACKHOLE_Y,(float) (transformMatrix.m31 + entitypatch.getOriginal().getY()), (ServerPlayer)entitypatch.getOriginal());
+								skill.getDataManager().setDataSync(DemonicAscensionSkill.BLACKHOLE_Z,(float) (transformMatrix.m32 + entitypatch.getOriginal().getZ()), (ServerPlayer)entitypatch.getOriginal());
+								
+							}
+						
 							((ServerLevel) entitypatch.getOriginal().level).sendParticles( WOMParticles.ANTITHEUS_BLACKHOLE_START.get(),
 									transformMatrix.m30 + entitypatch.getOriginal().getX(), 
 									transformMatrix.m31 + entitypatch.getOriginal().getY(), 
@@ -3582,6 +3595,7 @@ public class WOMAnimations {
 									transformMatrix.m31 + entitypatch.getOriginal().getY(), 
 									transformMatrix.m32 + entitypatch.getOriginal().getZ(), 
 									48, 0.0D, 0.0D, 0.0D, 0.5D);
+							
 						}, Side.SERVER),TimeStampedEvent.create(1.45F, (entitypatch, self, params) -> {
 							OpenMatrix4f transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(1.0f), Armatures.BIPED.handR);
 							OpenMatrix4f CORRECTION = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yRotO + 180F), new Vec3f(0, 1, 0));
@@ -3962,15 +3976,15 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLADE)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
 				.addEvents(TimeStampedEvent.create(0.10F, (entitypatch, self, params) -> {
-					Entity entity = entitypatch.getOriginal();
-					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
-				},Side.CLIENT),
-						TimeStampedEvent.create(0.50F, (entitypatch, self, params) -> {
-							if (entitypatch instanceof ServerPlayerPatch) {
-								((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(LunarEclipsePassiveSkill.VERSO, false,(ServerPlayer)entitypatch.getOriginal());
-								((ServerPlayerPatch) entitypatch).modifyLivingMotionByCurrentItem();
-							}
-						},Side.SERVER));
+						Entity entity = entitypatch.getOriginal();
+						entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
+					},Side.CLIENT),
+					TimeStampedEvent.create(0.50F, (entitypatch, self, params) -> {
+						if (entitypatch instanceof ServerPlayerPatch) {
+							((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(LunarEclipsePassiveSkill.VERSO, false,(ServerPlayer)entitypatch.getOriginal());
+							((ServerPlayerPatch) entitypatch).modifyLivingMotionByCurrentItem();
+						}
+					},Side.SERVER));
 		
 		MOONLESS_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_1", biped,
 				new Phase(0.0F, 0.25F, 0.4F, 0.45F, Float.MAX_VALUE, biped.toolR, null))
@@ -4085,7 +4099,7 @@ public class WOMAnimations {
 				MOONLESS_CRESCENT = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_crescent", biped,
 						new Phase(0.0F, 0.40F, 0.50F, 0.70F, Float.MAX_VALUE, biped.toolR, null))
 						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2.0F))
-						.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.TARGET_LOST_HEALTH.create(0.10f)))
+						.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.TARGET_LOST_HEALTH.create(0.20f)))
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.5F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 						.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE))

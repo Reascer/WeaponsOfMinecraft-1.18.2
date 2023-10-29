@@ -1,3 +1,4 @@
+
 package reascer.wom.skill.weaponinnate;
 
 import java.util.List;
@@ -72,7 +73,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 	private static final SkillDataKey<Boolean> ZOOM = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	private static final SkillDataKey<Integer> ZOOM_COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	private static final SkillDataKey<Boolean> SHOOT = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	private static final SkillDataKey<Integer> SHOOT_COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
+	public static final SkillDataKey<Integer> SHOOT_COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	
 	public static final SkillDataKey<Integer> DARKNESS_TARGET = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	public static final SkillDataKey<Float> DARKNESS_TARGET_X = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
@@ -679,7 +680,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 				    			SoundEvents.WITHER_BREAK_BLOCK, container.getExecuter().getOriginal().getSoundSource(), 1.5F, 2.0F);
 						float WitherCatharsis = 0;
 						if (target.hasEffect(MobEffects.WITHER)) {
-							damage.setImpact(2f);
+							damage.setImpact(6f);
 							damage.addTag(SourceTags.WEAPON_INNATE);
 							int wither_lvl = target.getEffect(MobEffects.WITHER).getAmplifier()+1;
 							WitherCatharsis = (float) ((target.getEffect(MobEffects.WITHER).getDuration()/20) * ( wither_lvl == 0 ? 0.5f : wither_lvl));
@@ -703,7 +704,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 							float ressource = container.getExecuter().getSkill(this).getResource();
 							float ressource_after_consumption = ressource + (33.3f * wither_lvl);
 							this.setConsumptionSynchronize((ServerPlayerPatch) executer,ressource_after_consumption);	
-							container.getExecuter().getOriginal().heal(WitherCatharsis*0.4f);
+							container.getExecuter().getOriginal().heal(WitherCatharsis*0.1f);
 							target.removeEffect(MobEffects.WITHER);
 						}
 						float dpx = container.getDataManager().getDataValue(DARKNESS_PORTAL_X);
@@ -712,7 +713,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 						container.getDataManager().setDataSync(DARKNESS_TARGET_REAPED, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 						container.getDataManager().setDataSync(DARKNESS_ACTIVATE_PORTAL, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 						container.getDataManager().setDataSync(DARKNESS_PORTAL_TIMER, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-						if (target.hurt(damage,1 + ((target.getMaxHealth() - target.getHealth()) * 0.1F) + (WitherCatharsis * 0.6f))) {
+						if (target.hurt(damage,1 + ((target.getMaxHealth() - target.getHealth()) * 0.1F) + (WitherCatharsis * 0.9f))) {
 							container.getExecuter().getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent((ServerPlayerPatch)container.getExecuter(), target, damage, 1 +((target.getMaxHealth() - target.getHealth()) * 0.1F) + (WitherCatharsis * 0.8f)));
 							if (target.isAlive()) {
 								target.teleportTo(dpx,(target instanceof Player ? 0:dpy - 100), dpz);
@@ -756,7 +757,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 								container.getDataManager().setDataSync(DARKNESS_PORTAL_Y, dpy, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 								container.getDataManager().setDataSync(DARKNESS_PORTAL_Z, dpz, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 								container.getDataManager().setDataSync(DARKNESS_PORTAL_ANGLE, -(float) Math.toRadians(container.getExecuter().getOriginal().getViewYRot(1) + 180F), ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-								container.getDataManager().setDataSync(SHOOT_COOLDOWN, 10, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+								container.getDataManager().setDataSync(SHOOT_COOLDOWN, 6*20, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 								container.getExecuter().playAnimationSynchronized(WOMAnimations.ANTITHEUS_SHOOT, 0);
 							}
 						}

@@ -194,9 +194,9 @@ public class WOMWeaponCapabilityPresets {
 			})
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, WOMAnimations.KATANA_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.KNEEL, WOMAnimations.KATANA_IDLE)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, WOMAnimations.KATANA_IDLE)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, WOMAnimations.KATANA_IDLE)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, Animations.BIPED_RUN_UCHIGATANA)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, WOMAnimations.KATANA_WALK)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, WOMAnimations.KATANA_RUN)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, WOMAnimations.KATANA_RUN)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SNEAK, WOMAnimations.KATANA_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, WOMAnimations.KATANA_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.FLOAT, WOMAnimations.KATANA_IDLE)
@@ -345,9 +345,6 @@ public class WOMWeaponCapabilityPresets {
 				.innateSkill(Styles.OCHS,(itemstack) -> WOMSkills.LUNAR_ECHO)
 				.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
 				.passiveSkill(WOMSkills.LUNAR_ECLIPSE_PASSIVE)
-				.comboCancel((style) -> {
-					return false;
-				})
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, WOMAnimations.MOONLESS_IDLE)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, WOMAnimations.MOONLESS_WALK)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, WOMAnimations.MOONLESS_RUN)

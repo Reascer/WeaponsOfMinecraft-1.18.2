@@ -229,13 +229,15 @@ public class AntitheusShootAttackAnimation extends BasicMultipleAttackAnimation 
 					      			0.1f);
 							for (Entity entity : list2) {
 								HurtableEntityPatch<?> hitHurtableEntityPatch = EpicFightCapabilities.getEntityPatch(entity, HurtableEntityPatch.class);
-								if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).isPresent()) {
-									if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.NONE) {
-										float stunTime = (float) (0.83f * (1.0F - ((LivingEntity) entity).getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
-										if (hitHurtableEntityPatch.getOriginal().isAlive()) {
-											hitHurtableEntityPatch.setStunReductionOnHit(StunType.LONG);
-											hitHurtableEntityPatch.applyStun(StunType.LONG, stunTime);
-											hitHurtableEntityPatch.knockBackEntity(entitypatch.getOriginal().getPosition(1),3 * 0.25f);
+								if (hitHurtableEntityPatch != null) {
+									if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).isPresent()) {
+										if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.NONE) {
+											float stunTime = (float) (0.83f * (1.0F - ((LivingEntity) entity).getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
+											if (hitHurtableEntityPatch.getOriginal().isAlive()) {
+												hitHurtableEntityPatch.setStunReductionOnHit(StunType.LONG);
+												hitHurtableEntityPatch.applyStun(StunType.LONG, stunTime);
+												hitHurtableEntityPatch.knockBackEntity(entitypatch.getOriginal().getPosition(1),3 * 0.25f);
+											}
 										}
 									}
 								}
