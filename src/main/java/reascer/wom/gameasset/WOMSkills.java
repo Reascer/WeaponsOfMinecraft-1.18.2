@@ -40,6 +40,21 @@ import reascer.wom.skill.passive.MeditationSkill;
 import reascer.wom.skill.passive.MindSetSkill;
 import reascer.wom.skill.passive.PainAnticipationSkill;
 import reascer.wom.skill.passive.VampirizeSkill;
+import reascer.wom.skill.weaponinnate.AgonyPlungeSkill;
+import reascer.wom.skill.weaponinnate.CharybdisSkill;
+import reascer.wom.skill.weaponinnate.DemonicAscensionSkill;
+import reascer.wom.skill.weaponinnate.EnderBlastSkill;
+import reascer.wom.skill.weaponinnate.EnderFusionSkill;
+import reascer.wom.skill.weaponinnate.LunarEchoSkill;
+import reascer.wom.skill.weaponinnate.RegierungSkill;
+import reascer.wom.skill.weaponinnate.SakuraStateSkill;
+import reascer.wom.skill.weaponinnate.SoulSnatchSkill;
+import reascer.wom.skill.weaponinnate.TrueBerserkSkill;
+import reascer.wom.skill.weaponpassive.DemonMarkPassiveSkill;
+import reascer.wom.skill.weaponpassive.LunarEclipsePassiveSkill;
+import reascer.wom.skill.weaponpassive.RuinePassive;
+import reascer.wom.skill.weaponpassive.SatsujinPassive;
+import reascer.wom.skill.weaponpassive.TormentPassiveSkill;
 import reascer.wom.world.damagesources.WOMExtraDamageInstance;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
 import yesman.epicfight.api.data.reloader.SkillManager;
@@ -96,7 +111,7 @@ public class WOMSkills {
 	public static Skill ARROW_TENACITY;
 	public static Skill COUNTER_ATTACK;
 	public static Skill PAIN_ANTICIPATION;
-	public static Skill PAIN_RETRIBUTION;
+	public static Skill LATENT_RETRIBUTION;
 	public static Skill VAMPIRIZE;
 	public static Skill CRITICAL_KNOWLEDGE;
 	public static Skill HEART_SHIELD;
@@ -237,7 +252,7 @@ public class WOMSkills {
 				WeaponsOfMinecraft.MODID,"pain_anticipation");
 
 		SkillManager.register(LatentRetributionSkill::new, PassiveSkill.createPassiveBuilder(),
-				WeaponsOfMinecraft.MODID,"pain_retribution");
+				WeaponsOfMinecraft.MODID,"latent_retribution");
 
 		SkillManager.register(VampirizeSkill::new, PassiveSkill.createPassiveBuilder(),
 				WeaponsOfMinecraft.MODID,"vampirize");
@@ -276,7 +291,7 @@ public class WOMSkills {
 		
 		ARROW_TENACITY = onBuild.build(WeaponsOfMinecraft.MODID, "arrow_tenacity");
 		PAIN_ANTICIPATION = onBuild.build(WeaponsOfMinecraft.MODID, "pain_anticipation");
-		PAIN_RETRIBUTION = onBuild.build(WeaponsOfMinecraft.MODID, "pain_retribution");
+		LATENT_RETRIBUTION = onBuild.build(WeaponsOfMinecraft.MODID, "latent_retribution");
 		VAMPIRIZE = onBuild.build(WeaponsOfMinecraft.MODID, "vampirize");
 		CRITICAL_KNOWLEDGE = onBuild.build(WeaponsOfMinecraft.MODID, "critical_knowledge");
 		HEART_SHIELD = onBuild.build(WeaponsOfMinecraft.MODID, "heart_shield");

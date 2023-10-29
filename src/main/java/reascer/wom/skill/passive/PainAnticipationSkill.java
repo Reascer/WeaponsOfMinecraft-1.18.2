@@ -33,10 +33,13 @@ public class PainAnticipationSkill extends PassiveSkill {
 	protected int maxtimer;
 	protected int maxduree;
 	
+	protected float damage_reduction;
+	
 	public PainAnticipationSkill(Builder<? extends Skill> builder) {
 		super(builder);
 		maxtimer = 40;
 		maxduree = 40;
+		damage_reduction = 0.6f;
 	}
 	
 	@Override
@@ -48,8 +51,8 @@ public class PainAnticipationSkill extends PassiveSkill {
 		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_POST, EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(TIMER) == 0 || container.getDataManager().getDataValue(ACTIVE)) {
                 event.getDamageSource().setStunType(StunType.NONE);
-                event.setAmount(event.getAmount()*0.6f);
-                event.getPlayerPatch().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+                event.setAmount(event.getAmount()*damage_reduction);
+                event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 		    			SoundEvents.LARGE_AMETHYST_BUD_BREAK, container.getExecuter().getOriginal().getSoundSource(), 2.0F, 1.0F);
 				((ServerLevel) container.getExecuter().getOriginal().level()).sendParticles( ParticleTypes.SMOKE, 
 						container.getExecuter().getOriginal().getX() - 0.2D, 

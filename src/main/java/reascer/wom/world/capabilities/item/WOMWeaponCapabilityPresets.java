@@ -14,8 +14,9 @@ import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMColliders;
 import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.main.WeaponsOfMinecraft;
-import reascer.wom.skill.SatsujinPassive;
-import reascer.wom.skill.SoulSnatchSkill;
+import reascer.wom.skill.weaponinnate.SoulSnatchSkill;
+import reascer.wom.skill.weaponpassive.LunarEclipsePassiveSkill;
+import reascer.wom.skill.weaponpassive.SatsujinPassive;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.forgeevent.WeaponCapabilityPresetRegistryEvent;
@@ -23,6 +24,8 @@ import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.particle.EpicFightParticles;
+import yesman.epicfight.skill.BattojutsuPassive;
+import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -190,9 +193,9 @@ public class WOMWeaponCapabilityPresets {
 			})
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, WOMAnimations.KATANA_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.KNEEL, WOMAnimations.KATANA_IDLE)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, WOMAnimations.KATANA_IDLE)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, WOMAnimations.KATANA_IDLE)
-			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, Animations.BIPED_RUN_UCHIGATANA)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, WOMAnimations.KATANA_WALK)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, WOMAnimations.KATANA_RUN)
+			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, WOMAnimations.KATANA_RUN)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SNEAK, WOMAnimations.KATANA_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, WOMAnimations.KATANA_IDLE)
 			.livingMotionModifier(Styles.TWO_HAND, LivingMotions.FLOAT, WOMAnimations.KATANA_IDLE)
@@ -325,23 +328,34 @@ public class WOMWeaponCapabilityPresets {
 	public static final Function<Item, CapabilityItem.Builder> MOONLESS = (item) -> {
 		CapabilityItem.Builder builder = WeaponCapability.builder()
 				.category(WeaponCategories.TACHI)
-				.styleProvider((playerpatch) -> Styles.TWO_HAND)
+				.styleProvider((entitypatch) -> {
+					if (entitypatch instanceof PlayerPatch<?> playerpatch && (playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().hasData(LunarEclipsePassiveSkill.VERSO) &&
+								playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(LunarEclipsePassiveSkill.VERSO))) {
+							return Styles.OCHS;
+					}
+					return Styles.TWO_HAND;
+				})
 				.collider(WOMColliders.MOONLESS)
 				.hitSound(EpicFightSounds.BLADE_HIT.get())
 				.canBePlacedOffhand(false)
-				.newStyleCombo(Styles.TWO_HAND, WOMAnimations.MOONLESS_AUTO_1, WOMAnimations.MOONLESS_AUTO_2, WOMAnimations.MOONLESS_AUTO_3, WOMAnimations.MOONLESS_REVERSED_BYPASS, WOMAnimations.MOONLESS_CRESCENT)
-				.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
+				.newStyleCombo(Styles.TWO_HAND, WOMAnimations.MOONLESS_AUTO_1, WOMAnimations.MOONLESS_AUTO_2, WOMAnimations.MOONLESS_REVERSED_BYPASS, WOMAnimations.MOONLESS_CRESCENT)
 				.innateSkill(Styles.TWO_HAND,(itemstack) -> WOMSkills.LUNAR_ECHO)
+				.newStyleCombo(Styles.OCHS, WOMAnimations.MOONLESS_AUTO_1_VERSO, WOMAnimations.MOONLESS_AUTO_2_VERSO, WOMAnimations.MOONLESS_BYPASS, WOMAnimations.MOONLESS_FULLMOON)
+				.innateSkill(Styles.OCHS,(itemstack) -> WOMSkills.LUNAR_ECHO)
+				.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
 				.passiveSkill(WOMSkills.LUNAR_ECLIPSE_PASSIVE)
-				.comboCancel((style) -> {
-					return false;
-				})
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, WOMAnimations.MOONLESS_IDLE)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, WOMAnimations.MOONLESS_WALK)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, WOMAnimations.MOONLESS_RUN)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.RUN, WOMAnimations.MOONLESS_RUN)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.SWIM, Animations.BIPED_HOLD_SPEAR)
-				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, WOMAnimations.MOONLESS_GUARD);
+				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.BLOCK, WOMAnimations.MOONLESS_GUARD)
+				.livingMotionModifier(Styles.OCHS, LivingMotions.IDLE, WOMAnimations.MOONLESS_IDLE)
+				.livingMotionModifier(Styles.OCHS, LivingMotions.WALK, WOMAnimations.MOONLESS_WALK)
+				.livingMotionModifier(Styles.OCHS, LivingMotions.CHASE, WOMAnimations.MOONLESS_RUN)
+				.livingMotionModifier(Styles.OCHS, LivingMotions.RUN, WOMAnimations.MOONLESS_RUN)
+				.livingMotionModifier(Styles.OCHS, LivingMotions.SWIM, Animations.BIPED_HOLD_SPEAR)
+				.livingMotionModifier(Styles.OCHS, LivingMotions.BLOCK, WOMAnimations.MOONLESS_GUARD);
 		return builder;
 	};
 	

@@ -13,6 +13,7 @@ public class LatentRetributionSkill extends PainAnticipationSkill {
 		super(builder);
 		maxtimer = 80;
 		maxduree = 80;
+		damage_reduction = 0;
 	}
 	
 	@Override

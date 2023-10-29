@@ -109,7 +109,7 @@ public class WOMLootDropTables {
 				.add(LootItem.lootTableItem(EpicFightItems.SKILLBOOK.get()).apply(SetSkillFunction.builder(
 						"wom:critical_knowledge",
 						"wom:adrenaline",
-						"wom:pain_retribution",
+						"wom:latent_retribution",
 						"wom:bull_charge",
 						"wom:precise_roll"
 				))
@@ -117,7 +117,7 @@ public class WOMLootDropTables {
 				LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).when(LootItemRandomChanceCondition.randomChance(0.025F * dropChanceModifier))
 				.add(LootItem.lootTableItem(EpicFightItems.SKILLBOOK.get()).apply(SetSkillFunction.builder(
 						"wom:adrenaline",
-						"wom:pain_retribution",
+						"wom:latent_retribution",
 						"wom:arrow_tenacity",
 						"wom:precise_roll"
 				))
@@ -141,7 +141,7 @@ public class WOMLootDropTables {
 				.add(LootItem.lootTableItem(EpicFightItems.SKILLBOOK.get()).apply(SetSkillFunction.builder(
 						"wom:critical_knowledge",
 						"wom:vampirize",
-						"wom:pain_retribution",
+						"wom:latent_retribution",
 						"wom:vengeful_parry"
 				))
 	    	)).add(EntityType.ZOMBIFIED_PIGLIN, 
@@ -156,7 +156,7 @@ public class WOMLootDropTables {
 				LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F)).when(LootItemRandomChanceCondition.randomChance(0.025F * dropChanceModifier))
 				.add(LootItem.lootTableItem(EpicFightItems.SKILLBOOK.get()).apply(SetSkillFunction.builder(
 						1.0F, "wom:critical_knowledge",
-						1.0F, "wom:pain_retribution",
+						1.0F, "wom:latent_retribution",
 						1.0F, "wom:vampirize",
 						1.0F, "wom:dodge_master",
 						1.0F, "wom:counter_attack",
