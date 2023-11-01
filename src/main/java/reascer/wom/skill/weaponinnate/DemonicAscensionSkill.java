@@ -653,7 +653,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 				container.getExecuter().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 				container.getDataManager().setDataSync(SHOOT, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				if (container.getDataManager().getDataValue(ACTIVE)) {
-					if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) == 0 && container.getDataManager().getDataValue(TIMER) >= 80*20 || container.getExecuter().getOriginal().isCreative()) {
+					if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) == 0 && (container.getDataManager().getDataValue(TIMER) >= 80*20 || container.getExecuter().getOriginal().isCreative())) {
 						if (!container.getExecuter().getOriginal().isCreative()) {
 							container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER) - 80*20, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 						}
