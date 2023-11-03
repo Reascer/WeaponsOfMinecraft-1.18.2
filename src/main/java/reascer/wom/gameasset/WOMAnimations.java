@@ -18,6 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -590,8 +591,10 @@ public class WOMAnimations {
 						TimeStampedEvent.create(0.35F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT),
 						TimeStampedEvent.create(1.3F, ReuseableEvents.AGONY_PLUNGE_GROUNDTHRUST, Side.CLIENT),
 						TimeStampedEvent.create(1.45F, (entitypatch, self, params) -> {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.PLUNGING, true,(ServerPlayer)entitypatch.getOriginal());
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.STACK, 0,(ServerPlayer)entitypatch.getOriginal());
+							if (entitypatch instanceof PlayerPatch) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.PLUNGING, true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.STACK, 0,(ServerPlayer)entitypatch.getOriginal());
+							}
 						}, Side.SERVER),
 						TimeStampedEvent.create(1.55F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT));
 		
@@ -4878,7 +4881,7 @@ public class WOMAnimations {
 		
 		private static final AnimationEvent.AnimationEventConsumer ENDER_STEP = (entitypatch, self, params) -> {
 			if (!entitypatch.isLogicalClient()) {
-				ServerPlayer entity = (ServerPlayer) entitypatch.getOriginal();
+				Entity entity = entitypatch.getOriginal();
 				((ServerLevel) entity.level).sendParticles(ParticleTypes.REVERSE_PORTAL,
 						entity.xo, 
 						entity.yo + 1, 
@@ -4921,7 +4924,7 @@ public class WOMAnimations {
 								newY,
 								newZ);
 						entity.setDeltaMovement(target.getDeltaMovement());
-						entitypatch.rotateTo(target, 10, true);
+						entity.rotate(Rotation.CLOCKWISE_180);
 					}
 				}
 				((ServerLevel) entity.level).sendParticles(ParticleTypes.REVERSE_PORTAL,
@@ -4987,7 +4990,7 @@ public class WOMAnimations {
 		
 		private static final AnimationEvent.AnimationEventConsumer SHADOW_STEP_ENTER = (entitypatch, self, params) -> {
 			if (!entitypatch.isLogicalClient()) {
-				ServerPlayer entity = (ServerPlayer) entitypatch.getOriginal();
+				Entity entity = (Entity) entitypatch.getOriginal();
 				((ServerLevel) entity.level).sendParticles(ParticleTypes.LARGE_SMOKE,
 						entity.xo, 
 						entity.yo + 1, 
@@ -5007,16 +5010,16 @@ public class WOMAnimations {
 		
 		private static final AnimationEvent.AnimationEventConsumer SHADOW_STEP = (entitypatch, self, params) -> {
 			if (!entitypatch.isLogicalClient()) {
-				ServerPlayer entity = (ServerPlayer) entitypatch.getOriginal();
+				Entity entity = (Entity) entitypatch.getOriginal();
 				((ServerLevel) entity.level).sendParticles(ParticleTypes.SMOKE,
-						entity.xo, 
-						entity.yo + 1, 
-						entity.zo,
-						10,
-						0.45,
-					    0.45,
-						0.45,
-						0.05);
+					entity.xo, 
+					entity.yo + 1, 
+					entity.zo,
+					10,
+					0.45,
+				    0.45,
+					0.45,
+					0.05);
 			}
 		};
 		
