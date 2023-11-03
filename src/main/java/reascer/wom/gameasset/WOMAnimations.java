@@ -1381,7 +1381,7 @@ public class WOMAnimations {
 						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
 						entitypatch.updateMotion(true);
 					}
-					entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
+					entitypatch.playSound(EpicFightSounds.SWORD_IN.get(), 0, 0);
 				}, Side.SERVER));
 		
 		KATANA_SHEATHE = new StaticAnimation(0.1f,false, "biped/living/katana_sheathe", biped)
@@ -3533,7 +3533,7 @@ public class WOMAnimations {
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 1.70F))
 				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
-							entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), WOMSounds.ANTITHEUS_BLACKKHOLE_CHARGEUP, SoundSource.PLAYERS, 2.0F, 1.0F);
+							entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), WOMSounds.ANTITHEUS_BLACKKHOLE_CHARGEUP.get(), SoundSource.PLAYERS, 2.0F, 1.0F);
 							if (entitypatch instanceof ServerPlayerPatch) {
 								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, false, (ServerPlayer)entitypatch.getOriginal());
 							}
