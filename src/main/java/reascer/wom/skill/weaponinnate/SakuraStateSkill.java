@@ -191,7 +191,8 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 			executer.getSkill(this).getDataManager().setData(COOLDOWN, 80);
 			boolean isSheathed = executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(SatsujinPassive.SHEATH);
 			if (isSheathed || executer.getSkill(this).getDataManager().getDataValue(ACTIVE)) {
-				executer.playAnimationSynchronized(this.attackAnimations[this.getAnimationInCondition(executer)], -0.45F);
+				float convertTime =  -0.45F;
+				executer.playAnimationSynchronized(this.attackAnimations[this.getAnimationInCondition(executer)], convertTime);
 			} else {
 				executer.playAnimationSynchronized(this.attackAnimations[this.getAnimationInCondition(executer)], 0);
 			}

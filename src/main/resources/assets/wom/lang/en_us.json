@@ -25,7 +25,7 @@
 
 	"item.wom.agony" : "Agony",
 	"item.wom.agony.tooltip" : "Light and sharp spear allow his owner to perform deadly strokes. Jump attack allow to jump 2 block",
-	"skill.wom.agony_plunge" : "Falling sky",
+	"skill.wom.agony_plunge" : "Tribulation",
 	"skill.wom.agony_plunge.tooltip" : "\"Disappear in the sky before falling on your enemies.\"\n\nAttacking enemies will charge this for up to 3 times.\nThe Final damage is multiplied by the number of charges",
 	
 	"item.wom.tormented_mind" : "Torment",

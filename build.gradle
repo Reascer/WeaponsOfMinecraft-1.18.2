@@ -24,7 +24,7 @@ repositories {
         }
     }
 }
-version = '20.1.7.28.1'
+version = '20.1.7.29'
 group = 'com.reascer.wom'
 archivesBaseName = 'WeaponsOfMiracles'
 

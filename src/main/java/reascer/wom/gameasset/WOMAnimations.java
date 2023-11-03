@@ -18,6 +18,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -491,7 +492,6 @@ public class WOMAnimations {
 		AGONY_CLAWSTRIKE = new BasicMultipleAttackAnimation(0.05F, "biped/combat/agony_clawstrike", biped,
 				new Phase(0.0F, 0.35F, 0.6F, 0.95F, Float.MAX_VALUE, biped.toolR, WOMColliders.AGONY_AIRSLASH))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2F))
-				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.TARGET_LOST_HEALTH.create(0.1f)))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.5F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
 				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE))
@@ -569,16 +569,16 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,0)
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10),0)
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.setter(9.0F),0)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(1.5F),0)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(1.0F),0)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,0)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2f),1)
-				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(1.2f)),1)
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F),1)
+				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(1.5f),WOMExtraDamageInstance.TARGET_LOST_HEALTH.create(0.2f)),1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.0F),1)
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10),1)
 				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE),1)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER.get(),1)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.BLADE_RUSH_SKILL,1)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.KNOCKDOWN,1)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F)
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, false)
@@ -591,8 +591,10 @@ public class WOMAnimations {
 						TimeStampedEvent.create(0.35F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT),
 						TimeStampedEvent.create(1.3F, ReuseableEvents.AGONY_PLUNGE_GROUNDTHRUST, Side.CLIENT),
 						TimeStampedEvent.create(1.45F, (entitypatch, self, params) -> {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.PLUNGING, true,(ServerPlayer)entitypatch.getOriginal());
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.STACK, 0,(ServerPlayer)entitypatch.getOriginal());
+							if (entitypatch instanceof PlayerPatch) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.PLUNGING, true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.STACK, 0,(ServerPlayer)entitypatch.getOriginal());
+							}
 						}, Side.SERVER),
 						TimeStampedEvent.create(1.55F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT));
 		
@@ -4906,8 +4908,8 @@ public class WOMAnimations {
 		
 		private static final AnimationEvent.AnimationEventConsumer ENDER_STEP = (entitypatch, self, params) -> {
 			if (!entitypatch.isLogicalClient()) {
-				ServerPlayer entity = (ServerPlayer) entitypatch.getOriginal();
-				((ServerLevel) entity.level()).sendParticles(ParticleTypes.REVERSE_PORTAL,
+				Entity entity = entitypatch.getOriginal();
+				((ServerLevel) entity.level).sendParticles(ParticleTypes.REVERSE_PORTAL,
 						entity.xo, 
 						entity.yo + 1, 
 						entity.zo,
@@ -4949,7 +4951,7 @@ public class WOMAnimations {
 								newY,
 								newZ);
 						entity.setDeltaMovement(target.getDeltaMovement());
-						entitypatch.rotateTo(target, 10, true);
+						entity.rotate(Rotation.CLOCKWISE_180);
 					}
 				}
 				((ServerLevel) entity.level()).sendParticles(ParticleTypes.REVERSE_PORTAL,
@@ -5015,8 +5017,8 @@ public class WOMAnimations {
 		
 		private static final AnimationEvent.AnimationEventConsumer SHADOW_STEP_ENTER = (entitypatch, self, params) -> {
 			if (!entitypatch.isLogicalClient()) {
-				ServerPlayer entity = (ServerPlayer) entitypatch.getOriginal();
-				((ServerLevel) entity.level()).sendParticles(ParticleTypes.LARGE_SMOKE,
+				Entity entity = (Entity) entitypatch.getOriginal();
+				((ServerLevel) entity.level).sendParticles(ParticleTypes.LARGE_SMOKE,
 						entity.xo, 
 						entity.yo + 1, 
 						entity.zo,
@@ -5035,16 +5037,16 @@ public class WOMAnimations {
 		
 		private static final AnimationEvent.AnimationEventConsumer SHADOW_STEP = (entitypatch, self, params) -> {
 			if (!entitypatch.isLogicalClient()) {
-				ServerPlayer entity = (ServerPlayer) entitypatch.getOriginal();
-				((ServerLevel) entity.level()).sendParticles(ParticleTypes.SMOKE,
-						entity.xo, 
-						entity.yo + 1, 
-						entity.zo,
-						10,
-						0.45,
-					    0.45,
-						0.45,
-						0.05);
+				Entity entity = (Entity) entitypatch.getOriginal();
+				((ServerLevel) entity.level).sendParticles(ParticleTypes.SMOKE,
+					entity.xo, 
+					entity.yo + 1, 
+					entity.zo,
+					10,
+					0.45,
+				    0.45,
+					0.45,
+					0.05);
 			}
 		};
 		

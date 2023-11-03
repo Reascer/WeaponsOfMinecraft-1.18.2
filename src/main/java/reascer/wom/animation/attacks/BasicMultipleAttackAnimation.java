@@ -141,7 +141,9 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 										source.setStunType(StunType.NONE);
 									} else if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.FALL && hitHurtableEntityPatch.getOriginal().hasEffect(EpicFightMobEffects.STUN_IMMUNITY.get())) {
 										source.setStunType(StunType.NONE);
-									} else {
+									} else if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.KNOCKDOWN && hitHurtableEntityPatch.getOriginal().hasEffect(EpicFightMobEffects.STUN_IMMUNITY.get())) {
+										source.setStunType(StunType.NONE);
+									}else {
 										source = this.getEpicFightDamageSource(entitypatch, hitten, phase);
 									}
 								} else {

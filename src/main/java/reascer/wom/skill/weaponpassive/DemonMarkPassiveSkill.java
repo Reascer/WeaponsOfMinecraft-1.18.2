@@ -66,7 +66,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 					int sweping = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal());
 					if (chance < ( (20f + (sweping*10f) ) * (container.getDataManager().getDataValue(BLINK) ? 2F : 1F) ) ) {
 						if (event.getTarget().hasEffect(MobEffects.WITHER)) {
-							int power = Math.min(event.getTarget().getEffect(MobEffects.WITHER).getAmplifier(), 4) ;
+							int power = Math.min(event.getTarget().getEffect(MobEffects.WITHER).getAmplifier(), 4);
 							event.getTarget().removeEffect(MobEffects.WITHER);
 							event.getTarget().addEffect(new MobEffectInstance(MobEffects.WITHER, (6 + (2 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))) *20, ++power, false, true));
 						} else {
