@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import com.mojang.math.Vector3f;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -18,10 +16,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BushBlock;
-import net.minecraft.world.level.block.StructureVoidBlock;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -29,23 +26,21 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import reascer.wom.animation.AntitheusShootAttackAnimation;
-import reascer.wom.animation.BasicMultipleAttackAnimation;
-import reascer.wom.animation.CancelableDodgeAnimation;
-import reascer.wom.animation.ChargeAttackAnimation;
-import reascer.wom.animation.EnderblasterShootAttackAnimation;
-import reascer.wom.animation.SpecialAttackAnimation;
+import reascer.wom.animation.attacks.AntitheusShootAttackAnimation;
+import reascer.wom.animation.attacks.BasicMultipleAttackAnimation;
+import reascer.wom.animation.attacks.EnderblasterShootAttackAnimation;
+import reascer.wom.animation.attacks.SpecialAttackAnimation;
+import reascer.wom.animation.dodges.CancelableDodgeAnimation;
 import reascer.wom.main.WeaponsOfMinecraft;
 import reascer.wom.particle.WOMParticles;
-import reascer.wom.skill.AgonyPlungeSkill;
-import reascer.wom.skill.BullChargeSkill;
-import reascer.wom.skill.DemonMarkPassiveSkill;
-import reascer.wom.skill.DemonicAscensionSkill;
-import reascer.wom.skill.EnderObscurisSkill;
-import reascer.wom.skill.LunarEclipsePassiveSkill;
-import reascer.wom.skill.RegierungSkill;
-import reascer.wom.skill.SatsujinPassive;
-import reascer.wom.skill.SoulSnatchSkill;
+import reascer.wom.skill.dodges.BullChargeSkill;
+import reascer.wom.skill.dodges.EnderObscurisSkill;
+import reascer.wom.skill.weaponinnate.AgonyPlungeSkill;
+import reascer.wom.skill.weaponinnate.DemonicAscensionSkill;
+import reascer.wom.skill.weaponinnate.RegierungSkill;
+import reascer.wom.skill.weaponpassive.DemonMarkPassiveSkill;
+import reascer.wom.skill.weaponpassive.LunarEclipsePassiveSkill;
+import reascer.wom.skill.weaponpassive.SatsujinPassive;
 import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import reascer.wom.world.damagesources.WOMExtraDamageInstance;
 import yesman.epicfight.api.animation.Joint;
@@ -59,7 +54,6 @@ import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimation
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.StaticAnimationProperty;
-import yesman.epicfight.api.animation.types.ActionAnimation;
 import yesman.epicfight.api.animation.types.AimAnimation;
 import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
 import yesman.epicfight.api.animation.types.DodgeAnimation;
@@ -120,28 +114,6 @@ public class WOMAnimations {
 	public static StaticAnimation KICK_AUTO_1;
 	public static StaticAnimation KICK_AUTO_2;
 	public static StaticAnimation KICK_AUTO_3;
-	
-	public static StaticAnimation SWORD_ONEHAND_AUTO_1;
-	public static StaticAnimation SWORD_ONEHAND_AUTO_2;
-	public static StaticAnimation SWORD_ONEHAND_AUTO_3;
-	public static StaticAnimation SWORD_ONEHAND_AUTO_4;
-	
-	public static StaticAnimation TACHI_TWOHAND_AUTO_1;
-	public static StaticAnimation TACHI_TWOHAND_AUTO_2;
-	public static StaticAnimation TACHI_TWOHAND_AUTO_3;
-	public static StaticAnimation TACHI_TWOHAND_AUTO_4;
-	public static StaticAnimation TACHI_TWOHAND_BLOSSOM_CHARGE;
-	public static StaticAnimation TACHI_TWOHAND_BLOSSOM_SLASHES;
-	public static StaticAnimation TACHI_TWOHAND_BLOSSOM_FINAL;
-	
-	public static StaticAnimation LONGSWORD_TWOHAND_AUTO_1;
-	public static StaticAnimation LONGSWORD_TWOHAND_AUTO_2;
-	public static StaticAnimation LONGSWORD_TWOHAND_AUTO_3;
-	public static StaticAnimation LONGSWORD_TWOHAND_AUTO_4;
-	
-	public static StaticAnimation GREATSWORD_TWOHAND_AUTO_1;
-	public static StaticAnimation GREATSWORD_TWOHAND_AUTO_2;
-	public static StaticAnimation GREATSWORD_TWOHAND_AUTO_3;
 	
 	public static StaticAnimation STAFF_AUTO_1;
 	public static StaticAnimation STAFF_AUTO_2;
@@ -221,6 +193,8 @@ public class WOMAnimations {
 	public static StaticAnimation KATANA_AUTO_3;
 	public static StaticAnimation KATANA_DASH;
 	public static StaticAnimation KATANA_IDLE;
+	public static StaticAnimation KATANA_WALK;
+	public static StaticAnimation KATANA_RUN;
 	public static StaticAnimation KATANA_GUARD;
 	public static StaticAnimation KATANA_GUARD_HIT;
 	public static StaticAnimation KATANA_SHEATHED_AUTO_1;
@@ -228,6 +202,7 @@ public class WOMAnimations {
 	public static StaticAnimation KATANA_SHEATHED_AUTO_3;
 	public static StaticAnimation KATANA_SHEATHED_DASH;
 	public static StaticAnimation KATANA_SHEATHED_COUNTER;
+	public static StaticAnimation KATANA_SAKURA_TIMED_SLASH;
 	public static StaticAnimation KATANA_SHEATHE;
 	public static StaticAnimation KATANA_SHEATHED_IDLE;
 	public static StaticAnimation KATANA_SHEATHED_RUN;
@@ -325,17 +300,20 @@ public class WOMAnimations {
 	public static StaticAnimation MOONLESS_IDLE;
 	public static StaticAnimation MOONLESS_WALK;
 	public static StaticAnimation MOONLESS_RUN;
+	public static StaticAnimation MOONLESS_BYPASS;
 	public static StaticAnimation MOONLESS_REVERSED_BYPASS;
 	public static StaticAnimation MOONLESS_CRESCENT;
+	public static StaticAnimation MOONLESS_FULLMOON;
 	public static StaticAnimation MOONLESS_AUTO_1;
 	public static StaticAnimation MOONLESS_AUTO_2;
-	public static StaticAnimation MOONLESS_AUTO_3;
+	public static StaticAnimation MOONLESS_AUTO_1_VERSO;
+	public static StaticAnimation MOONLESS_AUTO_2_VERSO;
 	public static StaticAnimation MOONLESS_LUNAR_ECHO;
 	public static StaticAnimation MOONLESS_GUARD;
 	public static StaticAnimation MOONLESS_GUARD_HIT_1;
 	public static StaticAnimation MOONLESS_GUARD_HIT_2;
 	public static StaticAnimation MOONLESS_GUARD_HIT_3;
-	public static StaticAnimation MOONLESS_BYPASS;
+	public static StaticAnimation MOONLESS_REWINDER;
 	
 	public static StaticAnimation SOLAR_IDLE;
 	public static StaticAnimation SOLAR_WALK;
@@ -357,19 +335,19 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
 		
-		DODGEMASTER_BACKWARD = new CancelableDodgeAnimation(0.00F, "biped/skill/dodgemaster_back", 0.6F, 1.65F, biped)
+		DODGEMASTER_BACKWARD = new CancelableDodgeAnimation(0.05F, 0.00F, 0.2f, "biped/skill/dodgemaster_back", 0.6F, 1.65F, biped)
 				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().playSound(EpicFightSounds.WHOOSH_BIG.get(), 1.0F, 2.0F);
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				}, Side.CLIENT));
-		DODGEMASTER_LEFT = new CancelableDodgeAnimation(0.00F, "biped/skill/dodgemaster_left", 0.6F, 1.65F, biped)
+		DODGEMASTER_LEFT = new CancelableDodgeAnimation(0.05F, 0.00F, 0.2f, "biped/skill/dodgemaster_left", 0.6F, 1.65F, biped)
 				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().playSound(EpicFightSounds.WHOOSH_BIG.get(), 1.0F, 2.0F);
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				}, Side.CLIENT));
-		DODGEMASTER_RIGHT = new CancelableDodgeAnimation(0.00F, "biped/skill/dodgemaster_right", 0.6F, 1.65F, biped)
+		DODGEMASTER_RIGHT = new CancelableDodgeAnimation(0.05F, 0.00F, 0.2f, "biped/skill/dodgemaster_right", 0.6F, 1.65F, biped)
 				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().playSound(EpicFightSounds.WHOOSH_BIG.get(), 1.0F, 2.0F);
@@ -465,58 +443,6 @@ public class WOMAnimations {
 		MEDITATION_SITING = new StaticAnimation(0.2f,false, "biped/skill/meditation_siting", biped);
 		MEDITATION_BREATHING = new StaticAnimation(0.1f,true, "biped/skill/meditation_breathing", biped);
 		
-		SWORD_ONEHAND_AUTO_1 = new BasicMultipleAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, biped.toolR, "biped/combat/sword_onehand_auto_1", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
-		SWORD_ONEHAND_AUTO_2 = new BasicMultipleAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, biped.toolR, "biped/combat/sword_onehand_auto_2", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
-		SWORD_ONEHAND_AUTO_3 = new BasicMultipleAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, biped.toolR, "biped/combat/sword_onehand_auto_3", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
-		SWORD_ONEHAND_AUTO_4 = new BasicMultipleAttackAnimation(0.1F, 0.2F, 0.3F, 0.4F, null, biped.toolR, "biped/combat/sword_onehand_auto_4", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
-		
-		TACHI_TWOHAND_AUTO_1 = new BasicMultipleAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, biped.toolR, "biped/combat/tachi_twohand_auto_1", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F);
-		TACHI_TWOHAND_AUTO_2 = new BasicMultipleAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, biped.toolR, "biped/combat/tachi_twohand_auto_2", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F);
-		TACHI_TWOHAND_AUTO_3 = new BasicMultipleAttackAnimation(0.1F, 0.1F, 0.2F, 0.3F, null, biped.toolR, "biped/combat/tachi_twohand_auto_3", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F);
-		TACHI_TWOHAND_AUTO_4 = new BasicMultipleAttackAnimation(0.1F, 0.2F, 0.3F, 0.4F, null, biped.toolR, "biped/combat/tachi_twohand_auto_4", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F);
-		
-		TACHI_TWOHAND_BLOSSOM_CHARGE = new ActionAnimation(0.05F, "biped/skill/tachi_twohand_blossom_charge", biped);
-		TACHI_TWOHAND_BLOSSOM_SLASHES = new BasicMultipleAttackAnimation(0.05F, "biped/skill/tachi_twohand_blossom_slashes", biped,
-				new Phase(0.0F, 0.1F, 0.2F, 0.3F, 0.3F, biped.toolR, null),
-				new Phase(0.3F, 0.3F, 0.4F, 0.5F, 0.5F, biped.toolR, null),
-				new Phase(0.5F, 0.5F, 0.6F, 0.8F, 0.8F, biped.toolR, null),
-				new Phase(0.8F, 0.8F, 0.9F, 1.7F ,Float.MAX_VALUE, biped.toolR, null))
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.75F))
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.75F),1)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.75F),2)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.75F),3)
-				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
-		TACHI_TWOHAND_BLOSSOM_FINAL = new BasicMultipleAttackAnimation(0.1F, 0.05F, 0.2F, 0.3F, null, biped.toolR, "biped/skill/tachi_twohand_blossom_final", biped)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.25F))
-				.addProperty(AttackAnimationProperty.ATTACK_SPEED_FACTOR, 0.0F);
-		
-		LONGSWORD_TWOHAND_AUTO_1 = new BasicMultipleAttackAnimation(0.1F, 0.2F, 0.3F, 0.4F, null, biped.toolR, "biped/combat/longsword_twohand_auto_1", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
-		LONGSWORD_TWOHAND_AUTO_2 = new BasicMultipleAttackAnimation(0.1F, 0.2F, 0.3F, 0.4F, null, biped.toolR, "biped/combat/longsword_twohand_auto_2", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
-		LONGSWORD_TWOHAND_AUTO_3 = new BasicMultipleAttackAnimation(0.1F, 0.2F, 0.3F, 0.4F, null, biped.toolR, "biped/combat/longsword_twohand_auto_3", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
-		LONGSWORD_TWOHAND_AUTO_4 = new BasicMultipleAttackAnimation(0.1F, 0.3F, 0.4F, 0.5F, null, biped.toolR, "biped/combat/longsword_twohand_auto_4", biped)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.35F);
-		
-		GREATSWORD_TWOHAND_AUTO_1 = new BasicMultipleAttackAnimation(0.1F, 0.3F, 0.4F, 0.5F, null, biped.toolR, "biped/combat/greatsword_twohand_auto_1", biped)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F))
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.05F);
-		GREATSWORD_TWOHAND_AUTO_2 = new BasicMultipleAttackAnimation(0.1F, 0.3F, 0.4F, 0.5F, null, biped.toolR, "biped/combat/greatsword_twohand_auto_2", biped)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F))
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.05F);
-		GREATSWORD_TWOHAND_AUTO_3 = new BasicMultipleAttackAnimation(0.1F, 0.4F, 0.5F, 0.6F, null, biped.toolR, "biped/combat/greatsword_twohand_auto_3", biped)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.6F))
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.05F);
-		
 		AGONY_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, 0.05F, 0.15F, 0.2F, null, biped.toolR, "biped/combat/agony_auto_1", biped)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.7F);
@@ -566,7 +492,6 @@ public class WOMAnimations {
 		AGONY_CLAWSTRIKE = new BasicMultipleAttackAnimation(0.05F, "biped/combat/agony_clawstrike", biped,
 				new Phase(0.0F, 0.35F, 0.6F, 0.95F, Float.MAX_VALUE, biped.toolR, WOMColliders.AGONY_AIRSLASH))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2F))
-				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(ExtraDamageInstance.TARGET_LOST_HEALTH.create(0.1f)))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.5F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
 				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE))
@@ -644,16 +569,16 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,0)
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10),0)
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.setter(9.0F),0)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(1.5F),0)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(1.0F),0)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,0)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2f),1)
-				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(1.2f)),1)
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F),1)
+				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(1.5f),WOMExtraDamageInstance.TARGET_LOST_HEALTH.create(0.2f)),1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.0F),1)
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10),1)
 				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE),1)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER.get(),1)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.BLADE_RUSH_SKILL,1)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.KNOCKDOWN,1)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F)
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, false)
@@ -666,8 +591,10 @@ public class WOMAnimations {
 						TimeStampedEvent.create(0.35F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT),
 						TimeStampedEvent.create(1.3F, ReuseableEvents.AGONY_PLUNGE_GROUNDTHRUST, Side.CLIENT),
 						TimeStampedEvent.create(1.45F, (entitypatch, self, params) -> {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.PLUNGING, true,(ServerPlayer)entitypatch.getOriginal());
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.STACK, 0,(ServerPlayer)entitypatch.getOriginal());
+							if (entitypatch instanceof PlayerPatch) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.PLUNGING, true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.STACK, 0,(ServerPlayer)entitypatch.getOriginal());
+							}
 						}, Side.SERVER),
 						TimeStampedEvent.create(1.55F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT));
 		
@@ -1436,6 +1363,27 @@ public class WOMAnimations {
 					entitypatch.playSound(EpicFightSounds.SWORD_IN.get(), 0, 0);
 				}, Side.SERVER));
 		
+		KATANA_SHEATHED_COUNTER = new BasicMultipleAttackAnimation(0.15F, 0.16F, 0.4F, 0.6F,WOMColliders.KATANA_SHEATHED_DASH, biped.rootJoint, "biped/combat/katana_sheathed_counter", biped)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.5F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.95F))
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10F))
+				.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.KATANA_SHEATHED_HIT)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
+				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
+				.addEvents(TimeStampedEvent.create(0.12F, (entitypatch, self, params) -> {
+					Entity entity = entitypatch.getOriginal();
+					entitypatch.getOriginal().level.addParticle(WOMParticles.ENTITY_AFTER_IMAGE_WEAPON.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
+				}, Side.CLIENT),TimeStampedEvent.create(0.55F, (entitypatch, self, params) -> {
+					if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
+						entitypatch.updateMotion(true);
+					}
+					entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
+				}, Side.SERVER));
+		
 		KATANA_SHEATHE = new StaticAnimation(0.1f,false, "biped/living/katana_sheathe", biped)
 				.addEvents(TimeStampedEvent.create(0.2F, ReuseableEvents.KATANA_IN, Side.CLIENT));
 		
@@ -1467,6 +1415,9 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.4F);
 		
 		KATANA_IDLE = new StaticAnimation(0.2f,true, "biped/living/katana_idle", biped);
+		KATANA_WALK = new MovementAnimation(0.1f,true, "biped/living/katana_walk", biped);
+		KATANA_RUN = new MovementAnimation(0.1f,true, "biped/living/katana_run", biped);
+		
 		KATANA_GUARD = new StaticAnimation(0.05F, true, "biped/skill/katana_guard", biped);
 		KATANA_GUARD_HIT = new GuardAnimation(0.05F, 0.5F, "biped/skill/katana_guard_hit", biped)
 			.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, self, params) -> {
@@ -1545,6 +1496,7 @@ public class WOMAnimations {
 					entitypatch.playSound(EpicFightSounds.SWORD_IN.get(), 0, 0);
 				}, Side.SERVER));
 		
+		KATANA_SAKURA_TIMED_SLASH = new SpecialAttackAnimation(0.05F, 0.0F, 0.0F, 0.0F, 0.00F, null, biped.rootJoint, "biped/skill/katana_sakura_timed_slash", biped);
 		
 		ENDERBLASTER_ONEHAND_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/enderblaster_onehand_auto_1", biped,
 				new Phase(0.0F, 0.15F, 0.24F, 0.25F, 0.25F, biped.legL, WOMColliders.KICK),
@@ -3580,8 +3532,12 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F)
 				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
 				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 1.70F))
-				.addEvents(TimeStampedEvent.create(0.05F, (entitypatch, self, params) -> {
-							entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), WOMSounds.ANTITHEUS_BLACKKHOLE_CHARGEUP.get(), SoundSource.PLAYERS, 2.0F, 1.0F);
+				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
+							entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), WOMSounds.ANTITHEUS_BLACKKHOLE_CHARGEUP, SoundSource.PLAYERS, 2.0F, 1.0F);
+							if (entitypatch instanceof ServerPlayerPatch) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, false, (ServerPlayer)entitypatch.getOriginal());
+							}
+							
 						}, Side.SERVER),
 						TimeStampedEvent.create(0.05F, (entitypatch, self, params) -> {
 							OpenMatrix4f transformMatrix;
@@ -3620,12 +3576,16 @@ public class WOMAnimations {
 							OpenMatrix4f CORRECTION = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yRotO + 180F), new Vec3f(0, 1, 0));
 							CORRECTION.translate(new Vec3f(0.0f, 0.0F, -1.5F));
 							OpenMatrix4f.mul(CORRECTION,transformMatrix,transformMatrix);
-							
-							SkillContainer skill = ((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE);
-							skill.getDataManager().setDataSync(DemonicAscensionSkill.BLACKHOLE_X,(float) (transformMatrix.m30 + entitypatch.getOriginal().getX()), (ServerPlayer)entitypatch.getOriginal());
-							skill.getDataManager().setDataSync(DemonicAscensionSkill.BLACKHOLE_Y,(float) (transformMatrix.m31 + entitypatch.getOriginal().getY()), (ServerPlayer)entitypatch.getOriginal());
-							skill.getDataManager().setDataSync(DemonicAscensionSkill.BLACKHOLE_Z,(float) (transformMatrix.m32 + entitypatch.getOriginal().getZ()), (ServerPlayer)entitypatch.getOriginal());
-							
+							if (entitypatch instanceof ServerPlayerPatch) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, false, (ServerPlayer)entitypatch.getOriginal());
+
+								SkillContainer skill = ((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE);
+								skill.getDataManager().setDataSync(DemonicAscensionSkill.BLACKHOLE_X,(float) (transformMatrix.m30 + entitypatch.getOriginal().getX()), (ServerPlayer)entitypatch.getOriginal());
+								skill.getDataManager().setDataSync(DemonicAscensionSkill.BLACKHOLE_Y,(float) (transformMatrix.m31 + entitypatch.getOriginal().getY()), (ServerPlayer)entitypatch.getOriginal());
+								skill.getDataManager().setDataSync(DemonicAscensionSkill.BLACKHOLE_Z,(float) (transformMatrix.m32 + entitypatch.getOriginal().getZ()), (ServerPlayer)entitypatch.getOriginal());
+								
+							}
+						
 							((ServerLevel) entitypatch.getOriginal().level).sendParticles( WOMParticles.ANTITHEUS_BLACKHOLE_START.get(),
 									transformMatrix.m30 + entitypatch.getOriginal().getX(), 
 									transformMatrix.m31 + entitypatch.getOriginal().getY(), 
@@ -3637,6 +3597,7 @@ public class WOMAnimations {
 									transformMatrix.m31 + entitypatch.getOriginal().getY(), 
 									transformMatrix.m32 + entitypatch.getOriginal().getZ(), 
 									48, 0.0D, 0.0D, 0.0D, 0.5D);
+							
 						}, Side.SERVER),TimeStampedEvent.create(1.45F, (entitypatch, self, params) -> {
 							OpenMatrix4f transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(1.0f), Armatures.BIPED.handR);
 							OpenMatrix4f CORRECTION = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yRotO + 180F), new Vec3f(0, 1, 0));
@@ -3957,12 +3918,8 @@ public class WOMAnimations {
 						TimeStampedEvent.create(0.75F, (entitypatch, self, params) -> {
 							if (entitypatch instanceof ServerPlayerPatch) {
 								((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GESETZ_SPRENGKOPF, false,(ServerPlayer)entitypatch.getOriginal());
-								((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getSkill().setDurationSynchronize((ServerPlayerPatch) entitypatch, 0);
-							}
-						}, Side.SERVER),
-						TimeStampedEvent.create(1.60F, (entitypatch, self, params) -> {
-							if (entitypatch instanceof ServerPlayerPatch) {
 								((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.SUPER_ARMOR, false,(ServerPlayer)entitypatch.getOriginal());
+								((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getSkill().setDurationSynchronize((ServerPlayerPatch) entitypatch, 0);
 							}
 						}, Side.SERVER),
 						TimeStampedEvent.create(1.35F, (entitypatch, self, params) -> {
@@ -4004,9 +3961,15 @@ public class WOMAnimations {
 				.addEvents(TimeStampedEvent.create(0.10F, (entitypatch, self, params) -> {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
-				},Side.CLIENT));
+				},Side.CLIENT),
+						TimeStampedEvent.create(0.50F, (entitypatch, self, params) -> {
+							if (entitypatch instanceof ServerPlayerPatch) {
+								((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(LunarEclipsePassiveSkill.VERSO, true,(ServerPlayer)entitypatch.getOriginal());
+								((ServerPlayerPatch) entitypatch).modifyLivingMotionByCurrentItem();
+							}
+						},Side.SERVER));
 		
-		MOONLESS_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_1", biped,
+		MOONLESS_BYPASS = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_bypass", biped,
 				new Phase(0.0F, 0.3F, 0.65F, 0.75F, Float.MAX_VALUE, biped.toolR, WOMColliders.MOONLESS_BYPASS))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.00F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
@@ -4015,11 +3978,17 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLADE)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
 				.addEvents(TimeStampedEvent.create(0.10F, (entitypatch, self, params) -> {
-					Entity entity = entitypatch.getOriginal();
-					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
-				},Side.CLIENT));
+						Entity entity = entitypatch.getOriginal();
+						entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
+					},Side.CLIENT),
+					TimeStampedEvent.create(0.50F, (entitypatch, self, params) -> {
+						if (entitypatch instanceof ServerPlayerPatch) {
+							((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(LunarEclipsePassiveSkill.VERSO, false,(ServerPlayer)entitypatch.getOriginal());
+							((ServerPlayerPatch) entitypatch).modifyLivingMotionByCurrentItem();
+						}
+					},Side.SERVER));
 		
-		MOONLESS_AUTO_2 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_2", biped,
+		MOONLESS_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_1", biped,
 				new Phase(0.0F, 0.25F, 0.4F, 0.45F, Float.MAX_VALUE, biped.toolR, null))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.20F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.50F))
@@ -4029,15 +3998,36 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLADE)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.2F);
 		
-		MOONLESS_AUTO_3 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_3", biped,
+		MOONLESS_AUTO_2 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_2", biped,
 				new Phase(0.0F, 0.3F, 0.4F, 0.45F, 0.45F, biped.toolR, null),
 				new Phase(0.45F, 0.5F, 0.6F, 0.65F, 0.65F, biped.toolR, null),
 				new Phase(0.65F, 0.7F, 1.0F, 1.15F, Float.MAX_VALUE, biped.toolR, null))
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.50F),2)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.00F),2)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,2)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
+		
+		MOONLESS_AUTO_1_VERSO = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_1_verso", biped,
+				new Phase(0.00F, 0.2F, 0.25F, 0.29F, 0.29F, biped.toolR, null),
+				new Phase(0.29F, 0.3F, 0.4F, 0.45F, Float.MAX_VALUE, biped.toolR, null))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.50F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.00F),1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,1)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.4F)
+				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
+					Entity entity = entitypatch.getOriginal();
+					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
+				},Side.CLIENT));
+		
+		MOONLESS_AUTO_2_VERSO = new BasicMultipleAttackAnimation(0.25F, "biped/combat/moonless_auto_2_verso", biped,
+				new Phase(0.0F, 0.35F, 0.45F, 0.85F, Float.MAX_VALUE, biped.toolR, WOMColliders.MOONLESS_BYPASS))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.20F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.0F))
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
+				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, false);
 		
 		MOONLESS_LUNAR_ECHO = new SpecialAttackAnimation(0.05F, "biped/skill/moonless_lunar_echo", biped,
 				new Phase(0.0F, 0.6F, 0.7F, 0.85F, Float.MAX_VALUE, biped.rootJoint, WOMColliders.LUNAR_ECHO))
@@ -4111,12 +4101,13 @@ public class WOMAnimations {
 				MOONLESS_CRESCENT = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_crescent", biped,
 						new Phase(0.0F, 0.40F, 0.50F, 0.70F, Float.MAX_VALUE, biped.toolR, null))
 						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2.0F))
-						.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.TARGET_LOST_HEALTH.create(0.10f)))
-						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.5F))
-						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
+						.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.TARGET_LOST_HEALTH.create(0.20f)))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.5F))
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 						.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE))
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.0F)
 						.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
+						.addProperty(ActionAnimationProperty.STOP_MOVEMENT, false)
 						.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 0.25F))
 						.addProperty(StaticAnimationProperty.PLAY_SPEED_MODIFIER, (self, entitypatch, speed, elapsedTime) -> {
 							if (elapsedTime >= 0.25F && elapsedTime < 0.40F) {
@@ -4138,12 +4129,44 @@ public class WOMAnimations {
 							return 1.0F;
 						});
 				
+				MOONLESS_FULLMOON = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_fullmoon", biped,
+						new Phase(0.00F, 0.00F, 0.10F, 0.15F, 0.15F, biped.toolR, WOMColliders.MOONLESS_BYPASS),
+						new Phase(0.15F, 0.20F, 0.30F, 0.35F, 0.35F, biped.toolR, WOMColliders.MOONLESS_BYPASS),
+						new Phase(0.35F, 0.40F, 0.50F, 0.55F, 0.55F, biped.toolR, WOMColliders.MOONLESS_BYPASS),
+						new Phase(0.55F, 0.60F, 0.70F, 0.75F, 0.75F, biped.toolR, WOMColliders.MOONLESS_BYPASS),
+						new Phase(0.75F, 0.80F, 1.00F, 2.25F, Float.MAX_VALUE, biped.toolR, WOMColliders.MOONLESS_BYPASS))
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.5F))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.0F))
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.5F),1)
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.0F),1)
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.5F),2)
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.5F),2)
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,2)
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.5F),3)
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.5F),3)
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,3)
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F),4)
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.5F),4)
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,4)
+						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.4F)
+						.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
+						.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
+						.addProperty(ActionAnimationProperty.STOP_MOVEMENT, false)
+						.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 1.00F))
+						.addEvents(TimePeriodEvent.create(1.50F, 1.7F, ReuseableEvents.LOOPED_FALLING_MOVE, Side.BOTH))
+						.addEvents(TimeStampedEvent.create(1.7F, ReuseableEvents.LOOPED_FALLING, Side.BOTH),
+								TimeStampedEvent.create(1.5F, (entitypatch, self, params) -> {
+									entitypatch.getOriginal().resetFallDistance();
+								}, Side.BOTH));
+				
 				MOONLESS_GUARD = new StaticAnimation(0.20F, true, "biped/skill/moonless_guard", biped);
 				MOONLESS_GUARD_HIT_1  = new GuardAnimation(0.05F, 0.2F, "biped/skill/moonless_guard_hit_1", biped);
 				MOONLESS_GUARD_HIT_2  = new GuardAnimation(0.05F, 0.2F, "biped/skill/moonless_guard_hit_2", biped);
 				MOONLESS_GUARD_HIT_3  = new GuardAnimation(0.05F, 0.2F, "biped/skill/moonless_guard_hit_3", biped);
 				
-				MOONLESS_BYPASS = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_bypass", biped,
+				MOONLESS_REWINDER = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_rewinder", biped,
 						new Phase(0.0F, 0.20F, 0.55F, 0.65F, Float.MAX_VALUE, biped.toolR, WOMColliders.MOONLESS_BYPASS))
 						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.40F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
@@ -4152,7 +4175,7 @@ public class WOMAnimations {
 						.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLADE)
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.4F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
-						.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
+						.addEvents(TimeStampedEvent.create(0.20F, (entitypatch, self, params) -> {
 							Entity entity = entitypatch.getOriginal();
 							entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 						},Side.CLIENT));
@@ -4857,7 +4880,7 @@ public class WOMAnimations {
 		
 		private static final AnimationEvent.AnimationEventConsumer ENDER_STEP = (entitypatch, self, params) -> {
 			if (!entitypatch.isLogicalClient()) {
-				ServerPlayer entity = (ServerPlayer) entitypatch.getOriginal();
+				Entity entity = entitypatch.getOriginal();
 				((ServerLevel) entity.level).sendParticles(ParticleTypes.REVERSE_PORTAL,
 						entity.xo, 
 						entity.yo + 1, 
@@ -4900,7 +4923,7 @@ public class WOMAnimations {
 								newY,
 								newZ);
 						entity.setDeltaMovement(target.getDeltaMovement());
-						entitypatch.rotateTo(target, 10, true);
+						entity.rotate(Rotation.CLOCKWISE_180);
 					}
 				}
 				((ServerLevel) entity.level).sendParticles(ParticleTypes.REVERSE_PORTAL,
@@ -4966,7 +4989,7 @@ public class WOMAnimations {
 		
 		private static final AnimationEvent.AnimationEventConsumer SHADOW_STEP_ENTER = (entitypatch, self, params) -> {
 			if (!entitypatch.isLogicalClient()) {
-				ServerPlayer entity = (ServerPlayer) entitypatch.getOriginal();
+				Entity entity = (Entity) entitypatch.getOriginal();
 				((ServerLevel) entity.level).sendParticles(ParticleTypes.LARGE_SMOKE,
 						entity.xo, 
 						entity.yo + 1, 
@@ -4986,16 +5009,16 @@ public class WOMAnimations {
 		
 		private static final AnimationEvent.AnimationEventConsumer SHADOW_STEP = (entitypatch, self, params) -> {
 			if (!entitypatch.isLogicalClient()) {
-				ServerPlayer entity = (ServerPlayer) entitypatch.getOriginal();
+				Entity entity = (Entity) entitypatch.getOriginal();
 				((ServerLevel) entity.level).sendParticles(ParticleTypes.SMOKE,
-						entity.xo, 
-						entity.yo + 1, 
-						entity.zo,
-						10,
-						0.45,
-					    0.45,
-						0.45,
-						0.05);
+					entity.xo, 
+					entity.yo + 1, 
+					entity.zo,
+					10,
+					0.45,
+				    0.45,
+					0.45,
+					0.05);
 			}
 		};
 		

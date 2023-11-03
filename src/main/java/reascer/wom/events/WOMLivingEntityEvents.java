@@ -11,6 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -78,7 +79,7 @@ public class WOMLivingEntityEvents {
 			if ((event.getEntity() instanceof Skeleton) && (event.getEntity().getMainHandItem().getItem() == Items.BOW) && !event.getEntity().getTags().contains("wom-bow-replaced")) {
 				ItemStack weapon = Items.BOW.getDefaultInstance();
 				boolean no_change = true;
-				if (new Random().nextInt() % 100 < event.getEntity().level.getGameRules().getInt(WOMGamerules.SKELETON_MELEE_PERCENTAGE)) {
+				if (Math.abs(new Random().nextInt()) % 100 < event.getEntityLiving().level.getGameRules().getInt(WOMGamerules.SKELETON_MELEE_PERCENTAGE)) {
 					no_change = false;
 					switch (Math.abs(new Random().nextInt()) % 4) {
 						case 0:
@@ -124,9 +125,9 @@ public class WOMLivingEntityEvents {
 	
 	@SubscribeEvent
 	public static void onkillEvent(LivingDeathEvent event) {
-		if (!(event.getEntity() instanceof Player) && !(event.getEntity() instanceof Animal) && !(event.getEntity() instanceof Npc) && event.getEntity().level.getGameRules().getBoolean(WOMGamerules.STONGER_MOB_DROP_EMERALDS)) {
-			for (int i = 1; i < event.getEntity().getMaxHealth()/20; i++) {
-				if (new Random().nextInt() % 4 == 0) {
+		if (!(event.getEntityLiving() instanceof Player) && !(event.getEntityLiving() instanceof Animal) && !(event.getEntityLiving() instanceof Npc) && event.getEntityLiving().level.getGameRules().getBoolean(WOMGamerules.STONGER_MOB_DROP_EMERALDS)) {
+			for (int i = 1; i < event.getEntityLiving().getMaxHealth()/20; i++) {
+				if (Math.abs(new Random().nextInt()) % 5 == 0) {
 					double d0 = (double)EntityType.ITEM.getWidth();
 					double d1 = 1.0D - d0;
   					double d2 = d0 / 2.0D;
@@ -233,7 +234,7 @@ public class WOMLivingEntityEvents {
 									String replacetag = new String(tag); 
 									e.removeTag(tag);
 									ServerPlayerPatch player = EpicFightCapabilities.getEntityPatch(e.level.getEntity(Integer.valueOf(replacetag.split(":")[6])), ServerPlayerPatch.class);
-									EpicFightEntityDamageSource epicFightDamageSource = new EpicFightEntityDamageSource("timed_katana_slashes", player.getOriginal() ,WOMAnimations.KATANA_SHEATHED_DASH);
+									EpicFightEntityDamageSource epicFightDamageSource = new EpicFightEntityDamageSource("timed_katana_slashes", player.getOriginal() ,WOMAnimations.KATANA_SAKURA_TIMED_SLASH);
 									epicFightDamageSource.setImpact(2.0f);
 									epicFightDamageSource.setStunType(StunType.HOLD);
 									epicFightDamageSource.addTag(SourceTags.WEAPON_INNATE);
@@ -271,10 +272,19 @@ public class WOMLivingEntityEvents {
 		
 		for (String tag : event.getEntity().getTags()) {
 			if (tag.contains("lunar_eclipse:")) {
-				if (event.getEntity().hasEffect(MobEffects.BLINDNESS)) {
-					int blindness_amp = event.getEntity().getEffect(MobEffects.BLINDNESS).getAmplifier();
-					if (event.getEntity().getEffect(MobEffects.BLINDNESS).getDuration() == 1 || event.getEntity().isDeadOrDying()) {
-						Entity player = event.getEntity().level.getEntity(Integer.valueOf(tag.substring(14)));
+				if (event.getEntityLiving().hasEffect(MobEffects.GLOWING)) {
+					int glowing_amp = event.getEntityLiving().getEffect(MobEffects.GLOWING).getAmplifier();
+					if (event.getEntityLiving().getEffect(MobEffects.GLOWING).getDuration() == 1) {
+						if (!event.getEntityLiving().hasEffect(MobEffects.BLINDNESS)) {
+							event.getEntityLiving().addEffect(new MobEffectInstance(MobEffects.BLINDNESS,20,glowing_amp,true,false,false));
+							event.getEntityLiving().removeEffect(MobEffects.GLOWING);
+						}
+					}
+				}
+				if (event.getEntityLiving().hasEffect(MobEffects.BLINDNESS)) {
+					int blindness_amp = event.getEntityLiving().getEffect(MobEffects.BLINDNESS).getAmplifier();
+					if (event.getEntityLiving().getEffect(MobEffects.BLINDNESS).getDuration() == 1 || event.getEntityLiving().isDeadOrDying()) {
+						Entity player = event.getEntityLiving().level.getEntity(Integer.valueOf(tag.substring(14)));
 						PlayerPatch<?> playerpatch = EpicFightCapabilities.getEntityPatch(player, PlayerPatch.class);
 						ServerPlayerPatch serverPlayerPatch = (ServerPlayerPatch) playerpatch;
 						EpicFightEntityDamageSource epicFightDamageSource = new EpicFightEntityDamageSource("lunar_eclipse", player,WOMAnimations.MOONLESS_LUNAR_ECHO);
@@ -282,13 +292,13 @@ public class WOMLivingEntityEvents {
 						epicFightDamageSource.setStunType(StunType.HOLD);
 						epicFightDamageSource.addTag(SourceTags.WEAPON_INNATE);
 						DamageSource damage = epicFightDamageSource;
-						((ServerLevel) event.getEntity().level).sendParticles(ParticleTypes.END_ROD,
-								event.getEntity().getX(),
-								event.getEntity().getY()+ 0.25 * blindness_amp,
-								event.getEntity().getZ(),
-								5 * blindness_amp,
+						((ServerLevel) event.getEntityLiving().level).sendParticles(ParticleTypes.END_ROD,
+								event.getEntityLiving().getX(),
+								event.getEntityLiving().getY()+ 0.25 * (int) (blindness_amp*(1f/Math.sqrt((blindness_amp/8f)+1f))),
+								event.getEntityLiving().getZ(),
+								5 * (int) (blindness_amp*(1f/Math.sqrt((blindness_amp/8f)+1f))),
 								0.1,
-								0.5 * blindness_amp,
+								0.5 * (int) (blindness_amp*(1f/Math.sqrt((blindness_amp/8f)+1f))),
 								0.1,
 								0);
 						((ServerLevel) event.getEntity().level).sendParticles(ParticleTypes.FLASH,
@@ -317,17 +327,20 @@ public class WOMLivingEntityEvents {
 								LivingEntity livingEntity = (LivingEntity) entity;
 								
 								if (livingEntity.isAlive()) {
+									float lunar_power = 0;
 									if (blindness_amp > 0) {
-										if (livingEntity.equals(event.getEntity())){
-											livingEntity.hurt(damage,2 * blindness_amp);
+										if (livingEntity.equals(event.getEntityLiving())){
+											lunar_power = (float) (2f * blindness_amp*(1f/Math.sqrt((blindness_amp/8f)+1f)));
+											livingEntity.hurt(damage,lunar_power);
 										} else {
-											livingEntity.hurt(damage,1 * blindness_amp);
+											lunar_power = (float) (blindness_amp*(1f/Math.sqrt((blindness_amp/8f)+1f)));
+											livingEntity.hurt(damage,lunar_power);
 										}
 										((ServerLevel) livingEntity.level).sendParticles(ParticleTypes.DAMAGE_INDICATOR,
 												livingEntity.getX(),
 												livingEntity.getY()+1,
 												livingEntity.getZ(),
-												(1 * blindness_amp),
+												(1 * (int) lunar_power),
 												0.2,
 												0.2,
 												0.2,
@@ -337,23 +350,27 @@ public class WOMLivingEntityEvents {
 												livingEntity.getX(),
 												livingEntity.getY()+1,
 												livingEntity.getZ(),
-												5 * (1 + blindness_amp / 10),
-												0.5 * (1 + blindness_amp / 20),
-												0.5 * (1 + blindness_amp / 20),
-												0.5 * (1 + blindness_amp / 20),
+												5 * (1 + (int) lunar_power / 10),
+												0.5 * (1 + (int) lunar_power / 20),
+												0.5 * (1 + (int) lunar_power / 20),
+												0.5 * (1 + (int) lunar_power / 20),
 												0);
 									}
 									if (serverPlayerPatch != null) {
-										serverPlayerPatch.getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent(serverPlayerPatch, livingEntity, epicFightDamageSource, 1 * blindness_amp));
+										serverPlayerPatch.getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent(serverPlayerPatch, livingEntity, epicFightDamageSource, lunar_power));
 									} else {
-										event.getEntity().getTags().remove(tag);
+										if (!event.getEntityLiving().hasEffect(MobEffects.GLOWING)) {
+											event.getEntityLiving().getTags().remove(tag);
+										}
 										break;
 									}
 								}
 							}
 						}
-						event.getEntity().removeEffect(MobEffects.BLINDNESS);
-						event.getEntity().getTags().remove(tag);
+						event.getEntityLiving().removeEffect(MobEffects.BLINDNESS);
+						if (!event.getEntityLiving().hasEffect(MobEffects.GLOWING)) {
+							event.getEntityLiving().getTags().remove(tag);
+						}
 					}
 				}
 				break;
