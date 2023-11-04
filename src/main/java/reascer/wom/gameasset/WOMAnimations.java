@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import org.openjdk.nashorn.api.tree.InstanceOfTree;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -4216,7 +4218,11 @@ public class WOMAnimations {
 	private static class ReuseableEvents {
 		
 		public static final AnimationEvent.AnimationEventConsumer KATANA_IN = (entitypatch, self, params) -> entitypatch.playSound(EpicFightSounds.SWORD_IN.get(), 0, 0);
-		public static final AnimationEvent.AnimationEventConsumer FAST_SPINING = (entitypatch, self, params) -> entitypatch.getOriginal().level().playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH.get(), SoundSource.MASTER, 0.5F, 1.1F - ((new Random().nextFloat()-0.5f) * 0.2F));
+		public static final AnimationEvent.AnimationEventConsumer FAST_SPINING = (entitypatch, self, params) -> {
+			if (entitypatch instanceof PlayerPatch) {
+				entitypatch.getOriginal().level().playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH.get(), SoundSource.MASTER, 0.5F, 1.1F - ((new Random().nextFloat()-0.5f) * 0.2F));
+			}
+		};
 		
 		public static final AnimationEvent.AnimationEventConsumer LOOPED_FALLING_MOVE = (entitypatch, self, params) -> {
 			float dpx = (float) entitypatch.getOriginal().getX();
@@ -4295,6 +4301,7 @@ public class WOMAnimations {
 		};
 		
 		public static final AnimationEvent.AnimationEventConsumer ENDERBLASTER_RELOAD = (entitypatch, self, params) -> {
+			System.out.println(entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER);
 			if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER) {
 				if (entitypatch instanceof PlayerPatch) {
 					entitypatch.getOriginal().level().playSound(null, entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
@@ -4763,6 +4770,7 @@ public class WOMAnimations {
 			LevelUtil.circleSlamFracture(entitypatch.getOriginal(), level, weaponEdge, 3.50f,true,false);
 			
 		};
+		
 		private static final AnimationEvent.AnimationEventConsumer TORMENT_GROUNDSLAM_SMALL = (entitypatch, self, params) -> {
 			Vec3 position = entitypatch.getOriginal().position();
 			OpenMatrix4f modelTransform = entitypatch.getArmature().getBindedTransformFor(
@@ -4789,8 +4797,6 @@ public class WOMAnimations {
 					floorPos.z,
 					0.7D, 35.0D, 0.7D);
 			LevelUtil.circleSlamFracture(entitypatch.getOriginal(), level, weaponEdge, 2.0f,true,false);
-			
-			
 		};
 		
 		private static final AnimationEvent.AnimationEventConsumer RUINE_COMET_GROUNDTHRUST = (entitypatch, self, params) -> {
@@ -4909,7 +4915,7 @@ public class WOMAnimations {
 		private static final AnimationEvent.AnimationEventConsumer ENDER_STEP = (entitypatch, self, params) -> {
 			if (!entitypatch.isLogicalClient()) {
 				Entity entity = entitypatch.getOriginal();
-				((ServerLevel) entity.level).sendParticles(ParticleTypes.REVERSE_PORTAL,
+				((ServerLevel) entity.level()).sendParticles(ParticleTypes.REVERSE_PORTAL,
 						entity.xo, 
 						entity.yo + 1, 
 						entity.zo,
@@ -5018,7 +5024,7 @@ public class WOMAnimations {
 		private static final AnimationEvent.AnimationEventConsumer SHADOW_STEP_ENTER = (entitypatch, self, params) -> {
 			if (!entitypatch.isLogicalClient()) {
 				Entity entity = (Entity) entitypatch.getOriginal();
-				((ServerLevel) entity.level).sendParticles(ParticleTypes.LARGE_SMOKE,
+				((ServerLevel) entity.level()).sendParticles(ParticleTypes.LARGE_SMOKE,
 						entity.xo, 
 						entity.yo + 1, 
 						entity.zo,
@@ -5038,7 +5044,7 @@ public class WOMAnimations {
 		private static final AnimationEvent.AnimationEventConsumer SHADOW_STEP = (entitypatch, self, params) -> {
 			if (!entitypatch.isLogicalClient()) {
 				Entity entity = (Entity) entitypatch.getOriginal();
-				((ServerLevel) entity.level).sendParticles(ParticleTypes.SMOKE,
+				((ServerLevel) entity.level()).sendParticles(ParticleTypes.SMOKE,
 					entity.xo, 
 					entity.yo + 1, 
 					entity.zo,
@@ -5051,10 +5057,14 @@ public class WOMAnimations {
 		};
 		
 		private static final AnimationEvent.AnimationEventConsumer ANTITHEUS_WEAPON_TRAIL_ON = (entitypatch, self, params) -> {
-			((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.BASIC_ATTACK, true, (ServerPlayer)entitypatch.getOriginal());
+			if (entitypatch instanceof PlayerPatch) {
+				((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.BASIC_ATTACK, true, (ServerPlayer)entitypatch.getOriginal());
+			}
 		};
 		private static final AnimationEvent.AnimationEventConsumer ANTITHEUS_WEAPON_TRAIL_OFF = (entitypatch, self, params) -> {
-			((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.BASIC_ATTACK, false, (ServerPlayer)entitypatch.getOriginal());
+			if (entitypatch instanceof PlayerPatch) {
+				((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.BASIC_ATTACK, false, (ServerPlayer)entitypatch.getOriginal());
+			}
 		};
 		
 		private static final AnimationEvent.AnimationEventConsumer ANTITHEUS_AIRBURST = (entitypatch, self, params) -> {

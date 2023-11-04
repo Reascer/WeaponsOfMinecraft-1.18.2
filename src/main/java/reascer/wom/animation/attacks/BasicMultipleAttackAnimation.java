@@ -115,9 +115,9 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 			
 			while (entitypatch.getCurrenltyHurtEntities().size() < maxStrikes && hitEntities.next()) {
 				Entity hitten = hitEntities.getEntity();
-				LivingEntity trueEntity = this.getTrueEntity(hitten);
+				LivingEntity truehitten = this.getTrueEntity(hitten);
 				
-				if (trueEntity != null && trueEntity.isAlive() && !entitypatch.getCurrenltyAttackedEntities().contains(trueEntity) && !entitypatch.isTeammate(hitten)) {
+				if (truehitten != null && truehitten.isAlive() && !entitypatch.getCurrenltyAttackedEntities().contains(truehitten) && !entitypatch.isTeammate(hitten)) {
 					if (hitten instanceof LivingEntity || hitten instanceof PartEntity) {
 						if (entity.hasLineOfSight(hitten)) {
 							HurtableEntityPatch<?> hitHurtableEntityPatch = EpicFightCapabilities.getEntityPatch(hitten, HurtableEntityPatch.class);
@@ -131,9 +131,9 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 							if (hitHurtableEntityPatch != null) {
 								if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).isPresent()) {
 									if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.NONE) {
-										if (trueEntity instanceof Player && entitypatch instanceof PlayerPatch) {
+										if (truehitten instanceof Player ) {
 											source.setStunType(StunType.LONG);
-											source.setImpact(source.getImpact()*4);
+											source.setImpact(999);
 										} else {
 											source.setStunType(StunType.NONE);
 										}
@@ -143,7 +143,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 										source.setStunType(StunType.NONE);
 									} else if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.KNOCKDOWN && hitHurtableEntityPatch.getOriginal().hasEffect(EpicFightMobEffects.STUN_IMMUNITY.get())) {
 										source.setStunType(StunType.NONE);
-									}else {
+									} else {
 										source = this.getEpicFightDamageSource(entitypatch, hitten, phase);
 									}
 								} else {
@@ -208,7 +208,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 							if (attackResult.resultType.dealtDamage()) {
 								if (entitypatch instanceof ServerPlayerPatch) {
 									ServerPlayerPatch playerpatch = ((ServerPlayerPatch) entitypatch);
-									playerpatch.getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent(playerpatch, trueEntity, source, attackResult.damage));
+									playerpatch.getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent(playerpatch, truehitten, source, attackResult.damage));
 								}
 								if (source.getStunType() == StunType.KNOCKDOWN) {
 									hitHurtableEntityPatch.getOriginal().addEffect(new MobEffectInstance(EpicFightMobEffects.STUN_IMMUNITY.get(), 60, 0,true,false,false));
@@ -218,8 +218,8 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 								this.spawnHitParticle(((ServerLevel) hitten.level()), entitypatch, hitten, phase);
 								if (hitHurtableEntityPatch != null) {
 									if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).isPresent() && !hitHurtableEntityPatch.getOriginal().hasEffect(EpicFightMobEffects.STUN_IMMUNITY.get())) {
-										if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.NONE && !(trueEntity instanceof Player)) {
-											float stunTime = (float) ((source.getImpact() / anti_stunlock) * 0.2f * (1.0F - trueEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
+										if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.NONE && !(truehitten instanceof Player)) {
+											float stunTime = (float) ((source.getImpact() / anti_stunlock) * 0.2f * (1.0F - truehitten.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
 											if (hitHurtableEntityPatch.getOriginal().isAlive()) {
 												
 												hitHurtableEntityPatch.applyStun((anti_stunlock > 0.3f ? StunType.LONG : StunType.KNOCKDOWN), stunTime);
@@ -233,15 +233,15 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 												for (d0 = entity.getZ() - hitten.getZ(); d1 * d1 + d0 * d0 < 1.0E-4D; d0 = (Math.random() - Math.random()) * 0.01D) {
 										            d1 = (Math.random() - Math.random()) * 0.01D;
 										        }
-												if (!(trueEntity instanceof Player)) {
-													power *= 1.0D - trueEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
+												if (!(truehitten instanceof Player)) {
+													power *= 1.0D - truehitten.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
 												}
 												
 												if (power > 0.0D) {
 													hitten.hasImpulse = true;
 													Vec3 vec3 = hitten.getDeltaMovement();
 													Vec3 vec31 = (new Vec3(d1, 0.0D, d0)).normalize().scale(power);
-													if (!(trueEntity instanceof Player && entitypatch instanceof PlayerPatch)) {
+													if (!(truehitten instanceof Player)) {
 														hitten.setDeltaMovement(vec3.x / 2.0D - vec31.x, hitten.onGround() ? Math.min(0.4D, vec3.y / 2.0D) : vec3.y, vec3.z / 2.0D - vec31.z);
 													}
 												}
@@ -249,7 +249,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 										}
 										
 										if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.FALL) {
-											float stunTime = (float) ((source.getImpact() / anti_stunlock) * 0.4f * (1.0F - trueEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
+											float stunTime = (float) ((source.getImpact() / anti_stunlock) * 0.4f * (1.0F - truehitten.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE)));
 											if (hitHurtableEntityPatch.getOriginal().isAlive()) {
 												hitHurtableEntityPatch.applyStun((anti_stunlock > 0.3f ? StunType.SHORT : StunType.KNOCKDOWN), stunTime);
 												if (anti_stunlock <= 0.3f) {
@@ -264,21 +264,21 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 													d1 = (Math.random() - Math.random()) * 0.01D;
 												}
 												
-												if (!(trueEntity instanceof Player)) {
-													power *= 1.0D - trueEntity.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
+												if (!(truehitten instanceof Player)) {
+													power *= 1.0D - truehitten.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE);
 												}
 												
 												if (power > 0.0D) {
 													hitten.hasImpulse = true;
 													Vec3 vec3 = entity.getDeltaMovement();
 													Vec3 vec31 = (new Vec3(d1, d2, d0)).normalize().scale(power);
-													if (!(trueEntity instanceof Player && entitypatch instanceof PlayerPatch)) {
+													if (!(truehitten instanceof Player && entitypatch instanceof PlayerPatch)) {
 														hitten.setDeltaMovement(vec3.x / 2.0D - vec31.x, vec3.y / 2.0D - vec31.y, vec3.z / 2.0D - vec31.z);
 													}
 												}
 												
-												if (trueEntity instanceof Player && entitypatch instanceof PlayerPatch) {
-													trueEntity.addEffect(new MobEffectInstance(MobEffects.LEVITATION,5, (int) (power*4*6),true,false,false)); ;
+												if (truehitten instanceof Player && entitypatch instanceof PlayerPatch) {
+													truehitten.addEffect(new MobEffectInstance(MobEffects.LEVITATION,5, (int) (power*4*6),true,false,false)); ;
 												}
 											}
 										}
@@ -286,10 +286,10 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 								}
 							}
 							
-							entitypatch.getCurrenltyAttackedEntities().add(trueEntity);
+							entitypatch.getCurrenltyAttackedEntities().add(truehitten);
 							
 							if (attackResult.resultType.shouldCount()) {
-								entitypatch.getCurrenltyHurtEntities().add(trueEntity);
+								entitypatch.getCurrenltyHurtEntities().add(truehitten);
 							}
 						}
 					}
