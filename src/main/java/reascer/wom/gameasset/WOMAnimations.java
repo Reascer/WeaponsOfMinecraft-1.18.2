@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
-import org.openjdk.nashorn.api.tree.InstanceOfTree;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
