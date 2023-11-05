@@ -801,14 +801,14 @@ public class WOMAnimations {
 				new Phase(0.4F, 0.65F, 0.8F, 1.2F, Float.MAX_VALUE, biped.toolR, null))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.8F),0)
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(3.0F),0)
-				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT,0)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT.get(),0)
 				.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.RUINE_PLUNDER_SWORD,0)
 				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(0.5f)),0)
 				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE),0)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,0)
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2F),1)
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(3.0F),1)
-				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT,1)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT.get(),1)
 				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(0.5f)),1)
 				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE),1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
@@ -4197,10 +4197,10 @@ public class WOMAnimations {
 	
 	private static class ReuseableEvents {
 		
-		public static final AnimationEvent.AnimationEventConsumer KATANA_IN = (entitypatch, self, params) -> entitypatch.playSound(EpicFightSounds.SWORD_IN, 0, 0);
+		public static final AnimationEvent.AnimationEventConsumer KATANA_IN = (entitypatch, self, params) -> entitypatch.playSound(EpicFightSounds.SWORD_IN.get(), 0, 0);
 		public static final AnimationEvent.AnimationEventConsumer FAST_SPINING = (entitypatch, self, params) -> {
 			if (entitypatch instanceof PlayerPatch) {
-				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH, SoundSource.MASTER, 0.5F, 1.1F - ((new Random().nextFloat()-0.5f) * 0.2F));
+				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), EpicFightSounds.WHOOSH.get(), SoundSource.MASTER, 0.5F, 1.1F - ((new Random().nextFloat()-0.5f) * 0.2F));
 			}
 		};
 		
@@ -4282,7 +4282,7 @@ public class WOMAnimations {
 		
 		public static final AnimationEvent.AnimationEventConsumer ENDERBLASTER_RELOAD = (entitypatch, self, params) -> {
 			if (entitypatch instanceof PlayerPatch) {
-				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD, SoundSource.PLAYERS, 0.8F, 1.0F);
+				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
 			}
 //			if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER) {
 //				if (entitypatch instanceof PlayerPatch) {
@@ -4298,7 +4298,7 @@ public class WOMAnimations {
 		
 		public static final AnimationEvent.AnimationEventConsumer ENDERBLASTER_RELOAD_BOTH = (entitypatch, self, params) -> {
 			if (entitypatch instanceof PlayerPatch) {
-				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD, SoundSource.PLAYERS, 0.8F, 1.0F);
+				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
 			}
 //			if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER) {
 //				if (entitypatch instanceof PlayerPatch) {
