@@ -13,6 +13,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -288,6 +289,13 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 						container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_TWOHAND_RELOAD, 0);
 					} else {
 						if (container.getExecuter().getSkill(WOMSkills.MEDITATION).getDataManager().getDataValue(MeditationSkill.TIMER) == 0 || container.getExecuter().getSkill(WOMSkills.MEDITATION).getDataManager().getDataValue(MeditationSkill.TIMER) == null) {
+							if (container.getExecuter().getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER) {
+								SkillContainer skill = ((ServerPlayerPatch) container.getExecuter()).getSkill(SkillSlots.WEAPON_INNATE);
+								skill.getSkill().setStackSynchronize(((ServerPlayerPatch) container.getExecuter()), skill.getStack()+2);
+								if (skill.getStack() == skill.getSkill().getMaxStack()) {
+									skill.getSkill().setConsumptionSynchronize(((ServerPlayerPatch) container.getExecuter()), 12);
+								}
+							}
 							container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_TWOHAND_RELOAD, 0);
 						}
 					}
