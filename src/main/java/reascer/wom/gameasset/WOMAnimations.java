@@ -4310,7 +4310,7 @@ public class WOMAnimations {
 		
 		public static final AnimationEvent.AnimationEventConsumer ENDERBLASTER_RELOAD = (entitypatch, self, params) -> {
 			if (entitypatch instanceof PlayerPatch) {
-				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
+				entitypatch.getOriginal().level().playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
 			}
 //			if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER) {
 //				if (entitypatch instanceof PlayerPatch) {
@@ -4326,7 +4326,7 @@ public class WOMAnimations {
 		
 		public static final AnimationEvent.AnimationEventConsumer ENDERBLASTER_RELOAD_BOTH = (entitypatch, self, params) -> {
 			if (entitypatch instanceof PlayerPatch) {
-				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
+				entitypatch.getOriginal().level().playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
 			}
 //			if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER) {
 //				if (entitypatch instanceof PlayerPatch) {

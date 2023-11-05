@@ -5,7 +5,6 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -17,7 +16,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
-import reascer.wom.gameasset.WOMAnimations;
 import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.animation.Keyframe;
 import yesman.epicfight.api.animation.TransformSheet;
@@ -41,7 +39,6 @@ import yesman.epicfight.api.utils.TypeFlexibleHashMap;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.config.ConfigurationIngame;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
-import yesman.epicfight.world.capabilities.entitypatch.HumanoidMobPatch;
 import yesman.epicfight.world.capabilities.entitypatch.HurtableEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -249,7 +246,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 													Vec3 vec3 = hitten.getDeltaMovement();
 													Vec3 vec31 = (new Vec3(d1, 0.0D, d0)).normalize().scale(power);
 													if (!(truehittenEntity instanceof Player)) {
-														hitten.setDeltaMovement(vec3.x / 2.0D - vec31.x, hitten.isOnGround() ? Math.min(0.4D, vec3.y / 2.0D) : vec3.y, vec3.z / 2.0D - vec31.z);
+														hitten.setDeltaMovement(vec3.x / 2.0D - vec31.x, hitten.onGround() ? Math.min(0.4D, vec3.y / 2.0D) : vec3.y, vec3.z / 2.0D - vec31.z);
 													}
 												}
 											}
