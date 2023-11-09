@@ -235,72 +235,72 @@ public class TormentPassiveSkill extends PassiveSkill {
 	
 	@Override
 	public void updateContainer(SkillContainer container) {
-		if(container.getExecuter().isLogicalClient()) {
-			if ((container.getExecuter().getCurrentLivingMotion() == LivingMotions.WALK || container.getExecuter().getCurrentLivingMotion() == LivingMotions.RUN) && !container.getExecuter().getOriginal().isUsingItem()) {
-				PlayerPatch<?> entitypatch = container.getExecuter();
-				float interpolation = 0.0F;
-				OpenMatrix4f transformMatrix;
-				transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.toolR);
-				transformMatrix.translate(new Vec3f(0,-0.0F,-1.2F));
-				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
-					transformMatrix.translate(new Vec3f(0,0.0F,-(new Random().nextFloat() * 1.0f)));
-				
-				float dpx = transformMatrix.m30 + (float) entitypatch.getOriginal().getX();
-				float dpy = transformMatrix.m31 + (float) entitypatch.getOriginal().getY();
-				float dpz = transformMatrix.m32 + (float) entitypatch.getOriginal().getZ();
-				BlockState blockstate = entitypatch.getOriginal().level().getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
-				BlockPos blockpos = new BlockPos.MutableBlockPos(dpx,dpy,dpz);
-				while ((blockstate.getBlock() instanceof BushBlock || blockstate.isAir()) && !blockstate.is(Blocks.VOID_AIR)) {
-					dpy--;
-					blockstate = entitypatch.getOriginal().level().getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
-				}
-				
-				while (blockstate instanceof FractureBlockState) {
-					blockpos = new BlockPos.MutableBlockPos(dpx,dpy--,dpz);
-					blockstate = entitypatch.getOriginal().level().getBlockState(blockpos.below());
-				}
-				if ((transformMatrix.m31 + entitypatch.getOriginal().getY()) < dpy+1.50f) {
-					for (int i = 0; i < 2; i++) {
-						entitypatch.getOriginal().level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate),
-								(transformMatrix.m30 + entitypatch.getOriginal().getX()),
-								(transformMatrix.m31 + entitypatch.getOriginal().getY())-0.2f,
-								(transformMatrix.m32 + entitypatch.getOriginal().getZ()),
-								(new Random().nextFloat() - 0.5F)*0.005f,
-								(new Random().nextFloat()) * 0.02f,
-								(new Random().nextFloat() - 0.5F)*0.005f);
-					}
-				}
-			}
-		}
-		
-		if (container.getDataManager().getDataValue(CHARGED)) {
-			PlayerPatch<?> entitypatch = container.getExecuter();
-			int numberOf = 2;
-			float partialScale = 1.0F / (numberOf - 1);
-			float interpolation = 0.0F;
-			OpenMatrix4f transformMatrix;
-			for (int i = 0; i < numberOf; i++) {
-				transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.toolR);
-				transformMatrix.translate(new Vec3f(0,0.0F,-1.0F));
-				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
-					transformMatrix.translate(new Vec3f(0,0.0F,-(new Random().nextFloat() * 1.0f)));
-					entitypatch.getOriginal().level().addParticle(new DustParticleOptions(new Vector3f(0.8f,0.6f,0f),1.0f),
-						(transformMatrix.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.55f),
-						(transformMatrix.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.55f),
-						(transformMatrix.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.55f),
-						0,
-						0,
-						0);
-					entitypatch.getOriginal().level().addParticle(ParticleTypes.FLAME,
-							(transformMatrix.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.75f),
-							(transformMatrix.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.75f),
-							(transformMatrix.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.75f),
-							0,
-							0,
-							0);
-				interpolation += partialScale;
-			}
-		}
+//		if(container.getExecuter().isLogicalClient()) {
+//			if ((container.getExecuter().getCurrentLivingMotion() == LivingMotions.WALK || container.getExecuter().getCurrentLivingMotion() == LivingMotions.RUN) && !container.getExecuter().getOriginal().isUsingItem()) {
+//				PlayerPatch<?> entitypatch = container.getExecuter();
+//				float interpolation = 0.0F;
+//				OpenMatrix4f transformMatrix;
+//				transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.toolR);
+//				transformMatrix.translate(new Vec3f(0,-0.0F,-1.2F));
+//				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
+//					transformMatrix.translate(new Vec3f(0,0.0F,-(new Random().nextFloat() * 1.0f)));
+//				
+//				float dpx = transformMatrix.m30 + (float) entitypatch.getOriginal().getX();
+//				float dpy = transformMatrix.m31 + (float) entitypatch.getOriginal().getY();
+//				float dpz = transformMatrix.m32 + (float) entitypatch.getOriginal().getZ();
+//				BlockState blockstate = entitypatch.getOriginal().level().getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
+//				BlockPos blockpos = new BlockPos.MutableBlockPos(dpx,dpy,dpz);
+//				while ((blockstate.getBlock() instanceof BushBlock || blockstate.isAir()) && !blockstate.is(Blocks.VOID_AIR)) {
+//					dpy--;
+//					blockstate = entitypatch.getOriginal().level().getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
+//				}
+//				
+//				while (blockstate instanceof FractureBlockState) {
+//					blockpos = new BlockPos.MutableBlockPos(dpx,dpy--,dpz);
+//					blockstate = entitypatch.getOriginal().level().getBlockState(blockpos.below());
+//				}
+//				if ((transformMatrix.m31 + entitypatch.getOriginal().getY()) < dpy+1.50f) {
+//					for (int i = 0; i < 2; i++) {
+//						entitypatch.getOriginal().level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate),
+//								(transformMatrix.m30 + entitypatch.getOriginal().getX()),
+//								(transformMatrix.m31 + entitypatch.getOriginal().getY())-0.2f,
+//								(transformMatrix.m32 + entitypatch.getOriginal().getZ()),
+//								(new Random().nextFloat() - 0.5F)*0.005f,
+//								(new Random().nextFloat()) * 0.02f,
+//								(new Random().nextFloat() - 0.5F)*0.005f);
+//					}
+//				}
+//			}
+//		}
+//		
+//		if (container.getDataManager().getDataValue(CHARGED)) {
+//			PlayerPatch<?> entitypatch = container.getExecuter();
+//			int numberOf = 2;
+//			float partialScale = 1.0F / (numberOf - 1);
+//			float interpolation = 0.0F;
+//			OpenMatrix4f transformMatrix;
+//			for (int i = 0; i < numberOf; i++) {
+//				transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.toolR);
+//				transformMatrix.translate(new Vec3f(0,0.0F,-1.0F));
+//				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
+//					transformMatrix.translate(new Vec3f(0,0.0F,-(new Random().nextFloat() * 1.0f)));
+//					entitypatch.getOriginal().level().addParticle(new DustParticleOptions(new Vector3f(0.8f,0.6f,0f),1.0f),
+//						(transformMatrix.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.55f),
+//						(transformMatrix.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.55f),
+//						(transformMatrix.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.55f),
+//						0,
+//						0,
+//						0);
+//					entitypatch.getOriginal().level().addParticle(ParticleTypes.FLAME,
+//							(transformMatrix.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.75f),
+//							(transformMatrix.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.75f),
+//							(transformMatrix.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.75f),
+//							0,
+//							0,
+//							0);
+//				interpolation += partialScale;
+//			}
+//		}
 		if(!container.getExecuter().isLogicalClient()) {
 			AttributeModifier charging_Movementspeed = new AttributeModifier(EVENT_UUID, "torment.charging_movespeed", 3, Operation.MULTIPLY_TOTAL);
 			ServerPlayerPatch executer = (ServerPlayerPatch) container.getExecuter();

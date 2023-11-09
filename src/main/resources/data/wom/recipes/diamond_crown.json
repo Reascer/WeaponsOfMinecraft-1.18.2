@@ -9,5 +9,8 @@
     "result":
     {
         "item" : "wom:diamond_crown"
-    }
+    },
+	"template": {
+		"item": "minecraft:netherite_upgrade_smithing_template"
+	}
 }

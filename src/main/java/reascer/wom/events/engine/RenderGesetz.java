@@ -30,6 +30,9 @@ public class RenderGesetz extends RenderItemBase {
 		Joint holdingHand2 = isInMainhand ? armature.handR : armature.handL;
 		OpenMatrix4f jointTransform2 = poses[holdingHand2.getId()];
 		modelMatrix.mulFront(jointTransform);
+		if (!isInMainhand) {
+			modelMatrix.translate(1.000f,0, 0);
+		}
 		
 		poseStack.pushPose();
 		this.mulPoseStack(poseStack, modelMatrix);
