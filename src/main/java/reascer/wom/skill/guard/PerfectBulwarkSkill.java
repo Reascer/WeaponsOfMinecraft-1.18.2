@@ -6,13 +6,17 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
@@ -27,6 +31,7 @@ import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMColliders;
 import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import yesman.epicfight.api.animation.types.StaticAnimation;
+import yesman.epicfight.client.gui.BattleModeGui;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.gameasset.EpicFightSounds;
@@ -37,6 +42,7 @@ import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.guard.GuardSkill;
+import yesman.epicfight.skill.guard.GuardSkill.BlockType;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
@@ -52,6 +58,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("8665b153-4bc3-4480-adb4-96bdd66e35e6");
 	private static final SkillDataKey<Boolean> PARRYING = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	private static final SkillDataKey<Integer> CHARGE = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
+	private static final SkillDataKey<Integer> COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	
 	public static GuardSkill.Builder createCounterAttackBuilder() {
 		return GuardSkill.createGuardBuilder()
@@ -88,7 +95,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		super.onInitiate(container);
 		container.getDataManager().registerData(PARRYING);
 		container.getDataManager().registerData(CHARGE);
-		container.getDataManager().setData(PARRYING, false);
+		container.getDataManager().registerData(COOLDOWN);
 		
 		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_PRE, GuardSkill.EVENT_UUID,1);
 		
@@ -103,16 +110,21 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		container.getExecuter().getEventListener().addEventListener(EventType.SERVER_ITEM_USE_EVENT, PerfectBulwarkSkill.EVENT_UUID, (event) -> {
 			CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND);
 			
-			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD)) {
+			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && container.getDataManager().getDataValue(COOLDOWN) == 0) {
 				event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 				container.getDataManager().setDataSync(PARRYING, true, event.getPlayerPatch().getOriginal());
+			} else {
+				if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && event.getPlayerPatch().getEntityState().canBasicAttack() && container.getDataManager().getDataValue(COOLDOWN) > 0) {
+					event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+							SoundEvents.LAVA_EXTINGUISH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
+				}
 			}
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.SERVER_ITEM_STOP_EVENT, PerfectBulwarkSkill.EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(PARRYING) && container.getDataManager().getDataValue(CHARGE) >= 5) {
 				container.getDataManager().setDataSync(PARRYING, false, event.getPlayerPatch().getOriginal());
-				container.getDataManager().setDataSync(CHARGE, 0, event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(COOLDOWN, 100, event.getPlayerPatch().getOriginal());
 				CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND);
 				StaticAnimation animation;
 				
@@ -196,10 +208,11 @@ public class PerfectBulwarkSkill extends GuardSkill {
 						IndirectEpicFightDamageSource damage = (IndirectEpicFightDamageSource) new IndirectEpicFightDamageSource("perfect_bulkwark_shockwave", container.getExecuter().getOriginal(), container.getExecuter().getOriginal(), StunType.LONG);
 						damage.setImpact(3.0f);
 						LivingEntity target = (LivingEntity) entity;
-						target.hurt(damage,10);
+						target.hurt(damage,container.getDataManager().getDataValue(CHARGE));
 						entity.setDeltaMovement(vec3.x / 2.0D - vec31.x, vec3.y / 2.0D - vec31.y, vec3.z / 2.0D - vec31.z);
 					}
 				}
+				container.getDataManager().setDataSync(CHARGE, 0, event.getPlayerPatch().getOriginal());
 			}
 		});
 		
@@ -318,6 +331,43 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		
 
 		return super.getGuardMotion(playerpatch, itemCapability, blockType);
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public boolean shouldDraw(SkillContainer container) {
+		return container.getDataManager().getDataValue(CHARGE) > 0 || container.getDataManager().getDataValue(COOLDOWN) > 0;
+	}
+	
+	@OnlyIn(Dist.CLIENT)
+	@Override
+	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack poseStack, float x, float y) {
+		poseStack.pushPose();
+		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
+		RenderSystem.setShaderTexture(0, this.getSkillTexture());
+		
+		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
+			RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.5F);
+		} else {
+			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		}
+		
+		GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
+		
+		String string = "";
+		
+		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
+			string = String.valueOf(container.getDataManager().getDataValue(COOLDOWN)/20);
+		} else {
+			string = String.valueOf(container.getDataManager().getDataValue(CHARGE));
+		}
+		
+		if (container.getDataManager().getDataValue(CHARGE) == 0) {
+			string = "";
+		}
+		gui.font.drawShadow(poseStack, string, x+5, y+6, 16777215);
+		
+		poseStack.popPose();
 	}
 	
 	@Override

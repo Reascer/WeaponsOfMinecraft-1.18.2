@@ -288,6 +288,13 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 				container.getDataManager().setDataSync(RELOAD_COOLDOWN, 80,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				if (container.getExecuter().getSkill(this).getStack() < this.getMaxStack() && container.getExecuter().getOriginal().getItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.ENDER_BLASTER.get()) {
 					if (container.getExecuter().getSkill(WOMSkills.MEDITATION) == null) {
+						if (container.getExecuter().getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER) {
+							SkillContainer skill = ((ServerPlayerPatch) container.getExecuter()).getSkill(SkillSlots.WEAPON_INNATE);
+							skill.getSkill().setStackSynchronize(((ServerPlayerPatch) container.getExecuter()), skill.getStack()+2);
+							if (skill.getStack() == skill.getSkill().getMaxStack()) {
+								skill.getSkill().setConsumptionSynchronize(((ServerPlayerPatch) container.getExecuter()), 12);
+							}
+						}
 						container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_TWOHAND_RELOAD, 0);
 					} else {
 						if (container.getExecuter().getSkill(WOMSkills.MEDITATION).getDataManager().getDataValue(MeditationSkill.TIMER) == 0 || container.getExecuter().getSkill(WOMSkills.MEDITATION).getDataManager().getDataValue(MeditationSkill.TIMER) == null) {
