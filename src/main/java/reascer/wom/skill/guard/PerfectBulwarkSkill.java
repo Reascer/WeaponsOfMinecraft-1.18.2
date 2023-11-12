@@ -8,7 +8,10 @@ import javax.annotation.Nullable;
 
 import org.joml.Vector3f;
 
-import net.minecraft.client.gui.GuiComponent;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
@@ -115,7 +118,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 				container.getDataManager().setDataSync(PARRYING, true, event.getPlayerPatch().getOriginal());
 			} else {
 				if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && event.getPlayerPatch().getEntityState().canBasicAttack() && container.getDataManager().getDataValue(COOLDOWN) > 0) {
-					event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+					event.getPlayerPatch().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 							SoundEvents.LAVA_EXTINGUISH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 				}
 			}
@@ -332,6 +335,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		return super.getGuardMotion(playerpatch, itemCapability, blockType);
 	}
 	
+	
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldDraw(SkillContainer container) {
@@ -340,7 +344,8 @@ public class PerfectBulwarkSkill extends GuardSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack poseStack, float x, float y) {
+	public void drawOnGui(BattleModeGui gui, SkillContainer container, GuiGraphics guiGraphics, float x, float y) {
+		PoseStack poseStack = guiGraphics.pose();
 		poseStack.pushPose();
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, this.getSkillTexture());
@@ -351,7 +356,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		}
 		
-		GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
+		guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		
 		String string = "";
 		
@@ -363,8 +368,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 				string = "";
 			}
 		}
-		
-		gui.font.drawShadow(poseStack, string, x+5, y+6, 16777215);
+		guiGraphics.drawString(gui.font, string, x+5, y+6, 16777215,true);
 		
 		poseStack.popPose();
 	}
