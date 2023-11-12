@@ -365,7 +365,7 @@ public class VengefulParry extends GuardSkill {
 					container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 5 , 10, true,false,false));
 				}
 				if (container.getDataManager().getDataValue(TIMER) == 0 && container.getDataManager().getDataValue(HOLDING_STANCE)) {
-					container.getDataManager().setDataSync(COOLDOWN, 20, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(COOLDOWN, 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 					container.getDataManager().setDataSync(HOLDING_STANCE, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 					container.getExecuter().getOriginal().stopUsingItem();
 				}
@@ -393,5 +393,4 @@ public class VengefulParry extends GuardSkill {
 			container.getDataManager().setData(VENGENCE_DURATION, container.getDataManager().getDataValue(VENGENCE_DURATION)-1);
 		}
 	}
-	
 }

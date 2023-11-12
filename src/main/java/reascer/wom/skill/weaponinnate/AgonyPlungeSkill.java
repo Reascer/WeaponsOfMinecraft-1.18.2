@@ -84,7 +84,11 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 	
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
-		executer.playAnimationSynchronized(this.attackAnimations, 0);
+		if (executer.getSkill(EpicFightSkills.HYPERVITALITY) == null) {
+			executer.playAnimationSynchronized(this.attackAnimations, 0);
+		} else {
+			executer.playAnimationSynchronized(WOMAnimations.AGONY_PLUNGE_FORWARD_X, 0);
+		}
 		executer.getSkill(this).getDataManager().setDataSync(PLUNGING, true, executer.getOriginal());
 		if (executer.getSkill(EpicFightSkills.HYPERVITALITY) == null) {
 			executer.getSkill(this).getDataManager().setDataSync(STACK, executer.getSkill(this).getStack(), executer.getOriginal());
