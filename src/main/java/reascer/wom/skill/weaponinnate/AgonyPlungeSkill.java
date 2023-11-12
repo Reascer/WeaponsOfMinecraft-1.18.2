@@ -24,6 +24,7 @@ import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
+import yesman.epicfight.world.damagesource.EpicFightEntityDamageSource;
 import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.effect.EpicFightMobEffects;
@@ -83,7 +84,11 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 	
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
-		executer.playAnimationSynchronized(this.attackAnimations, 0);
+		if (executer.getSkill(EpicFightSkills.HYPERVITALITY) == null) {
+			executer.playAnimationSynchronized(this.attackAnimations, 0);
+		} else {
+			executer.playAnimationSynchronized(WOMAnimations.AGONY_PLUNGE_FORWARD_X, 0);
+		}
 		executer.getSkill(this).getDataManager().setDataSync(PLUNGING, true, executer.getOriginal());
 		if (executer.getSkill(EpicFightSkills.HYPERVITALITY) == null) {
 			executer.getSkill(this).getDataManager().setDataSync(STACK, executer.getSkill(this).getStack(), executer.getOriginal());
@@ -95,7 +100,7 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 		if (!executer.getOriginal().isCreative()) {
 			executer.getOriginal().level.playSound(null, executer.getOriginal().xo, executer.getOriginal().yo, executer.getOriginal().zo,
 	    			SoundEvents.PLAYER_HURT, executer.getOriginal().getSoundSource(), 1.0F, 1.0F);
-			DamageSource damage = new IndirectEpicFightDamageSource("agonized_to_death", executer.getOriginal(), executer.getOriginal(), StunType.NONE).bypassArmor().bypassMagic();
+			DamageSource damage = new EpicFightEntityDamageSource("agonized_to_death", executer.getOriginal(), attackAnimations).setStunType(StunType.NONE).cast().bypassArmor().bypassMagic();
 			executer.getOriginal().hurt(damage, executer.getOriginal().getHealth() * (0.40f - (0.10f * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()))));
 			super.executeOnServer(executer, args);
 		}

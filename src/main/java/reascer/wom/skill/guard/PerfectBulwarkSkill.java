@@ -19,6 +19,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -44,6 +46,7 @@ import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.guard.GuardSkill;
 import yesman.epicfight.skill.guard.GuardSkill.BlockType;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
+import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategories;
@@ -98,11 +101,13 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		container.getDataManager().registerData(COOLDOWN);
 		
 		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_PRE, GuardSkill.EVENT_UUID,1);
+		container.getExecuter().getEventListener().removeListener(EventType.CLIENT_ITEM_USE_EVENT, GuardSkill.EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.SERVER_ITEM_USE_EVENT, GuardSkill.EVENT_UUID);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
 			CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND);
 			
-			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD)) {
+			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && container.getDataManager().getDataValue(COOLDOWN) == 0) {
 				event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 			}
 		});
@@ -208,7 +213,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 						IndirectEpicFightDamageSource damage = (IndirectEpicFightDamageSource) new IndirectEpicFightDamageSource("perfect_bulkwark_shockwave", container.getExecuter().getOriginal(), container.getExecuter().getOriginal(), StunType.LONG);
 						damage.setImpact(3.0f);
 						LivingEntity target = (LivingEntity) entity;
-						target.hurt(damage,container.getDataManager().getDataValue(CHARGE));
+						target.hurt(damage,container.getDataManager().getDataValue(CHARGE)*2);
 						entity.setDeltaMovement(vec3.x / 2.0D - vec31.x, vec3.y / 2.0D - vec31.y, vec3.z / 2.0D - vec31.z);
 					}
 				}
@@ -220,11 +225,9 @@ public class PerfectBulwarkSkill extends GuardSkill {
 			CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(event.getPlayerPatch().getOriginal().getUsedItemHand());
 			
 			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && event.getPlayerPatch().getOriginal().isUsingItem()) {
-				if (container.getDataManager().getDataValue(CHARGE) < 5) {
-					container.getDataManager().setDataSync(CHARGE,1 + container.getDataManager().getDataValue(CHARGE) , event.getPlayerPatch().getOriginal());
-				}
+				container.getDataManager().setDataSync(CHARGE,1 + container.getDataManager().getDataValue(CHARGE) , event.getPlayerPatch().getOriginal());
 				
-				if (container.getDataManager().getDataValue(CHARGE) == 5){
+				if (container.getDataManager().getDataValue(CHARGE) >= 5){
 					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles(new DustParticleOptions(new Vector3f(0.8f,0.75f,0.65f), 1.0F), 
 							container.getExecuter().getOriginal().getX() - 0.2D, 
 							container.getExecuter().getOriginal().getY() + 1.3D, 
@@ -357,14 +360,14 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		String string = "";
 		
 		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
-			string = String.valueOf(container.getDataManager().getDataValue(COOLDOWN)/20);
+			string = String.valueOf((container.getDataManager().getDataValue(COOLDOWN)/20)+1);
 		} else {
 			string = String.valueOf(container.getDataManager().getDataValue(CHARGE));
+			if (container.getDataManager().getDataValue(CHARGE) == 0) {
+				string = "";
+			}
 		}
 		
-		if (container.getDataManager().getDataValue(CHARGE) == 0) {
-			string = "";
-		}
 		gui.font.drawShadow(poseStack, string, x+5, y+6, 16777215);
 		
 		poseStack.popPose();
@@ -386,5 +389,14 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		list.clear();
 		list.add(String.format("%s, %s, %s, %s, %s, %s, %s, %s", WeaponCategories.UCHIGATANA, WeaponCategories.LONGSWORD, WeaponCategories.SWORD, WeaponCategories.TACHI, WeaponCategories.SPEAR, WOMWeaponCategories.AGONY , WOMWeaponCategories.RUINE, WOMWeaponCategories.STAFF).toLowerCase());
 		return list;
+	}
+	
+	@Override
+	public void updateContainer(SkillContainer container) {
+		super.updateContainer(container);
+		
+		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
+			container.getDataManager().setData(COOLDOWN, container.getDataManager().getDataValue(COOLDOWN)-1);
+		}
 	}
 }

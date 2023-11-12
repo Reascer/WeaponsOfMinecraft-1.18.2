@@ -395,5 +395,4 @@ public class VengefulParry extends GuardSkill {
 			container.getDataManager().setData(VENGENCE_DURATION, container.getDataManager().getDataValue(VENGENCE_DURATION)-1);
 		}
 	}
-	
 }
