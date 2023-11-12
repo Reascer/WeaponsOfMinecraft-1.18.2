@@ -105,7 +105,7 @@ public class WOMLivingEntityEvents {
 			float distance_from_zero = (float) Math.sqrt(Math.pow(event.getX(), 2) + Math.pow(event.getZ(), 2));
 			if (distance_from_zero / 1000 > 1 && !event.getEntity().getTags().contains("wom-stronger-mob") && event.getEntity().level.getGameRules().getBoolean(WOMGamerules.SPAWN_STONGER_MOB_OVER_DISTANCE)) {
 				AttributeInstance entity_max_health = event.getEntity().getAttribute(Attributes.MAX_HEALTH);
-				AttributeModifier boosted_health = new AttributeModifier(UUID.fromString("5a70f02c-7ca0-43c5-a766-2be3d68461a2"), "wom.wom_stronger_health", Math.round(Math.pow(1.5D, (distance_from_zero / 1000))-1) , Operation.MULTIPLY_TOTAL);
+				AttributeModifier boosted_health = new AttributeModifier(UUID.fromString("5a70f02c-7ca0-43c5-a766-2be3d68461a2"), "wom.wom_stronger_health", Math.round(Math.pow(1.2D, (distance_from_zero / 1000))-1) , Operation.MULTIPLY_TOTAL);
 				if (entity_max_health != null) {
 					entity_max_health.removeModifier(boosted_health);
 					entity_max_health.addPermanentModifier(boosted_health);

@@ -22,7 +22,6 @@ import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.skill.WomMultipleAnimationSkill;
 import reascer.wom.skill.guard.CounterAttack;
-import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import reascer.wom.world.item.HerscherItem;
 import reascer.wom.world.item.MagneticShieldItem;
 import yesman.epicfight.api.animation.LivingMotions;
@@ -47,7 +46,6 @@ import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.effect.EpicFightMobEffects;
-import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class RegierungSkill extends WomMultipleAnimationSkill {

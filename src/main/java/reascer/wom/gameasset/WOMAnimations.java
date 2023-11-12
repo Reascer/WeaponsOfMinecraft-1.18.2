@@ -148,11 +148,8 @@ public class WOMAnimations {
 	public static StaticAnimation AGONY_GUARD;
 	public static StaticAnimation AGONY_GUARD_HIT_1;
 	public static StaticAnimation AGONY_GUARD_HIT_2;
-	public static StaticAnimation AGONY_PLUNGE_MIDDLE;
 	public static StaticAnimation AGONY_PLUNGE_FORWARD;
-	public static StaticAnimation AGONY_PLUNGE_BACKWARD;
-	public static StaticAnimation AGONY_PLUNGE_LEFT;
-	public static StaticAnimation AGONY_PLUNGE_RIGHT;
+	public static StaticAnimation AGONY_PLUNGE_FORWARD_X;
 	
 	public static StaticAnimation RUINE_AUTO_1;
 	public static StaticAnimation RUINE_AUTO_2;
@@ -586,6 +583,42 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER.get(),1)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.BLADE_RUSH_SKILL,1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.KNOCKDOWN,1)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F)
+				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
+				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, false)
+				.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
+				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 1.3F))
+				.addEvents(TimeStampedEvent.create(0.15F, ReuseableEvents.AGONY_AIRBURST_JUMP, Side.CLIENT),
+						TimeStampedEvent.create(0.2F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT),
+						TimeStampedEvent.create(0.25F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT),
+						TimeStampedEvent.create(0.3F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT),
+						TimeStampedEvent.create(0.35F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT),
+						TimeStampedEvent.create(1.3F, ReuseableEvents.AGONY_PLUNGE_GROUNDTHRUST, Side.CLIENT),
+						TimeStampedEvent.create(1.45F, (entitypatch, self, params) -> {
+							if (entitypatch instanceof PlayerPatch) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.PLUNGING, true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.STACK, 0,(ServerPlayer)entitypatch.getOriginal());
+							}
+						}, Side.SERVER),
+						TimeStampedEvent.create(1.55F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT));
+		
+		AGONY_PLUNGE_FORWARD_X = new SpecialAttackAnimation(0.05F, "biped/skill/agony_plunge_forward", biped,
+				new Phase(0.0F, 0.10F, 0.20F, 0.2F, 0.2F, biped.rootJoint, WOMColliders.AGONY_PLUNGE), 
+				new Phase(0.2F, 1.1F, 1.45F, 1.7F, Float.MAX_VALUE, biped.rootJoint, WOMColliders.AGONY_PLUNGE))
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.WHOOSH_BIG,0)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLUNT,0)
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10),0)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.setter(9.0F),0)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.setter(1.0F),0)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,0)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.2f),1)
+				.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.WOM_SWEEPING_EDGE_ENCHANTMENT.create(1.5f)),1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.0F),1)
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10),1)
+				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE),1)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER,1)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.BLADE_RUSH_SKILL,1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.LONG,1)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F)
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addProperty(ActionAnimationProperty.STOP_MOVEMENT, false)
@@ -1249,10 +1282,10 @@ public class WOMAnimations {
 					return 1.0F;
 				})
 				.addEvents(TimeStampedEvent.create(0.0F, (entitypatch, self, params) -> {
-							if (entitypatch instanceof PlayerPatch) {
-								((PlayerPatch<?>)entitypatch).setStamina(((PlayerPatch<?>)entitypatch).getStamina() - 2.0f);
-							}
-						}, Side.CLIENT),
+					if (entitypatch instanceof PlayerPatch) {
+						((PlayerPatch<?>)entitypatch).setStamina(((PlayerPatch<?>)entitypatch).getStamina() - 2.0f);
+					}
+				}, Side.CLIENT),
 				TimeStampedEvent.create(0.6F, ReuseableEvents.TORMENT_GROUNDSLAM, Side.CLIENT));
 		
 		TORMENT_BERSERK_CONVERT = new BasicMultipleAttackAnimation(0.05F, 0.6F, 1.35F, 1.7F, WOMColliders.PLUNDER_PERDITION, biped.rootJoint, "biped/skill/torment_berserk_convert", biped)
@@ -1284,11 +1317,13 @@ public class WOMAnimations {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				}, Side.CLIENT),TimeStampedEvent.create(0.90F, (entitypatch, self, params) -> {
-					if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
-						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
+					if (entitypatch instanceof PlayerPatch) {
+						if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+							entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
+						}
+						entitypatch.updateMotion(true);
 					}
-					entitypatch.updateMotion(true);
 					entitypatch.playSound(EpicFightSounds.SWORD_IN.get(), 0, 0);
 				}, Side.SERVER));
 		
@@ -1311,11 +1346,13 @@ public class WOMAnimations {
 						Entity entity = entitypatch.getOriginal();
 						entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 					}, Side.CLIENT),TimeStampedEvent.create(1.1F, (entitypatch, self, params) -> {
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
-						if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
-							entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
+						if (entitypatch instanceof PlayerPatch) {
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+							if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
+								entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
+							}
+							entitypatch.updateMotion(true);
 						}
-						entitypatch.updateMotion(true);
 						entitypatch.playSound(EpicFightSounds.SWORD_IN.get(), 0, 0);
 					}, Side.SERVER));
 				
@@ -1334,11 +1371,13 @@ public class WOMAnimations {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				}, Side.CLIENT),TimeStampedEvent.create(1.0F, (entitypatch, self, params) -> {
-					((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
-					if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
-						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
+					if (entitypatch instanceof PlayerPatch) {
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+						if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
+							entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
+						}
+						entitypatch.updateMotion(true);
 					}
-					entitypatch.updateMotion(true);
 					entitypatch.playSound(EpicFightSounds.SWORD_IN.get(), 0, 0);
 				}, Side.SERVER));
 		
@@ -1362,10 +1401,12 @@ public class WOMAnimations {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().level.addParticle(WOMParticles.ENTITY_AFTER_IMAGE_WEAPON.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				}, Side.CLIENT),TimeStampedEvent.create(0.8F, (entitypatch, self, params) -> {
-					if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
-						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
-						entitypatch.updateMotion(true);
+					if (entitypatch instanceof PlayerPatch) {
+						if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+							entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
+							entitypatch.updateMotion(true);
+						}
 					}
 					entitypatch.playSound(EpicFightSounds.SWORD_IN.get(), 0, 0);
 				}, Side.SERVER));
@@ -1383,10 +1424,12 @@ public class WOMAnimations {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().level.addParticle(WOMParticles.ENTITY_AFTER_IMAGE_WEAPON.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				}, Side.CLIENT),TimeStampedEvent.create(0.55F, (entitypatch, self, params) -> {
-					if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
-						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
-						entitypatch.updateMotion(true);
+					if (entitypatch instanceof PlayerPatch) {
+						if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+							entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
+							entitypatch.updateMotion(true);
+						}
 					}
 					entitypatch.playSound(EpicFightSounds.SWORD_IN.get(), 0, 0);
 				}, Side.SERVER));
@@ -1451,11 +1494,14 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.KATANA_SHEATHED_HIT)
 				.addEvents(TimeStampedEvent.create(0.05F, ReuseableEvents.KATANA_IN, Side.SERVER),
 						TimeStampedEvent.create(0.5F, (entitypatch, self, params) -> {
-							if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
-								entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 3);
+							if (entitypatch instanceof PlayerPatch) {
+								if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
+									((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+									entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 3);
+								}
+								entitypatch.updateMotion(true);
 							}
-							entitypatch.updateMotion(true);
+							
 						}, Side.SERVER),TimeStampedEvent.create(2.05F, (entitypatch, self, params) -> {
 							entitypatch.playSound(EpicFightSounds.WHOOSH.get(), 0, 0);
 						}, Side.SERVER),TimeStampedEvent.create(3.45F, (entitypatch, self, params) -> {
@@ -1471,11 +1517,13 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.KATANA_SHEATHED_HIT)
 				.addEvents(TimeStampedEvent.create(0.05F, ReuseableEvents.KATANA_IN, Side.SERVER),
 						TimeStampedEvent.create(0.5F, (entitypatch, self, params) -> {
-							if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
-								entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 3);
+							if (entitypatch instanceof PlayerPatch) {
+								if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
+									((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+									entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 3);
+								}
+								entitypatch.updateMotion(true);
 							}
-							entitypatch.updateMotion(true);
 						}, Side.SERVER),TimeStampedEvent.create(2.05F, (entitypatch, self, params) -> {
 							entitypatch.playSound(EpicFightSounds.WHOOSH.get(), 0, 0);
 						}, Side.SERVER),TimeStampedEvent.create(3.45F, (entitypatch, self, params) -> {
@@ -1495,11 +1543,13 @@ public class WOMAnimations {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().level.addParticle(WOMParticles.ENTITY_AFTER_IMAGE_WEAPON.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				}, Side.CLIENT),TimeStampedEvent.create(0.8F, (entitypatch, self, params) -> {
-					if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
-						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 3);
+					if (entitypatch instanceof PlayerPatch) {
+						if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+							entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 3);
+						}
+						entitypatch.updateMotion(true);
 					}
-					entitypatch.updateMotion(true);
 				}, Side.SERVER),TimeStampedEvent.create(1.90F, (entitypatch, self, params) -> {
 					entitypatch.playSound(EpicFightSounds.WHOOSH.get(), 0, 0);
 				}, Side.SERVER),TimeStampedEvent.create(3.35F, (entitypatch, self, params) -> {
@@ -2003,7 +2053,7 @@ public class WOMAnimations {
 						   TimeStampedEvent.create(0.3F, ReuseableEvents.FAST_SPINING, Side.CLIENT),
 						   TimeStampedEvent.create(0.4F, ReuseableEvents.FAST_SPINING, Side.CLIENT),
 						   TimeStampedEvent.create(0.5F, ReuseableEvents.FAST_SPINING, Side.CLIENT),
-						   TimeStampedEvent.create(0.7F, ReuseableEvents.ENDERBLASTER_RELOAD, Side.CLIENT));
+						   TimeStampedEvent.create(0.7F, ReuseableEvents.ENDERBLASTER_RELOAD, Side.SERVER));
 		
 		ENDERBLASTER_TWOHAND_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/enderblaster_onehand_auto_1", biped,
 				new Phase(0.0F, 0.15F, 0.24F, 0.25F, 0.25F,InteractionHand.OFF_HAND, biped.legL, WOMColliders.KICK),
@@ -2736,7 +2786,7 @@ public class WOMAnimations {
 						   TimeStampedEvent.create(0.35F, ReuseableEvents.FAST_SPINING, Side.CLIENT),
 						   TimeStampedEvent.create(0.4F, ReuseableEvents.FAST_SPINING, Side.CLIENT),
 						   TimeStampedEvent.create(0.5F, ReuseableEvents.FAST_SPINING, Side.CLIENT),
-						   TimeStampedEvent.create(0.7F, ReuseableEvents.ENDERBLASTER_RELOAD_BOTH, Side.CLIENT));
+						   TimeStampedEvent.create(0.7F, ReuseableEvents.ENDERBLASTER_RELOAD_BOTH, Side.SERVER));
 		
 		STAFF_AUTO_1 = new BasicMultipleAttackAnimation(0.15F, "biped/combat/staff_auto_1", biped,
 				new Phase(0.0F, 0.1F, 0.19F, 0.2F, 0.2F, biped.toolR, null),
@@ -4282,34 +4332,32 @@ public class WOMAnimations {
 		
 		public static final AnimationEvent.AnimationEventConsumer ENDERBLASTER_RELOAD = (entitypatch, self, params) -> {
 			if (entitypatch instanceof PlayerPatch) {
-				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
+				if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER) {
+					if (entitypatch instanceof PlayerPatch) {
+						entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
+					}
+					SkillContainer skill = ((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE);
+					skill.getSkill().setStackSynchronize(((ServerPlayerPatch) entitypatch), skill.getStack()+1);
+					if (skill.getStack() == skill.getSkill().getMaxStack()) {
+						skill.getSkill().setConsumptionSynchronize(((ServerPlayerPatch) entitypatch), 6);
+					}
+				}
 			}
-//			if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER) {
-//				if (entitypatch instanceof PlayerPatch) {
-//					entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD, SoundSource.PLAYERS, 0.8F, 1.0F);
-//				}
-//				SkillContainer skill = ((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE);
-//				skill.getSkill().setStackSynchronize(((ServerPlayerPatch) entitypatch), skill.getStack()+1);
-//				if (skill.getStack() == skill.getSkill().getMaxStack()) {
-//					skill.getSkill().setConsumptionSynchronize(((ServerPlayerPatch) entitypatch), 6);
-//				}
-//			}
 		};
 		
 		public static final AnimationEvent.AnimationEventConsumer ENDERBLASTER_RELOAD_BOTH = (entitypatch, self, params) -> {
 			if (entitypatch instanceof PlayerPatch) {
-				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
+				if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER) {
+					if (entitypatch instanceof PlayerPatch) {
+						entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD.get(), SoundSource.PLAYERS, 0.8F, 1.0F);
+					}
+						SkillContainer skill = ((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE);
+						skill.getSkill().setStackSynchronize(((ServerPlayerPatch) entitypatch), skill.getStack()+2);
+					if (skill.getStack() == skill.getSkill().getMaxStack()) {
+						skill.getSkill().setConsumptionSynchronize(((ServerPlayerPatch) entitypatch), 12);
+					}
+				}
 			}
-//			if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER) {
-//				if (entitypatch instanceof PlayerPatch) {
-//					entitypatch.getOriginal().level.playSound(null, entitypatch.getOriginal(), WOMSounds.ENDERBLASTER_RELOAD, SoundSource.PLAYERS, 0.8F, 1.0F);
-//				}
-//				SkillContainer skill = ((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE);
-//				skill.getSkill().setStackSynchronize(((ServerPlayerPatch) entitypatch), skill.getStack()+2);
-//				if (skill.getStack() == skill.getSkill().getMaxStack()) {
-//					skill.getSkill().setConsumptionSynchronize(((ServerPlayerPatch) entitypatch), 12);
-//				}
-//			}
 		};
 		
 		private static final AnimationEvent.AnimationEventConsumer SHOOT_RIGHT = (entitypatch, self, params) -> {
