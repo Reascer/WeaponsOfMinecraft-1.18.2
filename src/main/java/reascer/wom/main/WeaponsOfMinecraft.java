@@ -51,9 +51,10 @@ public class WeaponsOfMinecraft
     	WOMEntities.ENTITIES.register(bus);
     	WOMSounds.SOUNDS.register(bus);
     	WOMCreativeTabs.TABS.register(bus);
-    	WOMSkills.registerSkills();
     	
     	MinecraftForge.EVENT_BUS.register(this);
+    	
+    	WOMSkills.registerSkills();
     	
     	WOMConfigManager.loadConfig(WOMConfigManager.CLIENT_CONFIG, FMLPaths.CONFIGDIR.get().resolve(MODID + "-client.toml").toString());
     	WOMConfigManager.loadConfig(WOMConfigManager.COMMON_CONFIG, FMLPaths.CONFIGDIR.get().resolve(CONFIG_FILE_PATH).toString());

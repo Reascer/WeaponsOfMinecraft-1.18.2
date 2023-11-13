@@ -359,7 +359,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		
 		String string = "";
-		
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
 			string = String.valueOf((container.getDataManager().getDataValue(COOLDOWN)/20)+1);
 		} else {
