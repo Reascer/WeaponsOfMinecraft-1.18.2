@@ -71,12 +71,8 @@ public class TormentPassiveSkill extends PassiveSkill {
 
 	private static final UUID EVENT_UUID = UUID.fromString("72eabb8f-f889-4302-80bb-690bb557a008");
 	
-	protected final StaticAnimation activateAnimation;
-	
 	public TormentPassiveSkill(Builder<?> builder) {
 		super(builder.setActivateType(ActivateType.DURATION_INFINITE));
-
-		this.activateAnimation = WOMAnimations.TORMENT_BERSERK_CONVERT;
 	}
 	
 	@Override

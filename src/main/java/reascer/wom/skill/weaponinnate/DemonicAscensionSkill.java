@@ -98,14 +98,8 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 	
 	private static final UUID EVENT_UUID = UUID.fromString("61ec318a-10f6-11ed-861d-0242ac120002");
 	
-	private StaticAnimation activateAnimation;
-	private StaticAnimation deactivateAnimation;
-	
 	public DemonicAscensionSkill(Builder builder) {
 		super(builder);
-
-		this.activateAnimation = WOMAnimations.ANTITHEUS_ASCENSION;
-		this.deactivateAnimation = WOMAnimations.ANTITHEUS_LAPSE;
 	}
 	
 	@Override
@@ -334,12 +328,12 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		if (executer.getSkill(this).isActivated()) { 
-			executer.playAnimationSynchronized(this.deactivateAnimation, 0);
+			executer.playAnimationSynchronized(WOMAnimations.ANTITHEUS_LAPSE, 0);
 			cancelOnServer(executer, args);
 			executer.getSkill(this).deactivate();
 			executer.modifyLivingMotionByCurrentItem();
 		} else {
-			executer.playAnimationSynchronized(this.activateAnimation, 0);
+			executer.playAnimationSynchronized(WOMAnimations.ANTITHEUS_ASCENSION, 0);
 			executer.getSkill(this).getDataManager().setData(TIMER, (int)((20*20) * (1 + (EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())/2f))));
 			executer.getSkill(this).getDataManager().setDataSync(SUPERARMOR, true, executer.getOriginal());
 			executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false, executer.getOriginal());
@@ -885,7 +879,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 					}
 					this.setDurationSynchronize((ServerPlayerPatch) container.getExecuter(),(int)(container.getDataManager().getDataValue(TIMER)));
 					if (container.getDataManager().getDataValue(TIMER) == 0) {
-						container.getExecuter().playAnimationSynchronized(this.deactivateAnimation, 0);
+						container.getExecuter().playAnimationSynchronized(WOMAnimations.ANTITHEUS_LAPSE, 0);
 						cancelOnServer((ServerPlayerPatch)container.getExecuter(), null);
 						container.deactivate();
 						((ServerPlayerPatch)container.getExecuter()).modifyLivingMotionByCurrentItem();

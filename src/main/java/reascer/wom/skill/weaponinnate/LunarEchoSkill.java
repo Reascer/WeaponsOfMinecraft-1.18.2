@@ -6,8 +6,6 @@ import java.util.UUID;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ItemStack;
@@ -16,19 +14,13 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import reascer.wom.gameasset.WOMAnimations;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.EntityState;
-import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
-import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
-import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
-import yesman.epicfight.world.damagesource.StunType;
-import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 
@@ -37,11 +29,9 @@ public class LunarEchoSkill extends WeaponInnateSkill {
 	public static final SkillDataKey<Boolean> ECHO = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Boolean> CRESCENT = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private StaticAnimation attackAnimations;
 	
 	public LunarEchoSkill(Builder builder) {
 		super(builder);
-		this.attackAnimations = WOMAnimations.MOONLESS_LUNAR_ECHO;
 	}
 	
 	@Override
@@ -149,7 +139,7 @@ public class LunarEchoSkill extends WeaponInnateSkill {
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
-			if (!event.getAnimation().equals(attackAnimations)) {
+			if (!event.getAnimation().equals(WOMAnimations.MOONLESS_LUNAR_ECHO)) {
 				container.getDataManager().setDataSync(ECHO, false, event.getPlayerPatch().getOriginal());
 			}
 			if (!event.getAnimation().equals(WOMAnimations.MOONLESS_CRESCENT)) {
@@ -176,7 +166,7 @@ public class LunarEchoSkill extends WeaponInnateSkill {
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		super.executeOnServer(executer, args);
-		executer.playAnimationSynchronized(this.attackAnimations, 0);
+		executer.playAnimationSynchronized(WOMAnimations.MOONLESS_LUNAR_ECHO, 0);
 		executer.getSkill(this).getDataManager().setDataSync(ECHO, true, executer.getOriginal());
 		executer.getSkill(this).getDataManager().setDataSync(TIMER,20 * 4, executer.getOriginal());
 		this.setDurationSynchronize(executer, 0);
