@@ -53,12 +53,8 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 
 	private static final UUID EVENT_UUID = UUID.fromString("16c6748a-1c74-4681-9edb-e9ea4d69e54f");
 	
-	protected final StaticAnimation activateAnimation;
-	
 	public TrueBerserkSkill(Builder<?> builder) {
 		super(builder.setActivateType(ActivateType.DURATION_INFINITE));
-
-		this.activateAnimation = WOMAnimations.TORMENT_BERSERK_CONVERT;
 	}
 	
 	@Override
@@ -91,7 +87,7 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 			executer.getSkill(this).deactivate();
 			executer.modifyLivingMotionByCurrentItem();
 		} else {
-			executer.playAnimationSynchronized(this.activateAnimation, 0);
+			executer.playAnimationSynchronized(WOMAnimations.TORMENT_BERSERK_CONVERT, 0);
 			executer.getOriginal().level().playSound(null, executer.getOriginal().xo, executer.getOriginal().yo, executer.getOriginal().zo,
 	    			SoundEvents.DRAGON_FIREBALL_EXPLODE, executer.getOriginal().getSoundSource(), 1.0F, 0.5F);
 			((ServerLevel) executer.getOriginal().level()).sendParticles( ParticleTypes.LARGE_SMOKE, 

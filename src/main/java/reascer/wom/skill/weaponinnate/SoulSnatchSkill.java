@@ -42,7 +42,6 @@ public class SoulSnatchSkill extends WeaponInnateSkill{
 	public static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	public static final SkillDataKey<Integer> STRENGHT = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	
-	protected final StaticAnimation attackAnimation;
 	protected Boolean registerdata = true;
 	
 	public AttributeModifier stolen_move_speed = new AttributeModifier(EVENT_UUID, "ruine.stolen_move_speed", 0, Operation.MULTIPLY_TOTAL);
@@ -50,7 +49,6 @@ public class SoulSnatchSkill extends WeaponInnateSkill{
 	
 	public SoulSnatchSkill(Builder<? extends Skill> builder) {
 		super(builder);
-		this.attackAnimation = WOMAnimations.RUINE_PLUNDER;
 	}
 	
 	@Override
@@ -227,7 +225,7 @@ public class SoulSnatchSkill extends WeaponInnateSkill{
 			
 		} else if (executer.getSkill(this).getStack() == 10 || executer.getOriginal().isCreative()) {
 			this.setStackSynchronize(executer, 0);
-			executer.playAnimationSynchronized(this.attackAnimation, 0);
+			executer.playAnimationSynchronized(WOMAnimations.RUINE_PLUNDER, 0);
 			executer.getSkill(this).getDataManager().setData(BUFFING, true);
 			executer.getSkill(this).getDataManager().setData(BUFFED, false);
 			executer.getSkill(this).getDataManager().setData(STRENGHT, 0);

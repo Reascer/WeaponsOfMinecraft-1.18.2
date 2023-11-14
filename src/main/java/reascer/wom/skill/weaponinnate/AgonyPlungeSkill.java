@@ -21,6 +21,8 @@ import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
+import yesman.epicfight.skill.SkillSlots;
+import yesman.epicfight.skill.weaponinnate.ConditionalWeaponInnateSkill;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
@@ -31,15 +33,13 @@ import yesman.epicfight.world.effect.EpicFightMobEffects;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 
-public class AgonyPlungeSkill extends WeaponInnateSkill {
+public class AgonyPlungeSkill extends ConditionalWeaponInnateSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("c7a0ee46-56b3-4008-9fba-d2594b1e2676");
 	public static final SkillDataKey<Boolean> PLUNGING = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Integer> STACK = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private StaticAnimation attackAnimations;
 	
-	public AgonyPlungeSkill(Builder builder) {
+	public AgonyPlungeSkill(ConditionalWeaponInnateSkill.Builder builder) {
 		super(builder);
-		this.attackAnimations = WOMAnimations.AGONY_PLUNGE_FORWARD;
 	}
 	
 	@Override
@@ -85,9 +85,9 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		if (executer.getSkill(EpicFightSkills.HYPERVITALITY) == null) {
-			executer.playAnimationSynchronized(this.attackAnimations, 0);
+			executer.playAnimationSynchronized(this.attackAnimations[0], 0);
 		} else {
-			executer.playAnimationSynchronized(WOMAnimations.AGONY_PLUNGE_FORWARD_X, 0);
+			executer.playAnimationSynchronized(this.attackAnimations[1], 0);
 		}
 		executer.getSkill(this).getDataManager().setDataSync(PLUNGING, true, executer.getOriginal());
 		if (executer.getSkill(EpicFightSkills.HYPERVITALITY) == null) {

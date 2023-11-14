@@ -171,8 +171,11 @@ public class WOMSkills {
 		SkillManager.register(CharybdisSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
 				WeaponsOfMinecraft.MODID,"charybdis");
 
-		SkillManager.register(AgonyPlungeSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
+		SkillManager.register(AgonyPlungeSkill::new, ConditionalWeaponInnateSkill.createConditionalWeaponInnateBuilder().setAnimations(
+				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/agony_plunge_forward"),
+				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/agony_plunge_forward_x")),
 				WeaponsOfMinecraft.MODID,"agony_plunge");
+				
 		
 		SkillManager.register(TrueBerserkSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
 				WeaponsOfMinecraft.MODID,"true_berserk");
