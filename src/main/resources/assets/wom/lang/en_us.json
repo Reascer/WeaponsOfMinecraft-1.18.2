@@ -142,11 +142,5 @@
 	"gamerule.spawnStrongerMobs": "Spawn stronger mobs further away",
 	"gamerule.strongerMobsDropEmeralds": "Stronger mobs drop Emeralds",
 	"gamerule.strongerMobsMoreEXP": "Stronger mobs give more XP",
-	"gamerule.skeletonMoreMelee": "More Melee Skeletons",
-	
-	"subtitles.entity.weapon.whoosh": "Weapon attack",
-	"subtitles.sfx.ground_slam": "Ground-slamming attack",
-	"subtitles.sfx.antitheus_blackhole": "Antitheus attack",
-	"subtitles.sfx.antitheus_blackhole_chargeup": "Antitheus charges",
-	"subtitles.sfx.enderblaster_reload": "Ender Blaster reloads"
+	"gamerule.skeletonMoreMelee": "More Melee Skeletons"
 }
