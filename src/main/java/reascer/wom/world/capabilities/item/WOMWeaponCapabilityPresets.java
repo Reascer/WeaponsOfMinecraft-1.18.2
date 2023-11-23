@@ -21,12 +21,9 @@ import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.forgeevent.WeaponCapabilityPresetRegistryEvent;
 import yesman.epicfight.gameasset.Animations;
-import yesman.epicfight.gameasset.ColliderPreset;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.particle.EpicFightParticles;
-import yesman.epicfight.skill.BattojutsuPassive;
-import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -339,9 +336,9 @@ public class WOMWeaponCapabilityPresets {
 				.collider(WOMColliders.MOONLESS)
 				.hitSound(EpicFightSounds.BLADE_HIT)
 				.canBePlacedOffhand(false)
-				.newStyleCombo(Styles.TWO_HAND, WOMAnimations.MOONLESS_AUTO_1, WOMAnimations.MOONLESS_AUTO_2, WOMAnimations.MOONLESS_REVERSED_BYPASS, WOMAnimations.MOONLESS_CRESCENT)
+				.newStyleCombo(Styles.TWO_HAND, WOMAnimations.MOONLESS_AUTO_1, WOMAnimations.MOONLESS_AUTO_2, WOMAnimations.MOONLESS_AUTO_3, WOMAnimations.MOONLESS_REVERSED_BYPASS, WOMAnimations.MOONLESS_CRESCENT)
 				.innateSkill(Styles.TWO_HAND,(itemstack) -> WOMSkills.LUNAR_ECHO)
-				.newStyleCombo(Styles.OCHS, WOMAnimations.MOONLESS_AUTO_1_VERSO, WOMAnimations.MOONLESS_AUTO_2_VERSO, WOMAnimations.MOONLESS_BYPASS, WOMAnimations.MOONLESS_FULLMOON)
+				.newStyleCombo(Styles.OCHS, WOMAnimations.MOONLESS_AUTO_1_VERSO, WOMAnimations.MOONLESS_AUTO_2_VERSO,WOMAnimations.MOONLESS_AUTO_3_VERSO, WOMAnimations.MOONLESS_BYPASS, WOMAnimations.MOONLESS_FULLMOON)
 				.innateSkill(Styles.OCHS,(itemstack) -> WOMSkills.LUNAR_ECHO)
 				.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
 				.passiveSkill(WOMSkills.LUNAR_ECLIPSE_PASSIVE)

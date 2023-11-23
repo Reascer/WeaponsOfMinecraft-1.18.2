@@ -308,8 +308,10 @@ public class WOMAnimations {
 	public static StaticAnimation MOONLESS_FULLMOON;
 	public static StaticAnimation MOONLESS_AUTO_1;
 	public static StaticAnimation MOONLESS_AUTO_2;
+	public static StaticAnimation MOONLESS_AUTO_3;
 	public static StaticAnimation MOONLESS_AUTO_1_VERSO;
 	public static StaticAnimation MOONLESS_AUTO_2_VERSO;
+	public static StaticAnimation MOONLESS_AUTO_3_VERSO;
 	public static StaticAnimation MOONLESS_LUNAR_ECHO;
 	public static StaticAnimation MOONLESS_GUARD;
 	public static StaticAnimation MOONLESS_GUARD_HIT_1;
@@ -4013,11 +4015,12 @@ public class WOMAnimations {
 		MOONLESS_REVERSED_BYPASS = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_reversed_bypass", biped,
 				new Phase(0.0F, 0.3F, 0.65F, 0.75F, Float.MAX_VALUE, biped.toolR, WOMColliders.MOONLESS_BYPASS))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.00F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.50F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.WHOOSH_BIG)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLADE)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F)
 				.addEvents(TimeStampedEvent.create(0.10F, (entitypatch, self, params) -> {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
@@ -4032,11 +4035,12 @@ public class WOMAnimations {
 		MOONLESS_BYPASS = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_bypass", biped,
 				new Phase(0.0F, 0.3F, 0.65F, 0.75F, Float.MAX_VALUE, biped.toolR, WOMColliders.MOONLESS_BYPASS))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.00F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.50F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.WHOOSH_BIG)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT)
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLADE)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F)
 				.addEvents(TimeStampedEvent.create(0.10F, (entitypatch, self, params) -> {
 						Entity entity = entitypatch.getOriginal();
 						entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
@@ -4061,31 +4065,60 @@ public class WOMAnimations {
 		MOONLESS_AUTO_2 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_2", biped,
 				new Phase(0.0F, 0.3F, 0.4F, 0.45F, 0.45F, biped.toolR, null),
 				new Phase(0.45F, 0.5F, 0.6F, 0.65F, 0.65F, biped.toolR, null),
-				new Phase(0.65F, 0.7F, 1.0F, 1.15F, Float.MAX_VALUE, biped.toolR, null))
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.00F),2)
+				new Phase(0.65F, 0.7F, 1.0F, 1.0F, Float.MAX_VALUE, biped.toolR, null))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.60F),2)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,2)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
 		
-		MOONLESS_AUTO_1_VERSO = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_1_verso", biped,
-				new Phase(0.00F, 0.2F, 0.25F, 0.29F, 0.29F, biped.toolR, null),
-				new Phase(0.29F, 0.3F, 0.4F, 0.45F, Float.MAX_VALUE, biped.toolR, null))
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.50F))
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.00F),1)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,1)
-				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.4F)
+		MOONLESS_AUTO_3 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_3", biped,
+				new Phase(0.0F, 0.5F, 0.70F, 0.80F, Float.MAX_VALUE, biped.toolR, null))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2.50F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.50F))
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
+				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.WHOOSH_BIG)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLADE)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F)
+				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				},Side.CLIENT));
 		
-		MOONLESS_AUTO_2_VERSO = new BasicMultipleAttackAnimation(0.25F, "biped/combat/moonless_auto_2_verso", biped,
-				new Phase(0.0F, 0.35F, 0.45F, 0.85F, Float.MAX_VALUE, biped.toolR, WOMColliders.MOONLESS_BYPASS))
+		MOONLESS_AUTO_1_VERSO = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_1_verso", biped,
+				new Phase(0.00F, 0.2F, 0.3F, 0.35F, 0.35F, biped.toolR, null),
+				new Phase(0.35F, 0.45F, 0.55F, 0.65F, Float.MAX_VALUE, biped.toolR, null))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.50F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.50F),1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
+				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
+					Entity entity = entitypatch.getOriginal();
+					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
+				},Side.CLIENT));
+		
+		MOONLESS_AUTO_2_VERSO = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_2_verso", biped,
+				new Phase(0.0F, 0.15F, 0.30F, 0.34F, 0.34F, biped.toolR, null),
+				new Phase(0.34F, 0.35F, 0.5F, 0.54F, 0.54F, biped.toolR, null),
+				new Phase(0.54F, 0.55F, 0.75F, 0.75F, Float.MAX_VALUE, biped.toolR, null))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.40F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.40F),1)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.40F),2)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,1)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,2)
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
+		
+		MOONLESS_AUTO_3_VERSO = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_3_verso", biped,
+				new Phase(0.0F, 0.35F, 0.45F, 0.70F, Float.MAX_VALUE, biped.toolR, WOMColliders.MOONLESS_BYPASS))
 				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.20F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.0F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
+				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
+				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.BLADE_RUSH_SKILL)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
 				.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, false);
 		
@@ -4194,7 +4227,7 @@ public class WOMAnimations {
 						new Phase(0.15F, 0.20F, 0.30F, 0.35F, 0.35F, biped.toolR, WOMColliders.MOONLESS_BYPASS),
 						new Phase(0.35F, 0.40F, 0.50F, 0.55F, 0.55F, biped.toolR, WOMColliders.MOONLESS_BYPASS),
 						new Phase(0.55F, 0.60F, 0.70F, 0.75F, 0.75F, biped.toolR, WOMColliders.MOONLESS_BYPASS),
-						new Phase(0.75F, 0.80F, 1.00F, 2.25F, Float.MAX_VALUE, biped.toolR, WOMColliders.MOONLESS_BYPASS))
+						new Phase(0.75F, 0.80F, 1.00F, 1.75F, Float.MAX_VALUE, biped.toolR, WOMColliders.MOONLESS_BYPASS))
 						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.5F))
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.0F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
@@ -4208,7 +4241,7 @@ public class WOMAnimations {
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.5F),3)
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,3)
 						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F),4)
-						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.5F),4)
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.0F),4)
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,4)
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.4F)
 						.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
