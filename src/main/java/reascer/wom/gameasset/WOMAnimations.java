@@ -4139,7 +4139,7 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
 				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 					Entity entity = entitypatch.getOriginal();
-					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
+					entitypatch.getOriginal().level().addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				},Side.CLIENT));
 		
 		MOONLESS_AUTO_2_VERSO = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_2_verso", biped,
@@ -4179,7 +4179,7 @@ public class WOMAnimations {
 						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(LunarEchoPassiveSkill.IDLE, true);
 					}
 					
-					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 0.2F, 0.5F);
+					entitypatch.getOriginal().level().playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 0.2F, 0.5F);
 				}, Side.CLIENT),
 					TimeStampedEvent.create(0.55F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
@@ -4263,7 +4263,7 @@ public class WOMAnimations {
 						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(LunarEchoPassiveSkill.IDLE, true);
 					}
 					
-					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 0.2F, 0.5F);
+					entitypatch.getOriginal().level().playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 0.2F, 0.5F);
 				}, Side.CLIENT),
 					TimeStampedEvent.create(0.60F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
@@ -4288,7 +4288,7 @@ public class WOMAnimations {
 						double r = 0.3; // set the radius of the hemisphere to 1
 						double t = 0.01; // set the radius of the hemisphere to 1
 
-						 entitypatch.getOriginal().level.addParticle(ParticleTypes.FLASH,
+						 entitypatch.getOriginal().level().addParticle(ParticleTypes.FLASH,
 							        (transformMatrix.m30 + entitypatch.getOriginal().getX()),
 							        (transformMatrix.m31 + entitypatch.getOriginal().getY()),
 							        (transformMatrix.m32 + entitypatch.getOriginal().getZ()),
@@ -4296,7 +4296,7 @@ public class WOMAnimations {
 							        (float)(0),
 							        (float)(0));
 						for (int i = 0; i < n; i++) {
-						   entitypatch.getOriginal().level.addParticle(ParticleTypes.END_ROD,
+						   entitypatch.getOriginal().level().addParticle(ParticleTypes.END_ROD,
 						        (transformMatrix.m30 + entitypatch.getOriginal().getX()),
 						        (transformMatrix.m31 + entitypatch.getOriginal().getY()),
 						        (transformMatrix.m32 + entitypatch.getOriginal().getZ()),
@@ -4325,7 +4325,7 @@ public class WOMAnimations {
 							OpenMatrix4f.transform3v(rotation, direction, direction);
 							
 							// emit the particle in the calculated direction, with some random velocity added
-							entitypatch.getOriginal().level.addParticle(ParticleTypes.END_ROD,
+							entitypatch.getOriginal().level().addParticle(ParticleTypes.END_ROD,
 									(transformMatrix.m30 + entitypatch.getOriginal().getX() + direction.x*2),
 							        (transformMatrix.m31 + entitypatch.getOriginal().getY() + direction.y*2) + 0.8f,
 							        (transformMatrix.m32 + entitypatch.getOriginal().getZ() + direction.z*2),

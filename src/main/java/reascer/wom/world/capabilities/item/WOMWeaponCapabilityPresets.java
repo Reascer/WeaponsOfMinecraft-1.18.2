@@ -4,6 +4,7 @@ import java.util.function.Function;
 
 import com.mojang.datafixers.util.Pair;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TieredItem;
@@ -23,6 +24,7 @@ import yesman.epicfight.api.forgeevent.WeaponCapabilityPresetRegistryEvent;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.gameasset.EpicFightSounds;
+import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
@@ -30,6 +32,7 @@ import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategories;
+import yesman.epicfight.world.capabilities.item.ShieldCapability;
 import yesman.epicfight.world.capabilities.item.WeaponCapability;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 
@@ -382,16 +385,16 @@ public class WOMWeaponCapabilityPresets {
 	
 	@SubscribeEvent
 	public static void register(WeaponCapabilityPresetRegistryEvent event) {
-		event.getTypeEntry().put("staff", STAFF);
-		event.getTypeEntry().put("agony", AGONY);
-		event.getTypeEntry().put("torment", TORMENT);
-		event.getTypeEntry().put("ruine", RUINE);
-		event.getTypeEntry().put("satsujin", SATSUJIN);
-		event.getTypeEntry().put("ender_blaster", ENDER_BLASTER);
-		event.getTypeEntry().put("antitheus", ANTITHEUS);
-		event.getTypeEntry().put("herrscher", HERRSCHER);
-		event.getTypeEntry().put("moonless", MOONLESS);
-		event.getTypeEntry().put("solar", SOLAR);
+		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"staff"), STAFF);
+		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"agony"), AGONY);
+		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"torment"), TORMENT);
+		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"ruine"), RUINE);
+		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"satsujin"), SATSUJIN);
+		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"ender_blaster"), ENDER_BLASTER);
+		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"antitheus"), ANTITHEUS);
+		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"herrscher"), HERRSCHER);
+		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"moonless"), MOONLESS);
+		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"solar"), SOLAR);
 	}
 	
 }

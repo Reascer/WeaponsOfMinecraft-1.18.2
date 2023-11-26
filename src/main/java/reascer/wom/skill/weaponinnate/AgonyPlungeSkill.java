@@ -7,8 +7,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -90,13 +88,20 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 			executer.getSkill(this).getDataManager().setDataSync(STACK, executer.getSkill(this).getStack(), executer.getOriginal());
 		} else {
 			executer.getSkill(this).getDataManager().setDataSync(STACK, 1, executer.getOriginal());
+			
 		}
 		//executer.getOriginal().sendMessage(new TextComponent("number of stack: " + executer.getSkill(this).getDataManager().getDataValue(STACK)), UUID.randomUUID());
 		//executer.setStamina(executer.getStamina() - (5f - EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));
 		if (!executer.getOriginal().isCreative()) {
+			SkillConsumeEvent event = new SkillConsumeEvent(executer, this, this.resource, true);
+			executer.getEventListener().triggerEvents(EventType.SKILL_CONSUME_EVENT, event);
+			
+			if (!event.isCanceled()) {
+				event.getResourceType().consumer.consume(this, executer, event.getAmount());
+			}
 			executer.getOriginal().level().playSound(null, executer.getOriginal().xo, executer.getOriginal().yo, executer.getOriginal().zo,
 	    			SoundEvents.PLAYER_HURT, executer.getOriginal().getSoundSource(), 1.0F, 1.0F);
-			EpicFightDamageSource damage = executer.getDamageSource(attackAnimations[0], InteractionHand.MAIN_HAND);
+			EpicFightDamageSource damage = executer.getDamageSource(WOMAnimations.AGONY_PLUNGE_FORWARD, InteractionHand.MAIN_HAND);
 			damage.setStunType(StunType.NONE);
 			executer.getOriginal().hurt(damage, executer.getOriginal().getHealth() * (0.40f - (0.10f * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()))));
 		}

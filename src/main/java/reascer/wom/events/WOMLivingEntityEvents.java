@@ -276,16 +276,16 @@ public class WOMLivingEntityEvents {
 					int blindness_amp = event.getEntity().getEffect(MobEffects.BLINDNESS).getAmplifier();
 					
 					if (event.getEntity().getEffect(MobEffects.BLINDNESS).getDuration() == 1 || event.getEntity().isDeadOrDying()) {
-						Entity player = event.getEntity().level.getEntity(Integer.valueOf(tag.split(":")[1]));
+						Entity player = event.getEntity().level().getEntity(Integer.valueOf(tag.split(":")[1]));
 						PlayerPatch<?> playerpatch = EpicFightCapabilities.getEntityPatch(player, PlayerPatch.class);
 						ServerPlayerPatch serverPlayerPatch = (ServerPlayerPatch) playerpatch;
-						EpicFightEntityDamageSource epicFightDamageSource = new EpicFightEntityDamageSource("lunar_eclipse", player,WOMAnimations.MOONLESS_LUNAR_ECLIPSE);
+						EpicFightDamageSource epicFightDamageSource = serverPlayerPatch.getDamageSource(WOMAnimations.MOONLESS_LUNAR_ECLIPSE, InteractionHand.MAIN_HAND);
 						epicFightDamageSource.setImpact(4.0f);
 						epicFightDamageSource.setStunType(StunType.HOLD);
 						epicFightDamageSource.addTag(SourceTags.WEAPON_INNATE);
 						DamageSource damage = epicFightDamageSource;
 						float lunar_power = Float.valueOf(tag.split(":")[2]) + (Float.valueOf(tag.split(":")[2]) * ((blindness_amp)/100));
-						((ServerLevel) player.level).sendParticles(ParticleTypes.END_ROD,
+						((ServerLevel) player.level()).sendParticles(ParticleTypes.END_ROD,
 								event.getEntity().getX(),
 								event.getEntity().getY()+ 0.25 * (int) (lunar_power*(1f/Math.sqrt((lunar_power/8f)+1f))),
 								event.getEntity().getZ(),
@@ -294,7 +294,7 @@ public class WOMLivingEntityEvents {
 								0.5 * (int) (lunar_power*(1f/Math.sqrt((lunar_power/8f)+1f))),
 								0.1,
 								0);
-						((ServerLevel) player.level).playSound(null,
+						((ServerLevel) player.level()).playSound(null,
 								event.getEntity().getX(),
 								event.getEntity().getY()+0.75f,
 								event.getEntity().getZ(),
@@ -305,7 +305,7 @@ public class WOMLivingEntityEvents {
 							event.getEntity().removeEffect(MobEffects.GLOWING);
 						}
 						AABB box = AABB.ofSize(event.getEntity().position(),10 + (Math.min(40, glowing_amp)), 10, 10 + (Math.min(40, glowing_amp)));
-						List<Entity> list = event.getEntity().level.getEntities(player,box);
+						List<Entity> list = event.getEntity().level().getEntities(player,box);
 						
 						LivingEntity livingEntityLowestHP = null;
 						float distance_to_stored_target = -1;
@@ -325,7 +325,7 @@ public class WOMLivingEntityEvents {
 								if (livingEntity.equals(event.getEntity())){
 									if (livingEntity.isAlive()) {
 										livingEntity.hurt(damage,lunar_power);
-										((ServerLevel) event.getEntity().level).sendParticles(ParticleTypes.FLASH,
+										((ServerLevel) event.getEntity().level()).sendParticles(ParticleTypes.FLASH,
 												livingEntity.getX(),
 												livingEntity.getY()+1,
 												livingEntity.getZ(),
@@ -334,7 +334,7 @@ public class WOMLivingEntityEvents {
 												0.0,
 												0.0,
 												0);
-										((ServerLevel) event.getEntity().level).sendParticles(ParticleTypes.END_ROD,
+										((ServerLevel) event.getEntity().level()).sendParticles(ParticleTypes.END_ROD,
 												livingEntity.getX(),
 												livingEntity.getY()+1,
 												livingEntity.getZ(),
