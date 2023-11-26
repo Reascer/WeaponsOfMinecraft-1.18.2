@@ -70,6 +70,7 @@ public class WOMColliders {
 	public static final Collider MOONLESS = new MultiOBBCollider(4, 0.2D, 1.5D, 0.4D, 0.0D, 1.0D, 0.2D);
 	public static final Collider MOONLESS_BYPASS = new MultiOBBCollider(4, 0.2D, 1.8D, 0.7D, 0.0D, 1.0D, 0.3D);
 	public static final Collider LUNAR_ECHO = new OBBCollider( 6.0D, 6.0D, 6.0D, 0.0D, 0.0D, -6.0D);
+	public static final Collider BODY_CLOSE = new OBBCollider( 1.5D, 1.5D, 1.5D, 0.0D, 0.0D, 0.0D);
 	
 	public static final Collider SOLAR = new MultiOBBCollider(4, 0.4F, 0.6F, 1.8F, 0F, 0.0F, -1.0F);
 }

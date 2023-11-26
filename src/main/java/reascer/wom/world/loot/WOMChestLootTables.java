@@ -17,7 +17,7 @@ public class WOMChestLootTables {
     	if (event.getName().equals(BuiltInLootTables.STRONGHOLD_CORRIDOR)) {
     		event.getTable().addPool(LootPool.lootPool()
     			.add(LootItem.lootTableItem(WOMItems.RUINE.get()).setWeight(1))
-    			.add(LootItem.lootTableItem(Items.AIR).setWeight(3))
+    			.add(LootItem.lootTableItem(Items.AIR).setWeight(10))
     		.build());
     		
     		event.getTable().addPool(LootPool.lootPool()
@@ -32,7 +32,7 @@ public class WOMChestLootTables {
     	if (event.getName().equals(BuiltInLootTables.STRONGHOLD_CROSSING)) {
     		event.getTable().addPool(LootPool.lootPool()
     			.add(LootItem.lootTableItem(WOMItems.RUINE.get()).setWeight(1))
-    			.add(LootItem.lootTableItem(Items.AIR).setWeight(3))
+    			.add(LootItem.lootTableItem(Items.AIR).setWeight(10))
     		.build());
     		
     		event.getTable().addPool(LootPool.lootPool()
@@ -47,7 +47,7 @@ public class WOMChestLootTables {
     	if (event.getName().equals(BuiltInLootTables.SIMPLE_DUNGEON)) {
     		event.getTable().addPool(LootPool.lootPool()
     			.add(LootItem.lootTableItem(WOMItems.AGONY.get()).setWeight(1))
-    			.add(LootItem.lootTableItem(Items.AIR).setWeight(5))
+    			.add(LootItem.lootTableItem(Items.AIR).setWeight(10))
     		.build());
     		
     		event.getTable().addPool(LootPool.lootPool()
@@ -62,21 +62,21 @@ public class WOMChestLootTables {
     	if (event.getName().equals(BuiltInLootTables.WOODLAND_MANSION)) {
     		event.getTable().addPool(LootPool.lootPool()
     			.add(LootItem.lootTableItem(WOMItems.TORMENTED_MIND.get()).setWeight(1))
-    			.add(LootItem.lootTableItem(Items.AIR).setWeight(3))
+    			.add(LootItem.lootTableItem(Items.AIR).setWeight(10))
     		.build());
     	}
     	
     	if (event.getName().equals(BuiltInLootTables.PILLAGER_OUTPOST)) {
     		event.getTable().addPool(LootPool.lootPool()
     			.add(LootItem.lootTableItem(WOMItems.TORMENTED_MIND.get()).setWeight(1))
-    			.add(LootItem.lootTableItem(Items.AIR).setWeight(5))
+    			.add(LootItem.lootTableItem(Items.AIR).setWeight(20))
     		.build());
     	}
     	
     	if (event.getName().equals(BuiltInLootTables.END_CITY_TREASURE)) {
     		event.getTable().addPool(LootPool.lootPool()
     			.add(LootItem.lootTableItem(WOMItems.ENDER_BLASTER.get()).setWeight(1))
-    			.add(LootItem.lootTableItem(Items.AIR).setWeight(5))
+    			.add(LootItem.lootTableItem(Items.AIR).setWeight(20))
     		.build());
     	}
     	
@@ -98,7 +98,7 @@ public class WOMChestLootTables {
     	if (event.getName().equals(BuiltInLootTables.BASTION_TREASURE)) {
     		event.getTable().addPool(LootPool.lootPool()
     			.add(LootItem.lootTableItem(WOMItems.DEMON_SEAL.get()).setWeight(1))
-    			.add(LootItem.lootTableItem(Items.AIR).setWeight(5))
+    			.add(LootItem.lootTableItem(Items.AIR).setWeight(10))
     		.build());
     		
     		event.getTable().addPool(LootPool.lootPool()
@@ -153,8 +153,16 @@ public class WOMChestLootTables {
     	if (event.getName().equals(BuiltInLootTables.DESERT_PYRAMID)) {
     		event.getTable().addPool(LootPool.lootPool()
     			.add(LootItem.lootTableItem(WOMItems.MOONLESS.get()).setWeight(1))
-    			.add(LootItem.lootTableItem(Items.AIR).setWeight(10))
+    			.add(LootItem.lootTableItem(Items.AIR).setWeight(20))
     		.build());
+    		
+    		event.getTable().addPool(LootPool.lootPool()
+            		.add(LootItem.lootTableItem(WOMItems.GOLDEN_CHRONO.get()).setWeight(1))
+            		.add(LootItem.lootTableItem(WOMItems.GOLDEN_KIT.get()).setWeight(1))
+            		.add(LootItem.lootTableItem(WOMItems.GOLDEN_MOKASSIN.get()).setWeight(1))
+            		.add(LootItem.lootTableItem(WOMItems.GOLDEN_MONOCLE.get()).setWeight(1))
+            		.add(LootItem.lootTableItem(Items.AIR).setWeight(20))
+            	.build());
     	}
     }
 }

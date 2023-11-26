@@ -16,11 +16,9 @@ import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 
 public class CharybdisSkill extends WeaponInnateSkill {
-	protected final StaticAnimation attackAnimation;
 	
 	public CharybdisSkill(Builder builder) {
 		super(builder);
-		this.attackAnimation = WOMAnimations.STAFF_CHARYBDIS;
 	}
 	
 	@Override
@@ -35,7 +33,7 @@ public class CharybdisSkill extends WeaponInnateSkill {
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		if (executer.consumeStamina(this.consumption) || executer.getOriginal().isCreative()) {
-			executer.playAnimationSynchronized(this.attackAnimation, 0);
+			executer.playAnimationSynchronized(WOMAnimations.STAFF_CHARYBDIS, 0);
 			super.executeOnServer(executer, args);
 		}
 	}

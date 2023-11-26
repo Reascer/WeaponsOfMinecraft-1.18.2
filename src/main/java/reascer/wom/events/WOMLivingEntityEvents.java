@@ -7,6 +7,7 @@ import java.util.Random;
 import java.util.UUID;
 
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -272,81 +273,69 @@ public class WOMLivingEntityEvents {
 		
 		for (String tag : event.getEntity().getTags()) {
 			if (tag.contains("lunar_eclipse:")) {
-				if (event.getEntity().hasEffect(MobEffects.GLOWING)) {
-					int glowing_amp = event.getEntity().getEffect(MobEffects.GLOWING).getAmplifier();
-					if (event.getEntity().getEffect(MobEffects.GLOWING).getDuration() == 1) {
-						if (!event.getEntity().hasEffect(MobEffects.BLINDNESS)) {
-							event.getEntity().addEffect(new MobEffectInstance(MobEffects.BLINDNESS,20,glowing_amp,true,false,false));
-							event.getEntity().removeEffect(MobEffects.GLOWING);
-						}
-					}
-				}
-				if (event.getEntity().hasEffect(MobEffects.BLINDNESS)) {
-					int blindness_amp = event.getEntity().getEffect(MobEffects.BLINDNESS).getAmplifier();
-					if (event.getEntity().getEffect(MobEffects.BLINDNESS).getDuration() == 1 || event.getEntity().isDeadOrDying()) {
-						Entity player = event.getEntity().level.getEntity(Integer.valueOf(tag.substring(14)));
+				if (event.getEntityLiving().hasEffect(MobEffects.BLINDNESS)) {
+					int blindness_amp = event.getEntityLiving().getEffect(MobEffects.BLINDNESS).getAmplifier();
+					
+					if (event.getEntityLiving().getEffect(MobEffects.BLINDNESS).getDuration() == 1 || event.getEntityLiving().isDeadOrDying()) {
+						Entity player = event.getEntityLiving().level.getEntity(Integer.valueOf(tag.split(":")[1]));
 						PlayerPatch<?> playerpatch = EpicFightCapabilities.getEntityPatch(player, PlayerPatch.class);
 						ServerPlayerPatch serverPlayerPatch = (ServerPlayerPatch) playerpatch;
-						EpicFightEntityDamageSource epicFightDamageSource = new EpicFightEntityDamageSource("lunar_eclipse", player,WOMAnimations.MOONLESS_LUNAR_ECHO);
+						EpicFightEntityDamageSource epicFightDamageSource = new EpicFightEntityDamageSource("lunar_eclipse", player,WOMAnimations.MOONLESS_LUNAR_ECLIPSE);
 						epicFightDamageSource.setImpact(4.0f);
 						epicFightDamageSource.setStunType(StunType.HOLD);
 						epicFightDamageSource.addTag(SourceTags.WEAPON_INNATE);
 						DamageSource damage = epicFightDamageSource;
-						((ServerLevel) event.getEntity().level).sendParticles(ParticleTypes.END_ROD,
-								event.getEntity().getX(),
-								event.getEntity().getY()+ 0.25 * (int) (blindness_amp*(1f/Math.sqrt((blindness_amp/8f)+1f))),
-								event.getEntity().getZ(),
-								5 * (int) (blindness_amp*(1f/Math.sqrt((blindness_amp/8f)+1f))),
+						float lunar_power = Float.valueOf(tag.split(":")[2]) + (Float.valueOf(tag.split(":")[2]) * ((blindness_amp)/100));
+						((ServerLevel) player.level).sendParticles(ParticleTypes.END_ROD,
+								event.getEntityLiving().getX(),
+								event.getEntityLiving().getY()+ 0.25 * (int) (lunar_power*(1f/Math.sqrt((lunar_power/8f)+1f))),
+								event.getEntityLiving().getZ(),
+								5 * (int) (lunar_power*(1f/Math.sqrt((lunar_power/8f)+1f))),
 								0.1,
-								0.5 * (int) (blindness_amp*(1f/Math.sqrt((blindness_amp/8f)+1f))),
+								0.5 * (int) (lunar_power*(1f/Math.sqrt((lunar_power/8f)+1f))),
 								0.1,
 								0);
-						((ServerLevel) event.getEntity().level).sendParticles(ParticleTypes.FLASH,
-								event.getEntity().getX(),
-								event.getEntity().getY(),
-								event.getEntity().getZ(),
-								1,
-								0.0,
-								0.0,
-								0.0,
-								0);
-						((ServerLevel) event.getEntity().level).playSound(null,
-								event.getEntity().getX(),
-								event.getEntity().getY()+0.75f,
-								event.getEntity().getZ(),
-								blindness_amp == 0 ? SoundEvents.BEACON_ACTIVATE : SoundEvents.BEACON_DEACTIVATE, event.getEntity().getSoundSource(), 4.0F, 2.0F);
+						((ServerLevel) player.level).playSound(null,
+								event.getEntityLiving().getX(),
+								event.getEntityLiving().getY()+0.75f,
+								event.getEntityLiving().getZ(),
+								SoundEvents.BEACON_DEACTIVATE, event.getEntityLiving().getSoundSource(), 4.0F, 2.0F);
 						int glowing_amp = 0;
-						if (event.getEntity().hasEffect(MobEffects.GLOWING)) {
-							glowing_amp = event.getEntity().getEffect(MobEffects.GLOWING).getAmplifier();
+						if (event.getEntityLiving().hasEffect(MobEffects.GLOWING)) {
+							glowing_amp = event.getEntityLiving().getEffect(MobEffects.GLOWING).getAmplifier();
+							event.getEntityLiving().removeEffect(MobEffects.GLOWING);
 						}
-						AABB box = AABB.ofSize(event.getEntity().position(),10 + (Math.min(90, 1 * glowing_amp)), 10, 10 + (Math.min(90, 1 * glowing_amp)));
+						AABB box = AABB.ofSize(event.getEntityLiving().position(),10 + (Math.min(40, glowing_amp)), 10, 10 + (Math.min(40, glowing_amp)));
+						List<Entity> list = event.getEntityLiving().level.getEntities(player,box);
 						
-						List<Entity> list = event.getEntity().level.getEntities(event.getEntity().level.getEntity(Integer.valueOf(tag.substring(14))),box);
+						LivingEntity livingEntityLowestHP = null;
+						float distance_to_stored_target = -1;
+						
 						for (Entity entity : list) {
 							if (entity instanceof LivingEntity) {
 								LivingEntity livingEntity = (LivingEntity) entity;
+								if (livingEntity.hasEffect(MobEffects.BLINDNESS)) {
+									int Aoe_blindness_amp = livingEntity.getEffect(MobEffects.BLINDNESS).getAmplifier();
+									int Aoe_blindness_dur = livingEntity.getEffect(MobEffects.BLINDNESS).getDuration();
+									livingEntity.removeEffect(MobEffects.BLINDNESS);
+									if (Aoe_blindness_dur < 20*4) {
+										livingEntity.addEffect(new MobEffectInstance(MobEffects.BLINDNESS,20*4,Aoe_blindness_amp,true,false,false));
+									}
+								}
 								
-								if (livingEntity.isAlive()) {
-									float lunar_power = 0;
-									if (blindness_amp > 0) {
-										if (livingEntity.equals(event.getEntity())){
-											lunar_power = (float) (2f * blindness_amp*(1f/Math.sqrt((blindness_amp/8f)+1f)));
-											livingEntity.hurt(damage,lunar_power);
-										} else {
-											lunar_power = (float) (blindness_amp*(1f/Math.sqrt((blindness_amp/8f)+1f)));
-											livingEntity.hurt(damage,lunar_power);
-										}
-										((ServerLevel) livingEntity.level).sendParticles(ParticleTypes.DAMAGE_INDICATOR,
+								if (livingEntity.equals(event.getEntityLiving())){
+									if (livingEntity.isAlive()) {
+										livingEntity.hurt(damage,lunar_power);
+										((ServerLevel) event.getEntityLiving().level).sendParticles(ParticleTypes.FLASH,
 												livingEntity.getX(),
 												livingEntity.getY()+1,
 												livingEntity.getZ(),
-												(1 * (int) lunar_power),
-												0.2,
-												0.2,
-												0.2,
-												0.2);
-										
-										((ServerLevel) event.getEntity().level).sendParticles(ParticleTypes.END_ROD,
+												1,
+												0.0,
+												0.0,
+												0.0,
+												0);
+										((ServerLevel) event.getEntityLiving().level).sendParticles(ParticleTypes.END_ROD,
 												livingEntity.getX(),
 												livingEntity.getY()+1,
 												livingEntity.getZ(),
@@ -356,21 +345,63 @@ public class WOMLivingEntityEvents {
 												0.5 * (1 + (int) lunar_power / 20),
 												0);
 									}
-									if (serverPlayerPatch != null) {
-										serverPlayerPatch.getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent(serverPlayerPatch, livingEntity, epicFightDamageSource, lunar_power));
-									} else {
-										if (!event.getEntity().hasEffect(MobEffects.GLOWING)) {
-											event.getEntity().getTags().remove(tag);
+								} else {
+									if (!(livingEntity instanceof Animal) && livingEntity.isAlive() && !(livingEntity instanceof Npc)) {
+										if (livingEntityLowestHP == null) {
+											livingEntityLowestHP = livingEntity;
+											distance_to_stored_target = (float) Math.sqrt(
+													Math.pow(livingEntity.getX() - event.getEntityLiving().getX(), 2) + 
+													Math.pow(livingEntity.getZ() - event.getEntityLiving().getZ(), 2) + 
+													Math.pow(livingEntity.getY() - event.getEntityLiving().getY(), 2));
+										} else {
+											float distance_to_current_target = (float) Math.sqrt(
+													Math.pow(livingEntity.getX() - event.getEntityLiving().getX(), 2) + 
+													Math.pow(livingEntity.getZ() - event.getEntityLiving().getZ(), 2) + 
+													Math.pow(livingEntity.getY() - event.getEntityLiving().getY(), 2));
+											
+											if (distance_to_current_target < distance_to_stored_target) {
+												livingEntityLowestHP = livingEntity;
+												distance_to_stored_target = distance_to_current_target;
+											}
 										}
-										break;
 									}
+								}
+								if (serverPlayerPatch != null) {
+									serverPlayerPatch.getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent(serverPlayerPatch, livingEntity, epicFightDamageSource, lunar_power));
 								}
 							}
 						}
-						event.getEntity().removeEffect(MobEffects.BLINDNESS);
-						if (!event.getEntity().hasEffect(MobEffects.GLOWING)) {
-							event.getEntity().getTags().remove(tag);
+						
+						if (event.getEntityLiving().isDeadOrDying() && livingEntityLowestHP != null) {
+							String replacetag = new String(tag); 
+							livingEntityLowestHP.addTag(
+									replacetag.split(":")[0]+":"+ 
+									replacetag.split(":")[1]+":"+ 
+									lunar_power*0.95f);
+							int lowestHP_blindness_amp = 0; 
+							int lowestHP_glowing_amp = 0; 
+							if (livingEntityLowestHP.hasEffect(MobEffects.BLINDNESS)) {
+								lowestHP_blindness_amp = livingEntityLowestHP.getEffect(MobEffects.BLINDNESS).getAmplifier();
+								livingEntityLowestHP.removeEffect(MobEffects.BLINDNESS);
+							}
+							if (livingEntityLowestHP.hasEffect(MobEffects.GLOWING)) {
+								lowestHP_glowing_amp = livingEntityLowestHP.getEffect(MobEffects.GLOWING).getAmplifier();
+								if (lowestHP_glowing_amp < glowing_amp) {
+									livingEntityLowestHP.removeEffect(MobEffects.GLOWING);
+									livingEntityLowestHP.addEffect(new MobEffectInstance(MobEffects.GLOWING,5,glowing_amp,true,false,false));
+								} else {
+									livingEntityLowestHP.removeEffect(MobEffects.GLOWING);
+									livingEntityLowestHP.addEffect(new MobEffectInstance(MobEffects.GLOWING,5,lowestHP_glowing_amp,true,false,false));
+								}
+							} else if (glowing_amp > 0) {
+								livingEntityLowestHP.addEffect(new MobEffectInstance(MobEffects.GLOWING,5,glowing_amp,true,false,false));
+							}
+							
+							livingEntityLowestHP.addEffect(new MobEffectInstance(MobEffects.BLINDNESS,3,lowestHP_blindness_amp,true,false,false));
 						}
+						
+						event.getEntityLiving().removeEffect(MobEffects.BLINDNESS);
+						event.getEntityLiving().getTags().remove(tag);
 					}
 				}
 				break;

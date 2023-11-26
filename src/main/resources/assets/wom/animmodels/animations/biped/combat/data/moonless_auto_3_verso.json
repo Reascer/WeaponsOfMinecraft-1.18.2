@@ -3,8 +3,9 @@
 		{
 			"begin_pos": [0.0, 0.8, 0.8],
     		"end_pos": [0.0, 1.9, 0.4],
-			"start_time": 0.05,
-			"end_time": 0.70,
+			"start_time": 0.35,
+			"end_time": 0.65,
+			"fade_time": 0.95,
 			"joint": "Tool_R",
 			"item_skin_hand": "main_hand",
 			"texture_path": "wom:textures/particle/moonless/weapon_trail/blade_edge.png"
