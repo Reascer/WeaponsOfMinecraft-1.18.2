@@ -4093,6 +4093,7 @@ public class WOMAnimations {
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT.get())
 				.addProperty(AttackPhaseProperty.PARTICLE, EpicFightParticles.HIT_BLADE)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F)
+				.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 0.70F))
 				.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
 				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 					Entity entity = entitypatch.getOriginal();

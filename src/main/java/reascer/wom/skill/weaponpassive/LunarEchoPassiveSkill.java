@@ -67,13 +67,16 @@ public class LunarEchoPassiveSkill extends PassiveSkill {
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, WOMSkills.lUNAR_ECLIPSE.getSkillTexture());
 		GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
-		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK) > 0) {
-			float lunar_eclipse_stack = container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK);
-			int lunar_eclipse_damage = (int) (4f * lunar_eclipse_stack*(1f/Math.sqrt((lunar_eclipse_stack/8f)+1f)));
-			int nombre_de_chiffre = (int) Math.log(lunar_eclipse_damage);
-			
-			gui.font.drawShadow(poseStack, String.valueOf(lunar_eclipse_damage), x+8-(2*nombre_de_chiffre), y+8, 16777215);
+		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getSkill() == WOMSkills.lUNAR_ECLIPSE) {
+			if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK) > 0) {
+				float lunar_eclipse_stack = container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK);
+				int lunar_eclipse_damage = (int) (4f * lunar_eclipse_stack*(1f/Math.sqrt((lunar_eclipse_stack/8f)+1f)));
+				int nombre_de_chiffre = (int) Math.log(lunar_eclipse_damage);
+				
+				gui.font.drawShadow(poseStack, String.valueOf(lunar_eclipse_damage), x+8-(2*nombre_de_chiffre), y+8, 16777215);
+			}
 		}
+		
 		poseStack.popPose();
 	}
 	
@@ -117,28 +120,29 @@ public class LunarEchoPassiveSkill extends PassiveSkill {
 				interpolation += partialScale2;
 			}
 		}
-		
-		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK) > 0) {
-			float lunar_eclipse_stack = container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK);
-			int lunar_eclipse_damage = (int) (4f * lunar_eclipse_stack*(1f/Math.sqrt((lunar_eclipse_stack/8f)+1f)));
-			int numberOf2 = lunar_eclipse_damage/30;
-			float partialScale2 = 1.0F / (numberOf2 - 1);
-			float interpolation2 = 0.0F;
-			OpenMatrix4f transformMatrix2;
-			for (int i = 0; i < numberOf2; i++) {
-				transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation2), Armatures.BIPED.toolR);
-				transformMatrix2.translate(new Vec3f(0,1.7F,0.2F));
-				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
-				float blade = -(new Random().nextFloat() * 2.4f);
-				transformMatrix2.translate(new Vec3f(-((new Random().nextFloat()-0.5f) * 0.4f),blade,-((new Random().nextFloat()-0.5f) * 0.4f)));
-				entitypatch.getOriginal().level.addParticle(ParticleTypes.ELECTRIC_SPARK,
-					(transformMatrix2.m30 + entitypatch.getOriginal().getX()),
-					(transformMatrix2.m31 + entitypatch.getOriginal().getY()),
-					(transformMatrix2.m32 + entitypatch.getOriginal().getZ()),
-					0,
-					0,
-					0);
-				interpolation2 += partialScale2;
+		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getSkill() == WOMSkills.lUNAR_ECLIPSE) {
+			if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK) > 0) {
+				float lunar_eclipse_stack = container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK);
+				int lunar_eclipse_damage = (int) (4f * lunar_eclipse_stack*(1f/Math.sqrt((lunar_eclipse_stack/8f)+1f)));
+				int numberOf2 = lunar_eclipse_damage/30;
+				float partialScale2 = 1.0F / (numberOf2 - 1);
+				float interpolation2 = 0.0F;
+				OpenMatrix4f transformMatrix2;
+				for (int i = 0; i < numberOf2; i++) {
+					transformMatrix2 = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation2), Armatures.BIPED.toolR);
+					transformMatrix2.translate(new Vec3f(0,1.7F,0.2F));
+					OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix2,transformMatrix2);
+					float blade = -(new Random().nextFloat() * 2.4f);
+					transformMatrix2.translate(new Vec3f(-((new Random().nextFloat()-0.5f) * 0.4f),blade,-((new Random().nextFloat()-0.5f) * 0.4f)));
+					entitypatch.getOriginal().level.addParticle(ParticleTypes.ELECTRIC_SPARK,
+						(transformMatrix2.m30 + entitypatch.getOriginal().getX()),
+						(transformMatrix2.m31 + entitypatch.getOriginal().getY()),
+						(transformMatrix2.m32 + entitypatch.getOriginal().getZ()),
+						0,
+						0,
+						0);
+					interpolation2 += partialScale2;
+				}
 			}
 		}
 	}
