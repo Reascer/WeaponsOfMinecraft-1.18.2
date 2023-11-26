@@ -68,7 +68,7 @@ public class LunarEchoPassiveSkill extends PassiveSkill {
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, WOMSkills.lUNAR_ECLIPSE.getSkillTexture());
 		guiGraphics.blit(WOMSkills.lUNAR_ECLIPSE.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
-		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE) != null) {
+		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getSkill() == WOMSkills.lUNAR_ECLIPSE) {
 			if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK) > 0) {
 				float lunar_eclipse_stack = container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK);
 				int lunar_eclipse_damage = (int) (4f * lunar_eclipse_stack*(1f/Math.sqrt((lunar_eclipse_stack/8f)+1f)));
@@ -120,7 +120,7 @@ public class LunarEchoPassiveSkill extends PassiveSkill {
 				interpolation += partialScale2;
 			}
 		}
-		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE) != null) {
+		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getSkill() == WOMSkills.lUNAR_ECLIPSE) {
 			if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK) > 0) {
 				float lunar_eclipse_stack = container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK);
 				int lunar_eclipse_damage = (int) (4f * lunar_eclipse_stack*(1f/Math.sqrt((lunar_eclipse_stack/8f)+1f)));
