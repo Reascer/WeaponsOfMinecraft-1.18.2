@@ -92,10 +92,6 @@ public class AgonyPlungeSkill extends WeaponInnateSkill {
 		//executer.getOriginal().sendMessage(new TextComponent("number of stack: " + executer.getSkill(this).getDataManager().getDataValue(STACK)), UUID.randomUUID());
 		//executer.setStamina(executer.getStamina() - (5f - EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));
 		if (!executer.getOriginal().isCreative()) {
-			this.setDurationSynchronize(executer, 0);
-			this.setStackSynchronize(executer, 0);
-			this.setConsumptionSynchronize(executer, 0);
-			
 			SkillConsumeEvent event = new SkillConsumeEvent(executer, this, this.resource, true);
 			executer.getEventListener().triggerEvents(EventType.SKILL_CONSUME_EVENT, event);
 			
