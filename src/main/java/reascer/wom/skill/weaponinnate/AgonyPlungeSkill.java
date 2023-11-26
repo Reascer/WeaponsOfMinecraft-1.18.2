@@ -12,32 +12,27 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import reascer.wom.gameasset.WOMAnimations;
-import yesman.epicfight.api.animation.LivingMotions;
-import yesman.epicfight.api.animation.types.EntityState;
-import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
-import yesman.epicfight.skill.SkillSlots;
-import yesman.epicfight.skill.weaponinnate.ConditionalWeaponInnateSkill;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.damagesource.EpicFightEntityDamageSource;
-import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.effect.EpicFightMobEffects;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
+import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 
 
-public class AgonyPlungeSkill extends ConditionalWeaponInnateSkill {
+public class AgonyPlungeSkill extends WeaponInnateSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("c7a0ee46-56b3-4008-9fba-d2594b1e2676");
 	public static final SkillDataKey<Boolean> PLUNGING = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	public static final SkillDataKey<Integer> STACK = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	
-	public AgonyPlungeSkill(ConditionalWeaponInnateSkill.Builder builder) {
+	public AgonyPlungeSkill(Builder<?> builder) {
 		super(builder);
 	}
 	
@@ -84,9 +79,9 @@ public class AgonyPlungeSkill extends ConditionalWeaponInnateSkill {
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		if (executer.getSkill(EpicFightSkills.HYPERVITALITY) == null) {
-			executer.playAnimationSynchronized(this.attackAnimations[0], 0);
+			executer.playAnimationSynchronized(WOMAnimations.AGONY_PLUNGE_FORWARD, 0);
 		} else {
-			executer.playAnimationSynchronized(this.attackAnimations[1], 0);
+			executer.playAnimationSynchronized(WOMAnimations.AGONY_PLUNGE_FORWARD_X, 0);
 		}
 		executer.getSkill(this).getDataManager().setDataSync(PLUNGING, true, executer.getOriginal());
 		if (executer.getSkill(EpicFightSkills.HYPERVITALITY) == null) {
@@ -97,11 +92,20 @@ public class AgonyPlungeSkill extends ConditionalWeaponInnateSkill {
 		//executer.getOriginal().sendMessage(new TextComponent("number of stack: " + executer.getSkill(this).getDataManager().getDataValue(STACK)), UUID.randomUUID());
 		//executer.setStamina(executer.getStamina() - (5f - EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())));
 		if (!executer.getOriginal().isCreative()) {
+			this.setDurationSynchronize(executer, 0);
+			this.setStackSynchronize(executer, 0);
+			this.setConsumptionSynchronize(executer, 0);
+			
+			SkillConsumeEvent event = new SkillConsumeEvent(executer, this, this.resource, true);
+			executer.getEventListener().triggerEvents(EventType.SKILL_CONSUME_EVENT, event);
+			
+			if (!event.isCanceled()) {
+				event.getResourceType().consumer.consume(this, executer, event.getAmount());
+			}
 			executer.getOriginal().level.playSound(null, executer.getOriginal().xo, executer.getOriginal().yo, executer.getOriginal().zo,
 	    			SoundEvents.PLAYER_HURT, executer.getOriginal().getSoundSource(), 1.0F, 1.0F);
-			DamageSource damage = new EpicFightEntityDamageSource("agonized_to_death", executer.getOriginal(), this.attackAnimations[0]).setStunType(StunType.NONE).cast().bypassArmor().bypassMagic();
+			DamageSource damage = new EpicFightEntityDamageSource("agonized_to_death", executer.getOriginal(), WOMAnimations.AGONY_PLUNGE_FORWARD).setStunType(StunType.NONE).cast().bypassArmor().bypassMagic();
 			executer.getOriginal().hurt(damage, executer.getOriginal().getHealth() * (0.40f - (0.10f * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()))));
-			super.executeOnServer(executer, args);
 		}
 
 		if (executer.getSkill(EpicFightSkills.HYPERVITALITY) == null && !executer.getOriginal().isCreative()) {
@@ -117,13 +121,6 @@ public class AgonyPlungeSkill extends ConditionalWeaponInnateSkill {
 		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(1), "Plunge :");
 		
 		return list;
-	}
-	
-	@Override
-	public boolean isExecutableState(PlayerPatch<?> executer) {
-		executer.updateEntityState();
-		EntityState playerState = executer.getEntityState();
-		return !(executer.getOriginal().isFallFlying() || executer.currentLivingMotion == LivingMotions.FALL || !playerState.canUseSkill());
 	}
 	
 	@Override

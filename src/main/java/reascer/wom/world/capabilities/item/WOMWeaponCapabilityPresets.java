@@ -15,7 +15,7 @@ import reascer.wom.gameasset.WOMColliders;
 import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.main.WeaponsOfMinecraft;
 import reascer.wom.skill.weaponinnate.SoulSnatchSkill;
-import reascer.wom.skill.weaponpassive.LunarEclipsePassiveSkill;
+import reascer.wom.skill.weaponpassive.LunarEchoPassiveSkill;
 import reascer.wom.skill.weaponpassive.SatsujinPassive;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
@@ -327,8 +327,8 @@ public class WOMWeaponCapabilityPresets {
 		CapabilityItem.Builder builder = WeaponCapability.builder()
 				.category(WeaponCategories.TACHI)
 				.styleProvider((entitypatch) -> {
-					if (entitypatch instanceof PlayerPatch<?> playerpatch && (playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().hasData(LunarEclipsePassiveSkill.VERSO) &&
-								playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(LunarEclipsePassiveSkill.VERSO))) {
+					if (entitypatch instanceof PlayerPatch<?> playerpatch && (playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().hasData(LunarEchoPassiveSkill.VERSO) &&
+								playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(LunarEchoPassiveSkill.VERSO))) {
 							return Styles.OCHS;
 					}
 					return Styles.TWO_HAND;
@@ -337,11 +337,11 @@ public class WOMWeaponCapabilityPresets {
 				.hitSound(EpicFightSounds.BLADE_HIT)
 				.canBePlacedOffhand(false)
 				.newStyleCombo(Styles.TWO_HAND, WOMAnimations.MOONLESS_AUTO_1, WOMAnimations.MOONLESS_AUTO_2, WOMAnimations.MOONLESS_AUTO_3, WOMAnimations.MOONLESS_REVERSED_BYPASS, WOMAnimations.MOONLESS_CRESCENT)
-				.innateSkill(Styles.TWO_HAND,(itemstack) -> WOMSkills.LUNAR_ECHO)
+				.innateSkill(Styles.TWO_HAND,(itemstack) -> WOMSkills.lUNAR_ECLIPSE)
 				.newStyleCombo(Styles.OCHS, WOMAnimations.MOONLESS_AUTO_1_VERSO, WOMAnimations.MOONLESS_AUTO_2_VERSO,WOMAnimations.MOONLESS_AUTO_3_VERSO, WOMAnimations.MOONLESS_BYPASS, WOMAnimations.MOONLESS_FULLMOON)
-				.innateSkill(Styles.OCHS,(itemstack) -> WOMSkills.LUNAR_ECHO)
+				.innateSkill(Styles.OCHS,(itemstack) -> WOMSkills.lUNAR_ECLIPSE)
 				.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
-				.passiveSkill(WOMSkills.LUNAR_ECLIPSE_PASSIVE)
+				.passiveSkill(WOMSkills.LUNAR_ECHO_PASSIVE)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.IDLE, WOMAnimations.MOONLESS_IDLE)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.WALK, WOMAnimations.MOONLESS_WALK)
 				.livingMotionModifier(Styles.TWO_HAND, LivingMotions.CHASE, WOMAnimations.MOONLESS_RUN)

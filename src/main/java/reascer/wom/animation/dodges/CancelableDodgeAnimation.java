@@ -29,6 +29,7 @@ public class CancelableDodgeAnimation extends ActionAnimation {
 			.addState(EntityState.PHASE_LEVEL, 1)
 			.addState(EntityState.TURNING_LOCKED, false)
 			.addState(EntityState.MOVEMENT_LOCKED, true)
+			.addState(EntityState.UPDATE_LIVING_MOTION, false)
 			.addState(EntityState.CAN_BASIC_ATTACK, true)
 			.addState(EntityState.CAN_SKILL_EXECUTION, true)
 			.addState(EntityState.INACTION, true)

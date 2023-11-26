@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 
+import org.stringtemplate.v4.compiler.STParser.ifstat_return;
+
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.commands.arguments.EntityAnchorArgument.Anchor;
 import net.minecraft.core.BlockPos;
@@ -39,9 +41,10 @@ import reascer.wom.skill.dodges.BullChargeSkill;
 import reascer.wom.skill.dodges.EnderObscurisSkill;
 import reascer.wom.skill.weaponinnate.AgonyPlungeSkill;
 import reascer.wom.skill.weaponinnate.DemonicAscensionSkill;
+import reascer.wom.skill.weaponinnate.LunarEclipseSkill;
 import reascer.wom.skill.weaponinnate.RegierungSkill;
 import reascer.wom.skill.weaponpassive.DemonMarkPassiveSkill;
-import reascer.wom.skill.weaponpassive.LunarEclipsePassiveSkill;
+import reascer.wom.skill.weaponpassive.LunarEchoPassiveSkill;
 import reascer.wom.skill.weaponpassive.SatsujinPassive;
 import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import reascer.wom.world.damagesources.WOMExtraDamageInstance;
@@ -64,6 +67,7 @@ import yesman.epicfight.api.animation.types.GuardAnimation;
 import yesman.epicfight.api.animation.types.LongHitAnimation;
 import yesman.epicfight.api.animation.types.MovementAnimation;
 import yesman.epicfight.api.animation.types.StaticAnimation;
+import yesman.epicfight.api.collider.Collider;
 import yesman.epicfight.api.forgeevent.AnimationRegistryEvent;
 import yesman.epicfight.api.utils.LevelUtil;
 import yesman.epicfight.api.utils.TimePairList;
@@ -313,6 +317,7 @@ public class WOMAnimations {
 	public static StaticAnimation MOONLESS_AUTO_2_VERSO;
 	public static StaticAnimation MOONLESS_AUTO_3_VERSO;
 	public static StaticAnimation MOONLESS_LUNAR_ECHO;
+	public static StaticAnimation MOONLESS_LUNAR_ECLIPSE;
 	public static StaticAnimation MOONLESS_GUARD;
 	public static StaticAnimation MOONLESS_GUARD_HIT_1;
 	public static StaticAnimation MOONLESS_GUARD_HIT_2;
@@ -4025,9 +4030,9 @@ public class WOMAnimations {
 					Entity entity = entitypatch.getOriginal();
 					entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				},Side.CLIENT),
-						TimeStampedEvent.create(0.50F, (entitypatch, self, params) -> {
+						TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 							if (entitypatch instanceof ServerPlayerPatch) {
-								((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(LunarEclipsePassiveSkill.VERSO, true,(ServerPlayer)entitypatch.getOriginal());
+								((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(LunarEchoPassiveSkill.VERSO, true,(ServerPlayer)entitypatch.getOriginal());
 								((ServerPlayerPatch) entitypatch).modifyLivingMotionByCurrentItem();
 							}
 						},Side.SERVER));
@@ -4045,16 +4050,16 @@ public class WOMAnimations {
 						Entity entity = entitypatch.getOriginal();
 						entitypatch.getOriginal().level.addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 					},Side.CLIENT),
-					TimeStampedEvent.create(0.50F, (entitypatch, self, params) -> {
+					TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof ServerPlayerPatch) {
-							((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(LunarEclipsePassiveSkill.VERSO, false,(ServerPlayer)entitypatch.getOriginal());
+							((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(LunarEchoPassiveSkill.VERSO, false,(ServerPlayer)entitypatch.getOriginal());
 							((ServerPlayerPatch) entitypatch).modifyLivingMotionByCurrentItem();
 						}
 					},Side.SERVER));
 		
 		MOONLESS_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_1", biped,
 				new Phase(0.0F, 0.25F, 0.4F, 0.45F, Float.MAX_VALUE, biped.toolR, null))
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.20F))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.00F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.50F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.WHOOSH_BIG)
@@ -4066,16 +4071,25 @@ public class WOMAnimations {
 				new Phase(0.0F, 0.3F, 0.4F, 0.45F, 0.45F, biped.toolR, null),
 				new Phase(0.45F, 0.5F, 0.6F, 0.65F, 0.65F, biped.toolR, null),
 				new Phase(0.65F, 0.7F, 1.0F, 1.0F, Float.MAX_VALUE, biped.toolR, null))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F),1)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F),2)
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.40F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.40F),1)
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.60F),2)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
-				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD,1)
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10))
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10))
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(10))
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE,2)
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F);
 		
 		MOONLESS_AUTO_3 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_3", biped,
-				new Phase(0.0F, 0.5F, 0.70F, 0.80F, Float.MAX_VALUE, biped.toolR, null))
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2.50F))
+				new Phase(0.0F, 0.5F, 0.70F, 0.80F, Float.MAX_VALUE, biped.rootJoint, WOMColliders.BODY_CLOSE))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2.00F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.50F))
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(20))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
 				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.WHOOSH_BIG)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_HIT)
@@ -4090,6 +4104,8 @@ public class WOMAnimations {
 		MOONLESS_AUTO_1_VERSO = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_1_verso", biped,
 				new Phase(0.00F, 0.2F, 0.3F, 0.35F, 0.35F, biped.toolR, null),
 				new Phase(0.35F, 0.45F, 0.55F, 0.65F, Float.MAX_VALUE, biped.toolR, null))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F),1)
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.50F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.50F),1)
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
@@ -4104,6 +4120,9 @@ public class WOMAnimations {
 				new Phase(0.0F, 0.15F, 0.30F, 0.34F, 0.34F, biped.toolR, null),
 				new Phase(0.34F, 0.35F, 0.5F, 0.54F, 0.54F, biped.toolR, null),
 				new Phase(0.54F, 0.55F, 0.75F, 0.75F, Float.MAX_VALUE, biped.toolR, null))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F),1)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F),2)
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.40F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.40F),1)
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.40F),2)
@@ -4114,7 +4133,7 @@ public class WOMAnimations {
 		
 		MOONLESS_AUTO_3_VERSO = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_3_verso", biped,
 				new Phase(0.0F, 0.35F, 0.45F, 0.70F, Float.MAX_VALUE, biped.toolR, WOMColliders.MOONLESS_BYPASS))
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.20F))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.0F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
 				.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
@@ -4124,18 +4143,33 @@ public class WOMAnimations {
 		
 		MOONLESS_LUNAR_ECHO = new SpecialAttackAnimation(0.05F, "biped/skill/moonless_lunar_echo", biped,
 				new Phase(0.0F, 0.6F, 0.7F, 0.85F, Float.MAX_VALUE, biped.rootJoint, WOMColliders.LUNAR_ECHO))
-				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.50F))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.00F))
 				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(20))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
 				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE))
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
 				.addEvents(TimeStampedEvent.create(0.10F, (entitypatch, self, params) -> {
-					((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(LunarEclipsePassiveSkill.IDLE, true);
+					if (entitypatch instanceof PlayerPatch<?>) {
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(LunarEchoPassiveSkill.IDLE, true);
+					}
+					
 					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 0.2F, 0.5F);
 				}, Side.CLIENT),
+					TimeStampedEvent.create(0.55F, (entitypatch, self, params) -> {
+						if (entitypatch instanceof PlayerPatch<?>) {
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setData(LunarEclipseSkill.ECHO, true);
+						}
+				}, Side.SERVER),
 					TimeStampedEvent.create(0.75F, (entitypatch, self, params) -> {
-						entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 0.7F, 0.5F);
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(LunarEclipsePassiveSkill.IDLE, false);
+						if (entitypatch instanceof PlayerPatch<?>) {
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setData(LunarEclipseSkill.ECHO, false);
+						}
+				}, Side.SERVER),
+					TimeStampedEvent.create(0.75F, (entitypatch, self, params) -> {
+						if (entitypatch instanceof PlayerPatch<?>) {
+							entitypatch.getOriginal().playSound(SoundEvents.FIREWORK_ROCKET_BLAST, 0.7F, 0.5F);
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(LunarEchoPassiveSkill.IDLE, false);
+						}
 						OpenMatrix4f transformMatrix;
 						transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(0), Armatures.BIPED.toolL);
 						transformMatrix.translate(new Vec3f(0,0.0F,0));
@@ -4189,13 +4223,98 @@ public class WOMAnimations {
 									(float)(direction.y/2),
 									(float)(direction.z/2));
 						}
-				}, Side.CLIENT));;
+				}, Side.CLIENT));
 
+		MOONLESS_LUNAR_ECLIPSE = new SpecialAttackAnimation(0.05F, "biped/skill/moonless_lunar_eclipse", biped,
+				new Phase(0.0F, 0.6F, 0.7F, 0.85F, Float.MAX_VALUE, biped.rootJoint, WOMColliders.LUNAR_ECHO))
+				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.50F))
+				.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(20))
+				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
+				.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE))
+				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
+				.addEvents(TimeStampedEvent.create(0.10F, (entitypatch, self, params) -> {
+					if (entitypatch instanceof PlayerPatch<?>) {
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(LunarEchoPassiveSkill.IDLE, true);
+					}
+					
+					entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 0.2F, 0.5F);
+				}, Side.CLIENT),
+					TimeStampedEvent.create(0.60F, (entitypatch, self, params) -> {
+						if (entitypatch instanceof PlayerPatch<?>) {
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setData(LunarEclipseSkill.ECHO, true);
+						}
+				}, Side.SERVER),
+					TimeStampedEvent.create(0.70F, (entitypatch, self, params) -> {
+						if (entitypatch instanceof PlayerPatch<?>) {
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setData(LunarEclipseSkill.ECHO, false);
+						}
+				}, Side.SERVER),
+					TimeStampedEvent.create(0.75F, (entitypatch, self, params) -> {
+						if (entitypatch instanceof PlayerPatch<?>) {
+							entitypatch.getOriginal().playSound(SoundEvents.FIREWORK_ROCKET_BLAST, 0.7F, 0.5F);
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(LunarEchoPassiveSkill.IDLE, false);
+						}
+						OpenMatrix4f transformMatrix;
+						transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(0), Armatures.BIPED.toolL);
+						transformMatrix.translate(new Vec3f(0,0.0F,0));
+						OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
+						int n = 70; // set the number of particles to emit
+						double r = 0.3; // set the radius of the hemisphere to 1
+						double t = 0.01; // set the radius of the hemisphere to 1
+
+						 entitypatch.getOriginal().level.addParticle(ParticleTypes.FLASH,
+							        (transformMatrix.m30 + entitypatch.getOriginal().getX()),
+							        (transformMatrix.m31 + entitypatch.getOriginal().getY()),
+							        (transformMatrix.m32 + entitypatch.getOriginal().getZ()),
+							        (float)(0),
+							        (float)(0),
+							        (float)(0));
+						for (int i = 0; i < n; i++) {
+						   entitypatch.getOriginal().level.addParticle(ParticleTypes.END_ROD,
+						        (transformMatrix.m30 + entitypatch.getOriginal().getX()),
+						        (transformMatrix.m31 + entitypatch.getOriginal().getY()),
+						        (transformMatrix.m32 + entitypatch.getOriginal().getZ()),
+						        (float)(0),
+						        (float)((new Random().nextFloat() * 10)),
+						        (float)(0));
+						}
+						
+						for (int i = 0; i < n; i++) {
+							double theta = 2 * Math.PI * new Random().nextDouble(); // generate a random azimuthal angle
+							double phi = (new Random().nextDouble() - 0.5) * Math.PI * t / r; // generate a random angle within the disk thickness
+							
+							// calculate the emission direction in Cartesian coordinates using the polar coordinates
+							double x = r * Math.cos(phi) * Math.cos(theta);
+							double y = r * Math.cos(phi) * Math.sin(theta);
+							double z = r * Math.sin(phi);
+							
+							// create a Vector3f object to represent the emission direction
+							Vec3f direction = new Vec3f(
+									(float)x * 1.8f,
+									(float)y * 1.8f,
+									(float)z * 1.8f);
+							
+							// rotate the direction vector to align with the forward vector
+							OpenMatrix4f rotation = new OpenMatrix4f().rotate((float) Math.toRadians(90), new Vec3f(1, 0, 0));
+							OpenMatrix4f.transform3v(rotation, direction, direction);
+							
+							// emit the particle in the calculated direction, with some random velocity added
+							entitypatch.getOriginal().level.addParticle(ParticleTypes.END_ROD,
+									(transformMatrix.m30 + entitypatch.getOriginal().getX() + direction.x*2),
+							        (transformMatrix.m31 + entitypatch.getOriginal().getY() + direction.y*2) + 0.8f,
+							        (transformMatrix.m32 + entitypatch.getOriginal().getZ() + direction.z*2),
+									(float)(direction.x/2),
+									(float)(direction.y/2),
+									(float)(direction.z/2));
+						}
+				}, Side.CLIENT));
+		
 				MOONLESS_CRESCENT = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_crescent", biped,
 						new Phase(0.0F, 0.40F, 0.50F, 0.70F, Float.MAX_VALUE, biped.toolR, null))
 						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2.0F))
 						.addProperty(AttackPhaseProperty.EXTRA_DAMAGE, Set.of(WOMExtraDamageInstance.TARGET_LOST_HEALTH.create(0.20f)))
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.5F))
+						.addProperty(AttackPhaseProperty.MAX_STRIKES_MODIFIER, ValueModifier.setter(1))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 						.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE))
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.0F)
@@ -4227,7 +4346,7 @@ public class WOMAnimations {
 						new Phase(0.15F, 0.20F, 0.30F, 0.35F, 0.35F, biped.toolR, WOMColliders.MOONLESS_BYPASS),
 						new Phase(0.35F, 0.40F, 0.50F, 0.55F, 0.55F, biped.toolR, WOMColliders.MOONLESS_BYPASS),
 						new Phase(0.55F, 0.60F, 0.70F, 0.75F, 0.75F, biped.toolR, WOMColliders.MOONLESS_BYPASS),
-						new Phase(0.75F, 0.80F, 1.00F, 1.75F, Float.MAX_VALUE, biped.toolR, WOMColliders.MOONLESS_BYPASS))
+						new Phase(0.75F, 0.80F, 1.00F, 2.00F, Float.MAX_VALUE, biped.toolR, WOMColliders.MOONLESS_BYPASS))
 						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.5F))
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.0F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
