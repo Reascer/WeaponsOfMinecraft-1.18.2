@@ -30,13 +30,13 @@ import reascer.wom.skill.weaponinnate.CharybdisSkill;
 import reascer.wom.skill.weaponinnate.DemonicAscensionSkill;
 import reascer.wom.skill.weaponinnate.EnderBlastSkill;
 import reascer.wom.skill.weaponinnate.EnderFusionSkill;
-import reascer.wom.skill.weaponinnate.LunarEchoSkill;
+import reascer.wom.skill.weaponinnate.LunarEclipseSkill;
 import reascer.wom.skill.weaponinnate.RegierungSkill;
 import reascer.wom.skill.weaponinnate.SakuraStateSkill;
 import reascer.wom.skill.weaponinnate.SoulSnatchSkill;
 import reascer.wom.skill.weaponinnate.TrueBerserkSkill;
 import reascer.wom.skill.weaponpassive.DemonMarkPassiveSkill;
-import reascer.wom.skill.weaponpassive.LunarEclipsePassiveSkill;
+import reascer.wom.skill.weaponpassive.LunarEchoPassiveSkill;
 import reascer.wom.skill.weaponpassive.RuinePassive;
 import reascer.wom.skill.weaponpassive.SatsujinPassive;
 import reascer.wom.skill.weaponpassive.TormentPassiveSkill;
@@ -83,14 +83,14 @@ public class WOMSkills {
 	public static Skill SAKURA_STATE;
 	public static Skill ENDER_BLAST;
 	public static Skill ENDER_FUSION;
-	public static Skill LUNAR_ECHO;
+	public static Skill lUNAR_ECLIPSE;
 	
 	// Weapon Passive --------------------------------------------------------
 	public static Skill SATSUJIN_PASSIVE;
 	public static Skill DEMON_MARK_PASSIVE;
 	public static Skill RUINE_PASSIVE;
 	public static Skill TORMENT_PASSIVE;
-	public static Skill LUNAR_ECLIPSE_PASSIVE;
+	public static Skill LUNAR_ECHO_PASSIVE;
 
 	// Passive --------------------------------------------------------
 	public static Skill ARROW_TENACITY;
@@ -158,8 +158,8 @@ public class WOMSkills {
 		SkillManager.register(RuinePassive::new, Skill.createBuilder().setCategory(SkillCategories.WEAPON_PASSIVE),
 				WeaponsOfMinecraft.MODID,"ruine_passive");
 		
-		SkillManager.register(LunarEclipsePassiveSkill::new, Skill.createBuilder().setCategory(SkillCategories.WEAPON_PASSIVE),
-				WeaponsOfMinecraft.MODID,"lunar_eclipse_passive");
+		SkillManager.register(LunarEchoPassiveSkill::new, Skill.createBuilder().setCategory(SkillCategories.WEAPON_PASSIVE),
+				WeaponsOfMinecraft.MODID,"lunar_echo_passive");
 		
 		SkillManager.register(SatsujinPassive::new, Skill.createBuilder().setCategory(SkillCategories.WEAPON_PASSIVE).setActivateType(ActivateType.ONE_SHOT).setResource(Resource.COOLDOWN),
 				WeaponsOfMinecraft.MODID,"satsujin_passive");
@@ -171,9 +171,7 @@ public class WOMSkills {
 		SkillManager.register(CharybdisSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
 				WeaponsOfMinecraft.MODID,"charybdis");
 
-		SkillManager.register(AgonyPlungeSkill::new, ConditionalWeaponInnateSkill.createConditionalWeaponInnateBuilder().setAnimations(
-				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/agony_plunge_forward"),
-				new ResourceLocation(WeaponsOfMinecraft.MODID, "biped/skill/agony_plunge_forward_x")),
+		SkillManager.register(AgonyPlungeSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
 				WeaponsOfMinecraft.MODID,"agony_plunge");
 				
 		
@@ -217,8 +215,8 @@ public class WOMSkills {
 		SkillManager.register(RegierungSkill::new, WeaponInnateSkill.createWeaponInnateBuilder().setActivateType(ActivateType.DURATION_INFINITE),
 				WeaponsOfMinecraft.MODID,"regierung");
 		
-		SkillManager.register(LunarEchoSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
-				WeaponsOfMinecraft.MODID,"lunar_echo");
+		SkillManager.register(LunarEclipseSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
+				WeaponsOfMinecraft.MODID,"lunar_eclipse");
 		
 		//  GUARD --------------------------------------------------------
 		
@@ -369,8 +367,8 @@ public class WOMSkills {
 		
 		REGIERUNG = onBuild.build(WeaponsOfMinecraft.MODID, "regierung");
 		
-		LUNAR_ECHO = onBuild.build(WeaponsOfMinecraft.MODID, "lunar_echo");
-		LUNAR_ECLIPSE_PASSIVE = onBuild.build(WeaponsOfMinecraft.MODID, "lunar_eclipse_passive");
+		lUNAR_ECLIPSE = onBuild.build(WeaponsOfMinecraft.MODID, "lunar_eclipse");
+		LUNAR_ECHO_PASSIVE = onBuild.build(WeaponsOfMinecraft.MODID, "lunar_echo_passive");
 		
 		DEMONIC_ASCENSION = onBuild.build(WeaponsOfMinecraft.MODID, "demonic_ascension");
 		DEMON_MARK_PASSIVE = onBuild.build(WeaponsOfMinecraft.MODID, "demon_mark_passive");

@@ -40,7 +40,6 @@ public class WOMColliders {
 	public static final Collider KICK = new MultiOBBCollider(4, 0.4D, 0.4D, 0.4D, 0D, 0.6D, 0D);
 	public static final Collider KICK_HUGE = new MultiOBBCollider(4, 0.8D, 0.8D, 0.8D, 0D, 0.9D, 0D);
 	public static final Collider ENDER_DASH = new OBBCollider(1.5D, 1.5D, 1.5D, 0D, 1.0D, -1.0D);
-	public static final Collider ENDER_TISHNAW = new MultiOBBCollider(4, 1.5D, 1.5D, 1.5D, 0D, 1.0D, 0.0D);
 	public static final Collider KNEE = new MultiOBBCollider(4, 0.8D, 0.8D, 0.8D, 0D, 0.6D, 0D);
 	public static final Collider ENDER_LASER = new MultiOBBCollider(4, 0.3D, 20.0D, 0.3D, 0.0D, -20.2D, 0.0D);
 	public static final Collider ENDER_SHOOT = new MultiOBBCollider(4, 0.3D, 3.0D, 0.3D, 0.0D, -3.1D, 0.0D);
@@ -71,6 +70,7 @@ public class WOMColliders {
 	public static final Collider MOONLESS = new MultiOBBCollider(4, 0.2D, 1.5D, 0.4D, 0.0D, 1.0D, 0.2D);
 	public static final Collider MOONLESS_BYPASS = new MultiOBBCollider(4, 0.2D, 1.8D, 0.7D, 0.0D, 1.0D, 0.3D);
 	public static final Collider LUNAR_ECHO = new OBBCollider( 6.0D, 6.0D, 6.0D, 0.0D, 0.0D, -6.0D);
+	public static final Collider BODY_CLOSE = new OBBCollider( 1.5D, 1.5D, 1.5D, 0.0D, 0.0D, 0.0D);
 	
 	public static final Collider SOLAR = new MultiOBBCollider(4, 0.4F, 0.6F, 1.8F, 0F, 0.0F, -1.0F);
 }

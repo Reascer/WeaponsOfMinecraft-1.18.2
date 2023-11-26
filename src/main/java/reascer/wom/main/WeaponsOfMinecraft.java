@@ -13,6 +13,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLPaths;
 import reascer.wom.config.WOMConfigManager;
+import reascer.wom.config.WOMConfigurationIngame;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMEnchantment;
 import reascer.wom.gameasset.WOMSkills;
@@ -29,7 +30,7 @@ public class WeaponsOfMinecraft
 	public static final String MODID = "wom";
 	public static final String CONFIG_FILE_PATH = WeaponsOfMinecraft.MODID + ".toml";
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
-	//public static WOMConfigurationIngame CLIENT_INGAME_CONFIG;
+	public static WOMConfigurationIngame CLIENT_INGAME_CONFIG;
 	private static WeaponsOfMinecraft instance;
 	
 	public static WeaponsOfMinecraft getInstance() {
@@ -62,7 +63,7 @@ public class WeaponsOfMinecraft
     }
     
     private void doClientStuff(final FMLClientSetupEvent event) {
-    	//CLIENT_INGAME_CONFIG = new WOMConfigurationIngame();
+    	CLIENT_INGAME_CONFIG = new WOMConfigurationIngame();
     }
     
     private void doCommonStuff(final FMLCommonSetupEvent event) {

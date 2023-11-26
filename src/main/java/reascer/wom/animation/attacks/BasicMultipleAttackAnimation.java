@@ -16,6 +16,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
+import reascer.wom.gameasset.WOMAnimations;
 import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.animation.Keyframe;
 import yesman.epicfight.api.animation.TransformSheet;
