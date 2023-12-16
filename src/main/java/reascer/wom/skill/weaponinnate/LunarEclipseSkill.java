@@ -145,7 +145,7 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 												0.0,
 												0);
 										int blindness_dur = event.getTarget().getEffect(MobEffects.BLINDNESS).getDuration();
-										event.getTarget().addEffect(new MobEffectInstance(MobEffects.GLOWING,blindness_dur+40,0,true,false,false));
+										event.getTarget().addEffect(new MobEffectInstance(MobEffects.GLOWING,blindness_dur+40,event.getTarget().getEffect(MobEffects.BLINDNESS).getAmplifier()/5,true,false,false));
 									}
 									
 									if (!event.getDamageSource().getAnimation().equals(WOMAnimations.MOONLESS_CRESCENT)) {
@@ -179,10 +179,10 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 											0.0,
 											0.0,
 											0);
-									event.getTarget().removeEffect(MobEffects.GLOWING);
 									if (!event.getTarget().hasEffect(MobEffects.BLINDNESS)) {
-										event.getTarget().addEffect(new MobEffectInstance(MobEffects.BLINDNESS,20*7,0,true,false,false));
+										event.getTarget().addEffect(new MobEffectInstance(MobEffects.BLINDNESS,20*7,event.getTarget().getEffect(MobEffects.GLOWING).getAmplifier()*5,true,false,false));
 									}
+									event.getTarget().removeEffect(MobEffects.GLOWING);
 								}
 							}
 						}
