@@ -51,9 +51,7 @@ public class EnderblasterbulletParticle extends HitParticle {
 	    
 		@Override
 		public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-			if (EpicFightMod.CLIENT_INGAME_CONFIG.offBloodEffects.getValue()) {
-				return null;
-			}
+
 			EnderblasterbulletParticle particle = new EnderblasterbulletParticle(worldIn, x, y, z, spriteSet);
 			return particle;
 		}

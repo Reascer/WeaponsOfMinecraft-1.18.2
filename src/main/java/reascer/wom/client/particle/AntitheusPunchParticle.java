@@ -48,9 +48,7 @@ public class AntitheusPunchParticle extends HitParticle {
 	    
 		@Override
 		public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-			if (EpicFightMod.CLIENT_INGAME_CONFIG.offBloodEffects.getValue()) {
-				return null;
-			}
+
 			AntitheusPunchParticle particle = new AntitheusPunchParticle(worldIn, x, y, z, spriteSet);
 			return particle;
 		}
