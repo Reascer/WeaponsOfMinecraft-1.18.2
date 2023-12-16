@@ -49,9 +49,6 @@ public class AntitheusCutParticle extends HitParticle {
 	    
 		@Override
 		public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-			if (EpicFightMod.CLIENT_INGAME_CONFIG.offBloodEffects.getValue()) {
-				return null;
-			}
 			AntitheusCutParticle particle = new AntitheusCutParticle(worldIn, x, y, z, spriteSet);
 			Float rand = new Random().nextFloat();
 			particle.roll = (float)Math.toRadians(45.0F + ((rand - 0.5F) * 45F) + (xSpeed == 0 ? 0f : 180f));
