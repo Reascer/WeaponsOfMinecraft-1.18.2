@@ -120,6 +120,7 @@ public class LunarEchoPassiveSkill extends PassiveSkill {
 				interpolation += partialScale2;
 			}
 		}
+		
 		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getSkill() == WOMSkills.lUNAR_ECLIPSE) {
 			if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK) > 0) {
 				float lunar_eclipse_stack = container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK);

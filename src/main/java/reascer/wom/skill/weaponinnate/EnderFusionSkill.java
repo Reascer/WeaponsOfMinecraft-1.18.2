@@ -33,7 +33,9 @@ import yesman.epicfight.client.ClientEngine;
 import yesman.epicfight.client.events.engine.ControllEngine;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.gameasset.EpicFightSkills;
+import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.client.CPExecuteSkill;
+import yesman.epicfight.network.server.SPSkillExecutionFeedback;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
@@ -223,10 +225,11 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 			executer.getSkill(this).getDataManager().setDataSync(COOLDOWN, cooldown, executer.getOriginal());
 		}
 		executer.getSkill(this).getDataManager().setDataSync(ZOOM, true, executer.getOriginal());
+
 		if (!executer.getOriginal().isCreative()) {
+			int stack = executer.getSkill(this).getStack();
 			SkillConsumeEvent event = new SkillConsumeEvent(executer, this, this.resource, true);
 			executer.getEventListener().triggerEvents(EventType.SKILL_CONSUME_EVENT, event);
-			int stack = executer.getSkill(this).getStack();
 			if (!event.isCanceled()) {
 				event.getResourceType().consumer.consume(this, executer, event.getAmount());
 				if (double_cost) {
@@ -234,7 +237,7 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 				}
 			}
 			int sweeping_edge = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()) + EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getValidItemInHand(InteractionHand.OFF_HAND));
-			if (Math.abs(new Random().nextInt()) % 100 < (100 * (-(1f/(Math.sqrt(sweeping_edge+1f)))+1))) {
+			if (Math.abs(new Random().nextInt()) % 100 < (100 * (-(1f/(Math.sqrt((sweeping_edge/2)+1)))+1))) {
 				if (double_cost && stack == 1) {
 					
 				} else {
@@ -252,6 +255,32 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 		executer.updateEntityState();
 		EntityState playerState = executer.getEntityState();
 		return !(executer.getOriginal().isFallFlying() || executer.currentLivingMotion == LivingMotions.FALL || !playerState.canUseSkill() || !executer.getEntityState().canBasicAttack());
+	}
+	
+	@Override
+	public boolean resourcePredicate(PlayerPatch<?> playerpatch) {
+		float consumption = this.getDefaultConsumeptionAmount(playerpatch);
+		
+		SkillConsumeEvent event = new SkillConsumeEvent(playerpatch, this, this.resource, consumption*5, false);
+		playerpatch.getEventListener().triggerEvents(EventType.SKILL_CONSUME_EVENT, event);
+		
+		if (event.isCanceled()) {
+			return false;
+		}
+		
+		if (event.getResourceType().predicate.canExecute(this, playerpatch, event.getAmount())) {
+			int stack = playerpatch.getSkill(this).getStack();
+			if (playerpatch.getSkill(EpicFightSkills.HYPERVITALITY) != null && stack <= 0) {
+				if (playerpatch.getSkill(EpicFightSkills.HYPERVITALITY).getStack() > 0) {
+					playerpatch.getSkill(EpicFightSkills.HYPERVITALITY).activate();
+					playerpatch.getSkill(EpicFightSkills.HYPERVITALITY).setMaxResource(12);
+					return true;
+				}
+			} else {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	@Override
@@ -316,32 +345,48 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 				if (container.getDataManager().getDataValue(SHOOT) && !container.getExecuter().getOriginal().isUsingItem() && container.getExecuter().getEntityState().canBasicAttack()) {
 					container.getExecuter().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 					container.getDataManager().setDataSync(SHOOT, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-					if ((container.getStack() > 0) || container.getExecuter().getOriginal().isCreative() ) {
+					if (executer.getSkill(EpicFightSkills.HYPERVITALITY) != null || container.getStack() > 0 || container.getExecuter().getOriginal().isCreative() ) {
+						boolean flag = true;
 						if (!container.getExecuter().getOriginal().isCreative()) {
-							this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()-1);
-							if (Math.abs(new Random().nextInt()) % 100 < (100 * (-(1f/(Math.sqrt(sweeping_edge+1f)))+1))) {
-								this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()+1);
-								container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
-						    			WOMSounds.ENDERBLASTER_RELOAD.get(), container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
+							int stack = executer.getSkill(this).getStack();
+							if (executer.getSkill(EpicFightSkills.HYPERVITALITY) != null && stack <= 0) {
+								if (executer.getSkill(EpicFightSkills.HYPERVITALITY).getStack() > 0) {
+									executer.getSkill(EpicFightSkills.HYPERVITALITY).activate();
+									executer.getSkill(EpicFightSkills.HYPERVITALITY).setMaxResource(12);
+									executer.getSkill(EpicFightSkills.HYPERVITALITY).getSkill().setStackSynchronize(executer, -1);
+									EpicFightNetworkManager.sendToPlayer(SPSkillExecutionFeedback.executed(executer.getSkill(EpicFightSkills.HYPERVITALITY).getSlotId()), executer.getOriginal());
+								} else {
+									flag = false;
+								}
+							}
+							if (flag) {
+								this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()-1);
+								if (Math.abs(new Random().nextInt()) % 100 < (100 * (-(1f/(Math.sqrt((sweeping_edge/2)+1)))+1))) {
+									this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()+1);
+									container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+							    			WOMSounds.ENDERBLASTER_RELOAD.get(), container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
+								}
 							}
 						}
-						if (container.getExecuter().getOriginal().isVisuallySwimming()) {
-							if (container.getDataManager().getDataValue(SIDE)) {
-								container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LAYED_RIGHT, 0);
-								container.getDataManager().setDataSync(SIDE, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+						if (flag) {
+							if (container.getExecuter().getOriginal().isVisuallySwimming()) {
+								if (container.getDataManager().getDataValue(SIDE)) {
+									container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LAYED_RIGHT, 0);
+									container.getDataManager().setDataSync(SIDE, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+								} else {
+									container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LAYED_LEFT, 0);
+									container.getDataManager().setDataSync(SIDE, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+								}
 							} else {
-								container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LAYED_LEFT, 0);
-								container.getDataManager().setDataSync(SIDE, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+								if (container.getDataManager().getDataValue(SIDE)) {
+									container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_RIGHT, 0);
+									container.getDataManager().setDataSync(SIDE, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+								} else {
+									container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LEFT, 0);
+									container.getDataManager().setDataSync(SIDE, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+								}
+								
 							}
-						} else {
-							if (container.getDataManager().getDataValue(SIDE)) {
-								container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_RIGHT, 0);
-								container.getDataManager().setDataSync(SIDE, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-							} else {
-								container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_TWOHAND_SHOOT_LEFT, 0);
-								container.getDataManager().setDataSync(SIDE, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-							}
-							
 						}
 					}
 					container.getDataManager().setDataSync(COOLDOWN, cooldown, ((ServerPlayerPatch)container.getExecuter()).getOriginal());

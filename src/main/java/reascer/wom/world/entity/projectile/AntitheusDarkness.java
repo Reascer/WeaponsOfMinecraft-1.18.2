@@ -19,6 +19,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractHurtingProjectile;
 import net.minecraft.world.entity.projectile.ProjectileUtil;
@@ -183,8 +184,10 @@ public class AntitheusDarkness extends AbstractHurtingProjectile {
             }
             if (entity instanceof LivingEntity) {
             	if (!((LivingEntity) entity).isDeadOrDying()) {
-					livingentity.setLastHurtMob(entity);
-					livingentity.addTag("antitheus_pull:"+ entity.getId());
+            		if (!(entity instanceof ArmorStand)) {
+						livingentity.setLastHurtMob(entity);
+						livingentity.addTag("antitheus_pull:"+ entity.getId());
+					}
 				}
             }
          } else {
