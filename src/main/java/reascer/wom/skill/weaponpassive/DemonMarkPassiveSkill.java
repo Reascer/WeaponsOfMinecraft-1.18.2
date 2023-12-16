@@ -8,8 +8,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,6 +27,7 @@ import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.client.gui.BattleModeGui;
 import yesman.epicfight.gameasset.Armatures;
+import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
@@ -30,6 +35,7 @@ import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.passive.PassiveSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
+import yesman.epicfight.world.entity.DeathHarvestOrb;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class DemonMarkPassiveSkill extends PassiveSkill {
@@ -66,11 +72,22 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 					int sweping = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal());
 					if (chance < ( (20f + (sweping*10f) ) * (container.getDataManager().getDataValue(BLINK) ? 2F : 1F) ) ) {
 						if (event.getTarget().hasEffect(MobEffects.WITHER)) {
-							int power = Math.min(event.getTarget().getEffect(MobEffects.WITHER).getAmplifier(), 4);
+							int power = Math.min(event.getTarget().getEffect(MobEffects.WITHER).getAmplifier(), 9);
 							event.getTarget().removeEffect(MobEffects.WITHER);
-							event.getTarget().addEffect(new MobEffectInstance(MobEffects.WITHER, (6 + (2 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))) *20, ++power, false, true));
+							event.getTarget().addEffect(new MobEffectInstance(MobEffects.WITHER, 6*20, ++power, false, true));
+							PlayerPatch<?> playerpatch = container.getExecuter();
+							Player original = playerpatch.getOriginal();
+							LivingEntity target = event.getTarget();
+							
+							if (event.getPlayerPatch().getSkill(EpicFightSkills.DEATH_HARVEST) != null && target.hasEffect(MobEffects.WITHER)) {
+								original.level.playSound(null, original.getX(), original.getY(), original.getZ(), SoundEvents.WITHER_AMBIENT, original.getSoundSource(), 0.3F, 1.25F);
+								
+								int damage = (int)original.getAttributeValue(Attributes.ATTACK_DAMAGE);
+								DeathHarvestOrb harvestOrb = new DeathHarvestOrb(original, target.getX(), target.getY() + target.getBbHeight() * 0.5D, target.getZ(), damage);
+								original.level.addFreshEntity(harvestOrb);
+							}
 						} else {
-							event.getTarget().addEffect(new MobEffectInstance(MobEffects.WITHER, (6 + (2 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()))) *20, 0, false, true));
+							event.getTarget().addEffect(new MobEffectInstance(MobEffects.WITHER, 6*20, 0, false, true));
 						}
 					}
 				}
