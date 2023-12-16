@@ -25,7 +25,7 @@ import reascer.wom.particle.WOMParticles;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
-import yesman.epicfight.world.damagesource.SourceTags;
+import yesman.epicfight.world.damagesource.EpicFightDamageType;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
@@ -101,7 +101,7 @@ public class EnderBullet extends AbstractHurtingProjectile {
             EpicFightDamageSource damage = new EpicFightDamageSource(this.damageSources().magic());
             damage.setAnimation(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT);
             damage.setStunType(StunType.SHORT);
-            damage.addTag(SourceTags.WEAPON_INNATE);
+            damage.addRuntimeTag(EpicFightDamageType.WEAPON_INNATE);
             int prevInvulTime = entity.invulnerableTime;
             entity.invulnerableTime = 0;
             float entity1damage = 7f;

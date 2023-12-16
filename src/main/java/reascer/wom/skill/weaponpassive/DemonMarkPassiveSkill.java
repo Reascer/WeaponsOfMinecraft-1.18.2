@@ -80,11 +80,11 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 							LivingEntity target = event.getTarget();
 							
 							if (event.getPlayerPatch().getSkill(EpicFightSkills.DEATH_HARVEST) != null && target.hasEffect(MobEffects.WITHER)) {
-								original.level.playSound(null, original.getX(), original.getY(), original.getZ(), SoundEvents.WITHER_AMBIENT, original.getSoundSource(), 0.3F, 1.25F);
+								original.level().playSound(null, original.getX(), original.getY(), original.getZ(), SoundEvents.WITHER_AMBIENT, original.getSoundSource(), 0.3F, 1.25F);
 								
 								int damage = (int)original.getAttributeValue(Attributes.ATTACK_DAMAGE);
 								DeathHarvestOrb harvestOrb = new DeathHarvestOrb(original, target.getX(), target.getY() + target.getBbHeight() * 0.5D, target.getZ(), damage);
-								original.level.addFreshEntity(harvestOrb);
+								original.level().addFreshEntity(harvestOrb);
 							}
 						} else {
 							event.getTarget().addEffect(new MobEffectInstance(MobEffects.WITHER, 6*20, 0, false, true));

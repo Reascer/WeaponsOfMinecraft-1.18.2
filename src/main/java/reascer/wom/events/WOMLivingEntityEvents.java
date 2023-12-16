@@ -50,7 +50,7 @@ import yesman.epicfight.world.capabilities.entitypatch.EntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
-import yesman.epicfight.world.damagesource.SourceTags;
+import yesman.epicfight.world.damagesource.EpicFightDamageType;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
@@ -105,14 +105,14 @@ public class WOMLivingEntityEvents {
 			int block_distance = 1000;
 			double health_multiplier = 1.1D;
 			double damage_multiplier = 1.09D;
-			if (distance_from_zero / block_distance > 1 && !(event.getEntityLiving() instanceof Player) && !event.getEntityLiving().getTags().contains("wom-stronger-mob") && event.getEntityLiving().level.getGameRules().getBoolean(WOMGamerules.SPAWN_STONGER_MOB_OVER_DISTANCE)) {
-				AttributeInstance entity_max_health = event.getEntityLiving().getAttribute(Attributes.MAX_HEALTH);
+			if (distance_from_zero / block_distance > 1 && !event.getEntity().getTags().contains("wom-stronger-mob") && event.getEntity().level().getGameRules().getBoolean(WOMGamerules.SPAWN_STONGER_MOB_OVER_DISTANCE)) {
+				AttributeInstance entity_max_health = event.getEntity().getAttribute(Attributes.MAX_HEALTH);
 				AttributeModifier boosted_health = new AttributeModifier(UUID.fromString("5a70f02c-7ca0-43c5-a766-2be3d68461a2"), "wom.wom_stronger_health", Math.round(Math.pow(health_multiplier, (distance_from_zero / block_distance))-1) , Operation.MULTIPLY_TOTAL);
 				if (entity_max_health != null) {
 					entity_max_health.removeModifier(boosted_health);
 					entity_max_health.addPermanentModifier(boosted_health);
 				}
-				AttributeInstance entity_attack_damage = event.getEntityLiving().getAttribute(Attributes.ATTACK_DAMAGE);
+				AttributeInstance entity_attack_damage = event.getEntity().getAttribute(Attributes.ATTACK_DAMAGE);
 				AttributeModifier boosted_damage = new AttributeModifier(UUID.fromString("5a70f02c-7ca0-43c5-a766-2be3d68461a2"), "wom.wom_stronger_damage", Math.round(Math.pow(damage_multiplier, (distance_from_zero / block_distance))-1), Operation.MULTIPLY_TOTAL);
 				if (entity_attack_damage != null) {
 					entity_attack_damage.removeModifier(boosted_damage);
@@ -240,7 +240,7 @@ public class WOMLivingEntityEvents {
 									
 									epicFightDamageSource.setImpact(2.0f);
 									epicFightDamageSource.setStunType(StunType.HOLD);
-									epicFightDamageSource.addTag(SourceTags.WEAPON_INNATE);
+									epicFightDamageSource.addRuntimeTag(EpicFightDamageType.WEAPON_INNATE);
 									DamageSource damage = epicFightDamageSource;
 									e.invulnerableTime = 0;
 									if (e.hurt(damage,(float) Math.max(1.0f, Float.valueOf(replacetag.split(":")[5]) * 0.25f))) {
@@ -285,7 +285,7 @@ public class WOMLivingEntityEvents {
 						EpicFightDamageSource epicFightDamageSource = serverPlayerPatch.getDamageSource(WOMAnimations.MOONLESS_LUNAR_ECLIPSE, InteractionHand.MAIN_HAND);
 						epicFightDamageSource.setImpact(4.0f);
 						epicFightDamageSource.setStunType(StunType.HOLD);
-						epicFightDamageSource.addTag(SourceTags.WEAPON_INNATE);
+						epicFightDamageSource.addRuntimeTag(EpicFightDamageType.WEAPON_INNATE);
 						DamageSource damage = epicFightDamageSource;
 						float lunar_power = Float.valueOf(tag.split(":")[2]) + (Float.valueOf(tag.split(":")[2]) * ((blindness_amp)/100));
 						((ServerLevel) player.level()).sendParticles(ParticleTypes.END_ROD,

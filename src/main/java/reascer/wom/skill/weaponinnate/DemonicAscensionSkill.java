@@ -1,16 +1,10 @@
 
 package reascer.wom.skill.weaponinnate;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import javax.lang.model.element.ExecutableElement;
-
-import org.apache.commons.lang3.ObjectUtils.Null;
-
-import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder.NotEnoughDataDecoderException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
@@ -18,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -41,13 +36,11 @@ import reascer.wom.skill.weaponpassive.DemonMarkPassiveSkill;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.EntityState;
-import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.client.ClientEngine;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.gameasset.EpicFightSounds;
-import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
@@ -58,7 +51,7 @@ import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
-import yesman.epicfight.world.damagesource.SourceTags;
+import yesman.epicfight.world.damagesource.EpicFightDamageType;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.effect.EpicFightMobEffects;
 import yesman.epicfight.world.entity.DeathHarvestOrb;
@@ -413,7 +406,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 					}
 					
 					playerpatch.getSkill(EpicFightSkills.HYPERVITALITY).setMaxResource(120 * (1 - ressource/playerpatch.getSkill(this).getMaxResource()));
-					DamageSource damage = event.getPlayerPatch().getDamageSource(WOMAnimations.ANTITHEUS_PULL, InteractionHand.MAIN_HAND).bypassArmor().bypassMagic();
+					DamageSource damage = event.getPlayerPatch().getDamageSource(WOMAnimations.ANTITHEUS_PULL, InteractionHand.MAIN_HAND);
 					playerpatch.getOriginal().hurt(damage, (playerpatch.getOriginal().getHealth() * (1 - ressource/playerpatch.getSkill(this).getMaxResource()))-1);
 					if (!playerpatch.isLogicalClient()) {
 						this.setConsumptionSynchronize((ServerPlayerPatch)playerpatch, 0);
@@ -702,7 +695,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 						float WitherCatharsis = 0;
 						if (target.hasEffect(MobEffects.WITHER)) {
 							damage.setImpact(4f);
-							damage.addTag(SourceTags.WEAPON_INNATE);
+							damage.addRuntimeTag(EpicFightDamageType.WEAPON_INNATE);
 							int wither_lvl = target.getEffect(MobEffects.WITHER).getAmplifier()+1;
 							WitherCatharsis = (float) ((target.getEffect(MobEffects.WITHER).getDuration()/20) * ( wither_lvl == 0 ? 0.5f : wither_lvl));
 							((ServerLevel) container.getExecuter().getOriginal().level()).sendParticles( ParticleTypes.SOUL, 
@@ -728,7 +721,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 								int damage2 = (int)original.getAttributeValue(Attributes.ATTACK_DAMAGE);
 								for (int i = 0; i < wither_lvl*3; i++) {
 									DeathHarvestOrb harvestOrb = new DeathHarvestOrb(original, target.getX(), target.getY() + target.getBbHeight() * 0.5D, target.getZ(), damage2);
-									original.level.addFreshEntity(harvestOrb);
+									original.level().addFreshEntity(harvestOrb);
 								}
 							}
 							container.getExecuter().getOriginal().heal(WitherCatharsis*0.2f);
@@ -802,8 +795,8 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 									this.setConsumptionSynchronize((ServerPlayerPatch) executer,ressource - ressourceConsumption);	
 									
 									if (HealthConsumption > 0) {
-										player.level.playSound(null, player.getX(), player.getY(), player.getZ(), EpicFightSounds.FORBIDDEN_STRENGTH, player.getSoundSource(), 1.0F, 1.0F);
-										((ServerLevel)player.level).sendParticles(ParticleTypes.DAMAGE_INDICATOR, player.getX(), player.getY(0.5D), player.getZ(), (int)ressource_after_consumption, 0.1D, 0.0D, 0.1D, 0.2D);
+										player.level().playSound(null, player.getX(), player.getY(), player.getZ(), EpicFightSounds.FORBIDDEN_STRENGTH.get(), player.getSoundSource(), 1.0F, 1.0F);
+										((ServerLevel)player.level()).sendParticles(ParticleTypes.DAMAGE_INDICATOR, player.getX(), player.getY(0.5D), player.getZ(), (int)ressource_after_consumption, 0.1D, 0.0D, 0.1D, 0.2D);
 									}
 								}
 								
@@ -888,7 +881,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 								
 								if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) % 10 == 0 && entity instanceof LivingEntity && distance_to_target <= 10) {
 									LivingEntity target = (LivingEntity) entity;
-									IndirectEpicFightDamageSource damage = (IndirectEpicFightDamageSource) new IndirectEpicFightDamageSource("demon_fee", container.getExecuter().getOriginal(), container.getExecuter().getOriginal(), StunType.HOLD);
+									EpicFightDamageSource damage = container.getExecuter().getDamageSource(WOMAnimations.ANTITHEUS_PULL, InteractionHand.MAIN_HAND);
 									int chance = Math.abs(new Random().nextInt()) % 100;
 									int sweping = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal());
 									if (chance < 20f + (sweping*10f) ) {
@@ -911,19 +904,19 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 										damage.setImpact(2.5f);
 										int wither_lvl = target.getEffect(MobEffects.WITHER).getAmplifier()+1;
 										WitherCatharsis = (float) ((target.getEffect(MobEffects.WITHER).getDuration()/20) * ( wither_lvl == 0 ? 0.5f : wither_lvl));
-										((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.SOUL, 
+										((ServerLevel) container.getExecuter().getOriginal().level()).sendParticles( ParticleTypes.SOUL, 
 												target.getX(), 
 												target.getY() + 1.2D, 
 												target.getZ(), 
 												48, 0.0D, 0.0D, 0.0D, 0.05D);
-										container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+										container.getExecuter().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 								    			SoundEvents.WITHER_HURT, container.getExecuter().getOriginal().getSoundSource(), 1.5F, 0.5F);
-										((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( ParticleTypes.SOUL_FIRE_FLAME, 
+										((ServerLevel) container.getExecuter().getOriginal().level()).sendParticles( ParticleTypes.SOUL_FIRE_FLAME, 
 													target.getX(), 
 													target.getY() + 1.2D, 
 													target.getZ(), 
 													(target.getEffect(MobEffects.WITHER).getAmplifier()+1)*4, 0.0D, 0.0D, 0.0D, 0.05D);
-										container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+										container.getExecuter().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 									    			SoundEvents.WITHER_SKELETON_HURT, container.getExecuter().getOriginal().getSoundSource(), 1.5F, 0.5F);
 										target.removeEffect(MobEffects.WITHER);
 									}

@@ -50,7 +50,7 @@ import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategories;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
-import yesman.epicfight.world.damagesource.SourceTags;
+import yesman.epicfight.world.damagesource.EpicFightDamageType;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.HurtEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
@@ -237,7 +237,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 				float knockback = 0.25F;
 				
 				if (event.getDamageSource() instanceof EpicFightDamageSource epicfightDamageSource) {
-					if (epicfightDamageSource.hasTag(SourceTags.GUARD_PUNCTURE)) {
+					if (epicfightDamageSource.is(EpicFightDamageType.GUARD_PUNCTURE)) {
 						return;
 					}
 					

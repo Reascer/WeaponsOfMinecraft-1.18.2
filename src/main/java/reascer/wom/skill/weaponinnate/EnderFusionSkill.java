@@ -12,18 +12,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
-import reascer.wom.skill.passive.MeditationSkill;
 import reascer.wom.gameasset.WOMSounds;
 import reascer.wom.skill.WomMultipleAnimationSkill;
 import reascer.wom.skill.passive.MeditationSkill;
@@ -44,7 +39,6 @@ import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
-import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
@@ -365,7 +359,7 @@ public class EnderFusionSkill extends WomMultipleAnimationSkill {
 								this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()-1);
 								if (Math.abs(new Random().nextInt()) % 100 < (100 * (-(1f/(Math.sqrt((sweeping_edge/2)+1)))+1))) {
 									this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()+1);
-									container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+									container.getExecuter().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 							    			WOMSounds.ENDERBLASTER_RELOAD.get(), container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 								}
 							}

@@ -1,10 +1,7 @@
 package reascer.wom.skill.weaponinnate;
 
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
-
-import org.lwjgl.opengl.ARBTextureMirrorClampToEdge;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
@@ -22,7 +19,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.Npc;
-import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -34,8 +30,8 @@ import reascer.wom.skill.weaponpassive.LunarEchoPassiveSkill;
 import yesman.epicfight.api.animation.AnimationPlayer;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.AttackAnimation;
-import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
+import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
@@ -45,7 +41,7 @@ import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
-import yesman.epicfight.world.damagesource.SourceTags;
+import yesman.epicfight.world.damagesource.EpicFightDamageType;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
@@ -204,7 +200,7 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 					EpicFightDamageSource epicFightDamageSource = event.getPlayerPatch().getDamageSource(WOMAnimations.MOONLESS_LUNAR_ECLIPSE, InteractionHand.MAIN_HAND);
 					epicFightDamageSource.setImpact(4.0f);
 					epicFightDamageSource.setStunType(StunType.HOLD);
-					epicFightDamageSource.addTag(SourceTags.WEAPON_INNATE);
+					epicFightDamageSource.addRuntimeTag(EpicFightDamageType.WEAPON_INNATE);
 					DamageSource damage = epicFightDamageSource;
 					float lunar_eclipse_stack = container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK);
 					float lunar_eclipse_damage = (float) (4f * lunar_eclipse_stack*(1f/Math.sqrt((lunar_eclipse_stack/8f)+1f)));
@@ -351,7 +347,7 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 						EpicFightDamageSource epicFightDamageSource = event.getPlayerPatch().getDamageSource(WOMAnimations.MOONLESS_LUNAR_ECLIPSE, InteractionHand.MAIN_HAND);
 						epicFightDamageSource.setImpact(4.0f);
 						epicFightDamageSource.setStunType(StunType.LONG);
-						epicFightDamageSource.addTag(SourceTags.WEAPON_INNATE);
+						epicFightDamageSource.addRuntimeTag(EpicFightDamageType.WEAPON_INNATE);
 						DamageSource damage = epicFightDamageSource;
 						float lunar_eclipse_stack = container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK);
 						float lunar_eclipse_damage = (float) (4f * lunar_eclipse_stack*(1f/Math.sqrt((lunar_eclipse_stack/8f)+1f)));

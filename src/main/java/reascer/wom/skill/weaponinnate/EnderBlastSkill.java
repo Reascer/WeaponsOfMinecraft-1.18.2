@@ -12,9 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -45,8 +43,6 @@ import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
-import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
-import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 
@@ -373,7 +369,7 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 								this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()-1);
 								if (Math.abs(new Random().nextInt()) % 100 < (100 * (-(1f/(Math.sqrt(sweeping_edge+1)))+1))) {
 									this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()+1);
-									container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+									container.getExecuter().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 							    			WOMSounds.ENDERBLASTER_RELOAD.get(), container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 								}
 							}
