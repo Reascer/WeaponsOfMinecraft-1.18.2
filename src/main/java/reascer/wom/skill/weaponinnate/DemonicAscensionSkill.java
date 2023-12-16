@@ -1,16 +1,10 @@
 
 package reascer.wom.skill.weaponinnate;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import javax.lang.model.element.ExecutableElement;
-
-import org.apache.commons.lang3.ObjectUtils.Null;
-
-import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder.NotEnoughDataDecoderException;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
@@ -35,21 +29,17 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import reascer.wom.gameasset.WOMAnimations;
-import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.gameasset.WOMSounds;
 import reascer.wom.particle.WOMParticles;
 import reascer.wom.skill.weaponpassive.DemonMarkPassiveSkill;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.EntityState;
-import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.api.utils.AttackResult.ResultType;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.client.ClientEngine;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.gameasset.EpicFightSounds;
-import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
@@ -795,7 +785,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 									this.setConsumptionSynchronize((ServerPlayerPatch) executer,ressource - ressourceConsumption);	
 									
 									if (HealthConsumption > 0) {
-										player.level.playSound(null, player.getX(), player.getY(), player.getZ(), EpicFightSounds.FORBIDDEN_STRENGTH, player.getSoundSource(), 1.0F, 1.0F);
+										player.level.playSound(null, player.getX(), player.getY(), player.getZ(), EpicFightSounds.FORBIDDEN_STRENGTH.get(), player.getSoundSource(), 1.0F, 1.0F);
 										((ServerLevel)player.level).sendParticles(ParticleTypes.DAMAGE_INDICATOR, player.getX(), player.getY(0.5D), player.getZ(), (int)ressource_after_consumption, 0.1D, 0.0D, 0.1D, 0.2D);
 									}
 								}
