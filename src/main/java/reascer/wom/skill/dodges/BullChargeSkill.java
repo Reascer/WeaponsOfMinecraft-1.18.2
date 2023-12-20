@@ -9,6 +9,7 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import reascer.wom.gameasset.WOMAnimations;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.main.EpicFightMod;
@@ -88,7 +89,7 @@ public class BullChargeSkill extends Skill {
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		super.executeOnServer(executer, args);
 		executer.getSkill(this).getDataManager().setDataSync(SUPER_ARMOR, true, executer.getOriginal());
-		executer.playAnimationSynchronized(animations, 0);
+		executer.playAnimationSynchronized(WOMAnimations.BULL_CHARGE, 0);
 		
 	}
 
