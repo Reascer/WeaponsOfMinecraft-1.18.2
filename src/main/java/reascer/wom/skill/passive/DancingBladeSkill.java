@@ -140,6 +140,7 @@ public class DancingBladeSkill extends PassiveSkill {
 	@Override
 	public void onRemoved(SkillContainer container) {
 		container.getExecuter().getEventListener().removeListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID);
+		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID);
 	}
 	
