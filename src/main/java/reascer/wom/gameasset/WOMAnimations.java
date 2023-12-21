@@ -3782,14 +3782,18 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.8F)
 				.addEvents(TimeStampedEvent.create(0.65F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 6,(ServerPlayer)entitypatch.getOriginal());
+							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 6,(ServerPlayer)entitypatch.getOriginal());
+							}
 						}
 					}, Side.SERVER),
 					TimeStampedEvent.create(1.35F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+							}
 						}
 					}, Side.SERVER));
 		
@@ -3806,14 +3810,18 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.8F)
 				.addEvents(TimeStampedEvent.create(0.40F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 1,(ServerPlayer)entitypatch.getOriginal());
+							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 1,(ServerPlayer)entitypatch.getOriginal());
+							}
 						}
 					}, Side.SERVER),
 					TimeStampedEvent.create(0.60F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+							}
 						}
 					}, Side.SERVER));
 		
@@ -3875,14 +3883,18 @@ public class WOMAnimations {
 				})
 				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 2,(ServerPlayer)entitypatch.getOriginal());
+							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 2,(ServerPlayer)entitypatch.getOriginal());
+							}
 						}
 					}, Side.SERVER),
 					TimeStampedEvent.create(0.20F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+							}
 						}
 					}, Side.SERVER));
 		
@@ -3894,14 +3906,18 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
 				.addEvents(TimeStampedEvent.create(0.10F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 3,(ServerPlayer)entitypatch.getOriginal());
+							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 3,(ServerPlayer)entitypatch.getOriginal());
+							}
 						}
 					}, Side.SERVER),
 					TimeStampedEvent.create(0.30F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+							}
 						}
 					}, Side.SERVER));
 		
@@ -3913,14 +3929,18 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
 				.addEvents(TimeStampedEvent.create(0.10F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 4,(ServerPlayer)entitypatch.getOriginal());
+							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 4,(ServerPlayer)entitypatch.getOriginal());
+							}
 						}
 					}, Side.SERVER),
 					TimeStampedEvent.create(0.30F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+							}
 						}
 					}, Side.SERVER));
 		
@@ -3973,14 +3993,18 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.5F)
 				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 5,(ServerPlayer)entitypatch.getOriginal());
+							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 5,(ServerPlayer)entitypatch.getOriginal());
+							}
 						}
 					}, Side.SERVER),
 					TimeStampedEvent.create(0.20F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+							}
 						}
 					}, Side.SERVER));
 		
