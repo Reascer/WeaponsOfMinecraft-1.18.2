@@ -16,7 +16,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
 
-version = '19.1.7.36.1'
+version = '19.1.7.36.2'
 group = 'com.reascer.wom'
 archivesBaseName = 'WeaponsOfMiracles'
 
