@@ -366,13 +366,12 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 		executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false,executer.getOriginal());
 		executer.getSkill(this).getDataManager().setDataSync(ASCENDING, false,executer.getOriginal());
 		executer.getSkill(this).getDataManager().setDataSync(SUPERARMOR, true, executer.getOriginal());
-		if (executer.getSkill(SkillSlots.WEAPON_PASSIVE) != null) {
-			executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.LAPSE, true, executer.getOriginal());
-			executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, false, executer.getOriginal());
-		}
 		if (!executer.getSkill(SkillSlots.WEAPON_PASSIVE).isEmpty()) {
 			if (executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(DemonMarkPassiveSkill.PARTICLE)) {
 				executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, false, executer.getOriginal());					
+			}
+			if (executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(DemonMarkPassiveSkill.LAPSE)) {
+				executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.LAPSE, false, executer.getOriginal());					
 			}
 		}
 		this.setStackSynchronize(executer, executer.getSkill(this).getStack() - 1);
