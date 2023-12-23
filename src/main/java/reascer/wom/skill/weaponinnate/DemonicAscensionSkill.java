@@ -29,6 +29,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import reascer.wom.gameasset.WOMAnimations;
+import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.gameasset.WOMSounds;
 import reascer.wom.particle.WOMParticles;
 import reascer.wom.skill.weaponpassive.DemonMarkPassiveSkill;
@@ -356,12 +357,10 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 		executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false,executer.getOriginal());
 		executer.getSkill(this).getDataManager().setDataSync(ASCENDING, false,executer.getOriginal());
 		executer.getSkill(this).getDataManager().setDataSync(SUPERARMOR, true, executer.getOriginal());
-		if (!executer.getSkill(SkillSlots.WEAPON_PASSIVE).isEmpty()) {
-			if (executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(DemonMarkPassiveSkill.PARTICLE)) {
-				executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, false, executer.getOriginal());					
-			}
-			if (executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(DemonMarkPassiveSkill.LAPSE)) {
-				executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.LAPSE, false, executer.getOriginal());					
+		if (executer.getSkill(SkillSlots.WEAPON_PASSIVE) != null) {
+			if (executer.getSkill(SkillSlots.WEAPON_PASSIVE).getSkill() == WOMSkills.DEMON_MARK_PASSIVE) {
+				executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, false, executer.getOriginal());
+				executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.LAPSE, true, executer.getOriginal());
 			}
 		}
 		this.setStackSynchronize(executer, executer.getSkill(this).getStack() - 1);
