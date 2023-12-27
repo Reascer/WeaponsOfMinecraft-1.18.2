@@ -172,7 +172,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 	public void updateContainer(SkillContainer container) {
 		super.updateContainer(container);
 		if (container.getExecuter().getValidItemInHand(InteractionHand.MAIN_HAND) != null) {
-			if (container.getExecuter().getValidItemInHand(InteractionHand.MAIN_HAND).getItem() != WOMItems.ANTITHEUS.get()) {
+			if (container.getExecuter().getValidItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.ANTITHEUS.get()) {
 				if (container.getDataManager().getDataValue(PARTICLE)) {
 					PlayerPatch<?> entitypatch = container.getExecuter();
 					int numberOf = 3;
