@@ -173,12 +173,13 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 									if (firstAttack) {
 										int i = 0;  
 										while (i < hitten.getTags().size()) {
-											if (((String) hitten.getTags().toArray()[i]).contains("anti_stunlock:")) {
-												hitten.getTags().remove(hitten.getTags().toArray()[i]);
-											} else {
-												i++;
+											if (((String) hitten.getTags().toArray()[i]) != null) {
+												if (((String) hitten.getTags().toArray()[i]).contains("anti_stunlock:")) {
+													hitten.getTags().remove(hitten.getTags().toArray()[i]);
+												} else {
+													i++;
+												}
 											}
-											
 										}
 										hitten.addTag(replaceTag);
 									}

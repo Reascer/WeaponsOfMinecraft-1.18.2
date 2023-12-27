@@ -322,15 +322,10 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 	public void onRemoved(SkillContainer container) {
 		container.getExecuter().getEventListener().removeListener(EventType.ATTACK_ANIMATION_END_EVENT, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID);
-		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_POST, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.SERVER_ITEM_USE_EVENT, EVENT_UUID);
-		if(!container.getExecuter().isLogicalClient()) {
-			this.setMaxDurationSynchronize((ServerPlayerPatch)container.getExecuter(),667*20);
-			container.getSkill().cancelOnServer((ServerPlayerPatch)container.getExecuter(), null);
-		}
-		container.deactivate();
+		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_POST, EVENT_UUID);
 	}
 	
 	@Override
