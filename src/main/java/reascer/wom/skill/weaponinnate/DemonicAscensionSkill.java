@@ -322,15 +322,10 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 	public void onRemoved(SkillContainer container) {
 		container.getExecuter().getEventListener().removeListener(EventType.ATTACK_ANIMATION_END_EVENT, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID);
-		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_POST, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.SERVER_ITEM_USE_EVENT, EVENT_UUID);
-		if(!container.getExecuter().isLogicalClient()) {
-			this.setMaxDurationSynchronize((ServerPlayerPatch)container.getExecuter(),667*20);
-			container.getSkill().cancelOnServer((ServerPlayerPatch)container.getExecuter(), null);
-		}
-		container.deactivate();
+		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_POST, EVENT_UUID);
 	}
 	
 	@Override
@@ -366,12 +361,10 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 		executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false,executer.getOriginal());
 		executer.getSkill(this).getDataManager().setDataSync(ASCENDING, false,executer.getOriginal());
 		executer.getSkill(this).getDataManager().setDataSync(SUPERARMOR, true, executer.getOriginal());
-		if (!executer.getSkill(SkillSlots.WEAPON_PASSIVE).isEmpty()) {
-			if (executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(DemonMarkPassiveSkill.PARTICLE)) {
-				executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, false, executer.getOriginal());					
-			}
-			if (executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(DemonMarkPassiveSkill.LAPSE)) {
-				executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.LAPSE, false, executer.getOriginal());					
+		if (executer.getSkill(SkillSlots.WEAPON_PASSIVE) != null) {
+			if (executer.getSkill(SkillSlots.WEAPON_PASSIVE).getSkill() == WOMSkills.DEMON_MARK_PASSIVE) {
+				executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, false, executer.getOriginal());
+				executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.LAPSE, true, executer.getOriginal());
 			}
 		}
 		this.setStackSynchronize(executer, executer.getSkill(this).getStack() - 1);
