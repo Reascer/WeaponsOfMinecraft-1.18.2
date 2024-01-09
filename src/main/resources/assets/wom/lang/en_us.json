@@ -36,7 +36,7 @@
 	"item.wom.ruine" : "Ruine",
 	"item.wom.ruine.tooltip" : "An ancient weapon, forged with forgotten knowledge and infused with enderman power.\nIts balance and design allow for maximum efficiency and accuracy in combat.",
 	"skill.wom.plunder_perdition" : "Souls snatch",
-	"skill.wom.plunder_perdition.tooltip" : "\"Perform the enderman ritual of stealing things form others.\"\n\nThe condensed endpower of the cristal in the hilt\nwill steal the life force of all enemy in the area.\nEach enemy hit will give you 5% of your max stamina and\n1 health back (+1 heart per Sweeping edge level).\nThen, the cristal will give you increased overall\nspeed for 10sec x (1 + (Sweeping edge level)).\nThe strenght of the speed depens on the number of enemy hit.",
+	"skill.wom.plunder_perdition.tooltip" : "\"Perform the enderman ritual of stealing things from others.\"\n\nThe condensed endpower of the cristal in the hilt\nwill steal the life force of all enemy in the area.\nEach enemy hit will give you 5% of your max stamina and\n1 health back (+1 heart per Sweeping edge level).\nThen, the cristal will give you increased overall\nspeed for 10sec x (1 + (Sweeping edge level)).\nThe strenght of the speed depens on the number of enemy hit.",
 
 	"item.wom.satsujin" : "Satsujin",
 	"item.wom.satsujin.tooltip" : "The demon is sealed inside this blade.\nStrengthening the blade and increasing it's effectivness\nbut, as the demon is still sealed, he can't provide much more power...\n\nPassive: Sheath your blade after 4sec of inactivity.\nSheath the blade after a shorter period\nat the end of a sheathed attack.",
