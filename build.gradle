@@ -16,7 +16,7 @@ plugins {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'maven-publish'
 
-version = '19.1.7.36.3'
+version = '19.1.7.37'
 group = 'com.reascer.wom'
 archivesBaseName = 'WeaponsOfMiracles'
 
@@ -139,8 +139,8 @@ dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
-    minecraft 'net.minecraftforge:forge:1.19.2-43.3.5'
-    implementation fg.deobf("curse.maven:epic-fight-mod-405076:4922089")
+    minecraft 'net.minecraftforge:forge:1.19.2-43.3.7'
+    implementation fg.deobf("curse.maven:epic-fight-mod-405076:5049481")
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency
     // runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}") // Adds the full JEI mod as a runtime dependency

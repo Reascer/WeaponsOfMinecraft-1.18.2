@@ -11,7 +11,8 @@ public class WOMSounds {
 	public static final RegistryObject<SoundEvent> ENDERBLASTER_RELOAD = registerSound("sfx.enderblaster_reload");
 	public static final RegistryObject<SoundEvent> ANTITHEUS_BLACKKHOLE = registerSound("sfx.antitheus_blackhole");
 	public static final RegistryObject<SoundEvent> ANTITHEUS_BLACKKHOLE_CHARGEUP = registerSound("sfx.antitheus_blackhole_chargeup");
-	
+	public static final RegistryObject<SoundEvent> SOLAR_HIT = registerSound("sfx.solar_hit");
+
 	private static RegistryObject<SoundEvent> registerSound(String name) {
 		ResourceLocation res = new ResourceLocation("epicfight", name);
 		return SOUNDS.register(name, () -> new SoundEvent(res));

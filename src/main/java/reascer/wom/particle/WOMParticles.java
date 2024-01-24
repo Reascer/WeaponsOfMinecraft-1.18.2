@@ -6,7 +6,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import reascer.wom.main.WeaponsOfMinecraft;
-import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.particle.HitParticleType;
 
 public class WOMParticles {
@@ -39,5 +38,9 @@ public class WOMParticles {
 	public static final RegistryObject<SimpleParticleType> ENTITY_AFTER_IMAGE_WEAPON = PARTICLES.register("after_image_weapon", () -> new SimpleParticleType(true));
 	
 	public static final RegistryObject<SimpleParticleType> WOM_GROUND_SLAM = PARTICLES.register("wom_ground_slam", () -> new SimpleParticleType(true));
+	
+	public static final RegistryObject<SimpleParticleType> SOLAR_CUT = PARTICLES.register("solar_cut", () -> new SimpleParticleType(true));
+	public static final RegistryObject<HitParticleType> SOLAR_HIT = PARTICLES.register("solar_hit", () -> new HitParticleType(true, HitParticleType.RANDOM_WITHIN_BOUNDING_BOX, HitParticleType.ZERO));
+	public static final RegistryObject<HitParticleType> SOLAR_HIT_UP = PARTICLES.register("solar_hit_up", () -> new HitParticleType(true, HitParticleType.RANDOM_WITHIN_BOUNDING_BOX, HitParticleType.ZERO));
 	
 }
