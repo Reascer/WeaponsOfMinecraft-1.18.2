@@ -69,11 +69,11 @@ public class WOMClientModBusEvent {
     	
     	event.registerSpecial(WOMParticles.ENTITY_AFTER_IMAGE_WEAPON.get(), new EntityAfterImageWeaponParticle.Provider()); 
     	
-    	event.register(WOMParticles.WOM_GROUND_SLAM.get(), new WOMGroundSlamParticle.Provider());
+    	event.registerSpecial(WOMParticles.WOM_GROUND_SLAM.get(), new WOMGroundSlamParticle.Provider());
     	
-    	event.register(WOMParticles.SOLAR_HIT.get(), new SolarHitParticle.Provider());
-    	event.register(WOMParticles.SOLAR_HIT_UP.get(), new SolarHitUpParticle.Provider());
-    	event.register(WOMParticles.SOLAR_CUT.get(), SolarCutParticle.Provider::new);
+    	event.registerSpecial(WOMParticles.SOLAR_HIT.get(), new SolarHitParticle.Provider());
+    	event.registerSpecial(WOMParticles.SOLAR_HIT_UP.get(), new SolarHitUpParticle.Provider());
+    	event.registerSpriteSet(WOMParticles.SOLAR_CUT.get(), SolarCutParticle.Provider::new);
 
     }
 	

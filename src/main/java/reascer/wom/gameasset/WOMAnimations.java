@@ -4509,7 +4509,7 @@ public class WOMAnimations {
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
 						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT)
-						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER.get())
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.2F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true);
 				
@@ -4518,7 +4518,7 @@ public class WOMAnimations {
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.5F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT_UP)
-						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER.get())
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.1F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, false)
 						.addEvents(TimeStampedEvent.create(0.65F, ReuseableEvents.TORMENT_GROUNDSLAM_SMALL, Side.CLIENT));
@@ -4528,7 +4528,7 @@ public class WOMAnimations {
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
 						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT)
-						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER.get())
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.1F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true);
 				
@@ -4537,7 +4537,7 @@ public class WOMAnimations {
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.0F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
 						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT_UP)
-						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER.get())
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.1F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true);
 				
@@ -4546,7 +4546,7 @@ public class WOMAnimations {
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.20F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
 						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT)
-						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER.get())
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.1F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, false);
 				
@@ -4555,9 +4555,9 @@ public class WOMAnimations {
 						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.8F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
-						.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE))
+						.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(EpicFightDamageType.WEAPON_INNATE))
 						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT_UP)
-						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER.get())
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.0F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
 						.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
@@ -4568,11 +4568,11 @@ public class WOMAnimations {
 								float dpx = (float) entitypatch.getOriginal().getX();
 								float dpy = (float) entitypatch.getOriginal().getY();
 								float dpz = (float) entitypatch.getOriginal().getZ();
-								BlockState block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+								BlockState block = entitypatch.getOriginal().level().getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
 								
 								while ((block.getBlock() instanceof BushBlock || block.isAir()) && !block.is(Blocks.VOID_AIR)) {
 									dpy--;
-									block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+									block = entitypatch.getOriginal().level().getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
 								}
 								
 								float distanceToGround = (float) Math.max(Math.abs(entitypatch.getOriginal().getY() - dpy)-1, 0.0F);

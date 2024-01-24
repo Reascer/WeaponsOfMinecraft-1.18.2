@@ -51,7 +51,7 @@ public class OverbloodCutParticle extends HitParticle {
 	    
 		@Override
 		public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-			if (!EpicFightMod.CLIENT_INGAME_CONFIG.offBloodEffects.getValue()) {
+			if (!EpicFightMod.CLIENT_CONFIGS.bloodEffects.getValue()) {
 				return null;
 			}
 			OverbloodCutParticle particle = new OverbloodCutParticle(worldIn, x, y, z, spriteSet);

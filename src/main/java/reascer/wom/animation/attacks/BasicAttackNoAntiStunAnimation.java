@@ -16,6 +16,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
+import reascer.wom.config.WOMConfigurationIngame;
 import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.animation.Keyframe;
 import yesman.epicfight.api.animation.TransformSheet;
@@ -37,7 +38,6 @@ import yesman.epicfight.api.utils.AttackResult;
 import yesman.epicfight.api.utils.HitEntityList;
 import yesman.epicfight.api.utils.TypeFlexibleHashMap;
 import yesman.epicfight.api.utils.math.Vec3f;
-import yesman.epicfight.config.ConfigurationIngame;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.HurtableEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
@@ -319,7 +319,7 @@ public class BasicAttackNoAntiStunAnimation extends AttackAnimation {
 		boolean stiffAttack = entitypatch.getOriginal().level().getGameRules().getRule(EpicFightGamerules.STIFF_COMBO_ATTACKS).get();
 		
 		if (!isEnd && !nextAnimation.isMainFrameAnimation() && entitypatch.isLogicalClient() && !stiffAttack) {
-			float playbackSpeed = ConfigurationIngame.A_TICK * this.getPlaySpeed(entitypatch);
+			float playbackSpeed = WOMConfigurationIngame.A_TICK * this.getPlaySpeed(entitypatch);
 			entitypatch.getClientAnimator().baseLayer.copyLayerTo(entitypatch.getClientAnimator().baseLayer.getLayer(Layer.Priority.HIGHEST), playbackSpeed);
 		}
 	}
