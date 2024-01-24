@@ -3,18 +3,24 @@
     {
         "category":"master",
         "subtitle":"sfx.enderblaster_reload",
-        "sounds":[{"name":"wom:sfx/enderblaster_reload", "stream":true, "attenuation_distance":50}]
+        "sounds":[{"name":"wom:sfx/enderblaster_reload", "stream":true}]
     },
     "sfx.antitheus_blackhole":
     {
         "category":"master",
         "subtitle":"sfx.antitheus_blackhole",
-        "sounds":[{"name":"wom:sfx/antitheus_blackhole", "stream":true, "attenuation_distance":50}]
+        "sounds":[{"name":"wom:sfx/antitheus_blackhole", "stream":true}]
     },
     "sfx.antitheus_blackhole_chargeup":
     {
         "category":"master",
         "subtitle":"sfx.antitheus_blackhole_chargeup",
-        "sounds":[{"name":"wom:sfx/antitheus_blackhole_chargeup", "stream":true, "attenuation_distance":50}]
+        "sounds":[{"name":"wom:sfx/antitheus_blackhole_chargeup", "stream":true}]
+    },
+    "sfx.solar_hit":
+    {
+        "category":"master",
+        "subtitle":"sfx.solar_hit",
+        "sounds":[{"name":"wom:sfx/solar_hit", "stream":true}]
     }
 }

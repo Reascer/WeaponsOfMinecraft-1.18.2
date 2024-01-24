@@ -2,12 +2,10 @@ package reascer.wom.events;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
-import net.minecraft.client.renderer.entity.NoopRenderer;
-import net.minecraft.client.renderer.entity.TippableArrowRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers;
+import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -30,19 +28,15 @@ import reascer.wom.client.particle.KatanaSheathedHitParticle;
 import reascer.wom.client.particle.OverbloodCutParticle;
 import reascer.wom.client.particle.OverbloodHitParticle;
 import reascer.wom.client.particle.RuinePlunderSwordParticle;
+import reascer.wom.client.particle.SolarCutParticle;
+import reascer.wom.client.particle.SolarHitParticle;
+import reascer.wom.client.particle.SolarHitUpParticle;
 import reascer.wom.client.particle.WOMGroundSlamParticle;
 import reascer.wom.client.renderer.entity.AntitheusDarknessRenderer;
 import reascer.wom.client.renderer.entity.EnderBlastRenderer;
 import reascer.wom.main.WeaponsOfMinecraft;
 import reascer.wom.particle.WOMParticles;
-import reascer.wom.world.entity.projectile.EnderBullet;
 import reascer.wom.world.entity.projectile.WOMEntities;
-import yesman.epicfight.client.particle.EntityAfterImageParticle;
-import yesman.epicfight.client.renderer.entity.DroppedNetherStarRenderer;
-import yesman.epicfight.client.renderer.entity.WitherGhostRenderer;
-import yesman.epicfight.client.renderer.entity.WitherSkeletonMinionRenderer;
-import yesman.epicfight.particle.EpicFightParticles;
-import yesman.epicfight.world.entity.EpicFightEntities;
 
 @OnlyIn(Dist.CLIENT)
 @Mod.EventBusSubscriber(modid=WeaponsOfMinecraft.MODID, value=Dist.CLIENT, bus=EventBusSubscriber.Bus.MOD)
@@ -77,7 +71,11 @@ public class WOMClientModBusEvent {
     	
     	particleEngine.register(WOMParticles.ENTITY_AFTER_IMAGE_WEAPON.get(), new EntityAfterImageWeaponParticle.Provider()); 
     	
-    	particleEngine.register(WOMParticles.WOM_GROUND_SLAM.get(), new WOMGroundSlamParticle.Provider()); 
+    	particleEngine.register(WOMParticles.WOM_GROUND_SLAM.get(), new WOMGroundSlamParticle.Provider());
+    	
+    	particleEngine.register(WOMParticles.SOLAR_HIT.get(), new SolarHitParticle.Provider());
+    	particleEngine.register(WOMParticles.SOLAR_HIT_UP.get(), new SolarHitUpParticle.Provider());
+    	particleEngine.register(WOMParticles.SOLAR_CUT.get(), SolarCutParticle.Provider::new);
 
     }
 	

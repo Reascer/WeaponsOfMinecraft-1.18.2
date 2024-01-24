@@ -335,6 +335,9 @@ public class WOMWeaponCapabilityPresets {
 				})
 				.collider(WOMColliders.MOONLESS)
 				.hitSound(EpicFightSounds.BLADE_HIT)
+				.comboCancel((style) -> {
+					return false;
+				})
 				.canBePlacedOffhand(false)
 				.newStyleCombo(Styles.TWO_HAND, WOMAnimations.MOONLESS_AUTO_1, WOMAnimations.MOONLESS_AUTO_2, WOMAnimations.MOONLESS_AUTO_3, WOMAnimations.MOONLESS_REVERSED_BYPASS, WOMAnimations.MOONLESS_CRESCENT)
 				.innateSkill(Styles.TWO_HAND,(itemstack) -> WOMSkills.lUNAR_ECLIPSE)
@@ -365,7 +368,7 @@ public class WOMWeaponCapabilityPresets {
 				.hitSound(EpicFightSounds.BLADE_HIT)
 				.swingSound(EpicFightSounds.WHOOSH_BIG)
 				.canBePlacedOffhand(false)
-				.newStyleCombo(Styles.TWO_HAND, WOMAnimations.TORMENT_AUTO_1, WOMAnimations.TORMENT_AUTO_2, WOMAnimations.RUINE_AUTO_2, WOMAnimations.RUINE_AUTO_3, WOMAnimations.TORMENT_DASH, WOMAnimations.TORMENT_AIRSLAM)
+				.newStyleCombo(Styles.TWO_HAND, WOMAnimations.SOLAR_AUTO_1, WOMAnimations.SOLAR_AUTO_2, WOMAnimations.SOLAR_AUTO_3, WOMAnimations.SOLAR_AUTO_4, WOMAnimations.SOLAR_QUEMADURA, WOMAnimations.SOLAR_HORNO)
 				.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
 				.innateSkill(Styles.TWO_HAND,(itemstack) -> EpicFightSkills.STEEL_WHIRLWIND)
 				.comboCancel((style) -> {
