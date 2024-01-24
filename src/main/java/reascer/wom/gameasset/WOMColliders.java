@@ -73,4 +73,5 @@ public class WOMColliders {
 	public static final Collider BODY_CLOSE = new OBBCollider( 1.5D, 1.5D, 1.5D, 0.0D, 0.0D, 0.0D);
 	
 	public static final Collider SOLAR = new MultiOBBCollider(4, 0.4F, 0.6F, 1.8F, 0F, 0.0F, -1.0F);
+	public static final Collider SOLAR_HORNO = new OBBCollider( 5D, 1.5D, 5D, 0.0D, 0.0D, 0.0D);
 }

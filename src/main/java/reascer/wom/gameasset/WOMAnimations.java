@@ -328,6 +328,12 @@ public class WOMAnimations {
 	public static StaticAnimation SOLAR_IDLE;
 	public static StaticAnimation SOLAR_WALK;
 	public static StaticAnimation SOLAR_RUN;
+	public static StaticAnimation SOLAR_AUTO_1;
+	public static StaticAnimation SOLAR_AUTO_2;
+	public static StaticAnimation SOLAR_AUTO_3;
+	public static StaticAnimation SOLAR_AUTO_4;
+	public static StaticAnimation SOLAR_QUEMADURA;
+	public static StaticAnimation SOLAR_HORNO;
 	
 	@SubscribeEvent
 	public static void registerAnimations(AnimationRegistryEvent event) {
@@ -4159,7 +4165,7 @@ public class WOMAnimations {
 		
 		MOONLESS_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, "biped/combat/moonless_auto_1", biped,
 				new Phase(0.0F, 0.25F, 0.4F, 0.45F, Float.MAX_VALUE, biped.toolR, null))
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.00F))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.50F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.50F))
 				.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 				.addProperty(AttackPhaseProperty.SWING_SOUND, EpicFightSounds.WHOOSH_BIG.get())
@@ -4171,9 +4177,9 @@ public class WOMAnimations {
 				new Phase(0.0F, 0.3F, 0.4F, 0.45F, 0.45F, biped.toolR, null),
 				new Phase(0.45F, 0.5F, 0.6F, 0.65F, 0.65F, biped.toolR, null),
 				new Phase(0.65F, 0.7F, 1.0F, 1.0F, Float.MAX_VALUE, biped.toolR, null))
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F),1)
-				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F),2)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.5F))
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.5F),1)
+				.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.5F),2)
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.40F))
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.40F),1)
 				.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.60F),2)
@@ -4497,6 +4503,86 @@ public class WOMAnimations {
 				SOLAR_IDLE = new StaticAnimation(0.1f,true, "biped/living/solar_idle", biped);
 				SOLAR_WALK = new MovementAnimation(0.1f, true, "biped/living/solar_walk", biped);
 				SOLAR_RUN = new MovementAnimation(0.1f, true, "biped/living/solar_run", biped);
+				
+				SOLAR_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, 0.40F, 0.70F, 0.75F,null, biped.toolR, "biped/combat/solar_auto_1", biped)
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F))
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
+						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
+						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.2F)
+						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true);
+				
+				SOLAR_AUTO_2 = new BasicMultipleAttackAnimation(0.15F, 0.65F, 0.80F, 1.00F,null, biped.toolR, "biped/combat/solar_auto_2", biped)
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.5F))
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT_UP)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
+						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.1F)
+						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, false)
+						.addEvents(TimeStampedEvent.create(0.65F, ReuseableEvents.TORMENT_GROUNDSLAM_SMALL, Side.CLIENT));
+				
+				SOLAR_AUTO_3 = new BasicMultipleAttackAnimation(0.15F, 0.40F, 0.75F, 0.85F,null, biped.toolR, "biped/combat/solar_auto_3", biped)
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F))
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
+						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
+						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.1F)
+						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true);
+				
+				SOLAR_AUTO_4 = new BasicMultipleAttackAnimation(0.15F, 0.25F, 0.40F, 0.75F,null, biped.toolR, "biped/combat/solar_auto_4", biped)
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.0F))
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
+						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT_UP)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
+						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.1F)
+						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true);
+				
+				SOLAR_QUEMADURA = new BasicMultipleAttackAnimation(0.05F, 0.10F, 0.40F, 0.45F,null, biped.toolR, "biped/combat/solar_quemadura", biped)
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.4F))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.20F))
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
+						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
+						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.1F)
+						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, false);
+				
+				SOLAR_HORNO = new BasicMultipleAttackAnimation(0.25F, "biped/combat/solar_horno", biped,
+						new Phase(0.0F, 0.35F, 0.65F, 0.8F, Float.MAX_VALUE, biped.rootJoint, WOMColliders.SOLAR_HORNO))
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.8F))
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+						.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(SourceTags.WEAPON_INNATE))
+						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT_UP)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
+						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.0F)
+						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+						.addProperty(ActionAnimationProperty.CANCELABLE_MOVE, false)
+						.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
+						.addProperty(ActionAnimationProperty.NO_GRAVITY_TIME, TimePairList.create(0.0F, 0.0F))
+						.addProperty(StaticAnimationProperty.PLAY_SPEED_MODIFIER, (self, entitypatch, speed, elapsedTime) -> {
+							if (elapsedTime >= 0.3F && elapsedTime < 0.55F) {
+								float dpx = (float) entitypatch.getOriginal().getX();
+								float dpy = (float) entitypatch.getOriginal().getY();
+								float dpz = (float) entitypatch.getOriginal().getZ();
+								BlockState block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+								
+								while ((block.getBlock() instanceof BushBlock || block.isAir()) && !block.is(Blocks.VOID_AIR)) {
+									dpy--;
+									block = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
+								}
+								
+								float distanceToGround = (float) Math.max(Math.abs(entitypatch.getOriginal().getY() - dpy)-1, 0.0F);
+								
+								return 1 - (1 / (-distanceToGround - 1.F) + 1.0f);
+							}
+							
+							return 1.0F;
+						})
+						.addEvents(TimeStampedEvent.create(0.35F, ReuseableEvents.TORMENT_GROUNDSLAM_SMALL, Side.CLIENT));
 	}
 	
 	private static class ReuseableEvents {

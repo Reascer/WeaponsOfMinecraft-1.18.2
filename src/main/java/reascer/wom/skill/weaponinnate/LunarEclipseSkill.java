@@ -95,18 +95,18 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 						event.getTarget().addEffect(new MobEffectInstance(MobEffects.GLOWING,20*7,0,true,false,false));
 					}
 				} else {
-					if (event.getPlayerPatch().getSkill(SkillSlots.WEAPON_PASSIVE) != null) {
+					if (event.getPlayerPatch().getSkill(SkillSlots.WEAPON_PASSIVE) != null ) {
 						if (event.getPlayerPatch().getSkill(SkillSlots.WEAPON_PASSIVE).getSkill() == WOMSkills.LUNAR_ECHO_PASSIVE) {
 							if (!event.getPlayerPatch().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(LunarEchoPassiveSkill.VERSO)) {
 								// RECTO
 								if (event.getTarget().hasEffect(MobEffects.GLOWING)) {
-									int glowing_amp = event.getTarget().getEffect(MobEffects.GLOWING).getAmplifier();
-									int glowing_dur = event.getTarget().getEffect(MobEffects.GLOWING).getDuration();
-									event.getTarget().removeEffect(MobEffects.GLOWING);
-									event.getTarget().addEffect(new MobEffectInstance(MobEffects.GLOWING,glowing_dur+40,glowing_amp+((1+EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, event.getPlayerPatch().getOriginal()))),true,false,false));
-
+									if (event.getPlayerPatch().getOriginal().hasEffect(MobEffects.INVISIBILITY)) {
+										event.getPlayerPatch().getOriginal().removeEffect(MobEffects.INVISIBILITY);
+									}
+									event.getPlayerPatch().getOriginal().addEffect(new MobEffectInstance(MobEffects.INVISIBILITY,20*7,0,true,false,false));
+									
 									container.getDataManager().setDataSync(TIMER, 20*7,event.getPlayerPatch().getOriginal());
-									container.getDataManager().setDataSync(LUNAR_ECLIPSE_STACK, container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK) + event.getAttackDamage(),event.getPlayerPatch().getOriginal());
+									container.getDataManager().setDataSync(LUNAR_ECLIPSE_STACK, container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK) + (event.getAttackDamage() * 2),event.getPlayerPatch().getOriginal());
 									((ServerLevel) event.getTarget().level()).playSound(null,
 											event.getTarget().getX(),
 											event.getTarget().getY()+0.75f,
@@ -121,45 +121,26 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 											0.0,
 											0.0,
 											0);
-								}
-								
-								if (event.getTarget().hasEffect(MobEffects.BLINDNESS)) {
-									if (!event.getTarget().hasEffect(MobEffects.GLOWING)) {
-										container.getDataManager().setDataSync(TIMER, 20*7,event.getPlayerPatch().getOriginal());
-										container.getDataManager().setDataSync(LUNAR_ECLIPSE_STACK, container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK) + event.getAttackDamage(),event.getPlayerPatch().getOriginal());
-										((ServerLevel) event.getTarget().level()).playSound(null,
-												event.getTarget().getX(),
-												event.getTarget().getY()+0.75f,
-												event.getTarget().getZ(),
-												SoundEvents.BEACON_ACTIVATE, event.getPlayerPatch().getOriginal().getSoundSource(), 4.0F, 2.0F);
-										((ServerLevel) event.getPlayerPatch().getOriginal().level()).sendParticles(ParticleTypes.FLASH,
-												event.getTarget().getX(),
-												event.getTarget().getY(),
-												event.getTarget().getZ(),
-												1,
-												0.0,
-												0.0,
-												0.0,
-												0);
-										int blindness_dur = event.getTarget().getEffect(MobEffects.BLINDNESS).getDuration();
-										event.getTarget().addEffect(new MobEffectInstance(MobEffects.GLOWING,blindness_dur+40,event.getTarget().getEffect(MobEffects.BLINDNESS).getAmplifier()/5,true,false,false));
+									if (!event.getTarget().hasEffect(MobEffects.BLINDNESS)) {
+										event.getTarget().addEffect(new MobEffectInstance(MobEffects.BLINDNESS,20*7,event.getTarget().getEffect(MobEffects.GLOWING).getAmplifier()*5,true,false,false));
 									}
-									
-									if (!event.getDamageSource().getAnimation().equals(WOMAnimations.MOONLESS_CRESCENT)) {
-										event.getTarget().removeEffect(MobEffects.BLINDNESS);
-									}
+									event.getTarget().removeEffect(MobEffects.GLOWING);
 								}
 								
 							} else {
 								// VERSO
 								if (event.getTarget().hasEffect(MobEffects.BLINDNESS)) {
-									int glowing_amp = event.getTarget().getEffect(MobEffects.BLINDNESS).getAmplifier();
-									int glowing_dur = event.getTarget().getEffect(MobEffects.BLINDNESS).getDuration();
+									int blindess_amp = event.getTarget().getEffect(MobEffects.BLINDNESS).getAmplifier();
+									int blindess_dur = event.getTarget().getEffect(MobEffects.BLINDNESS).getDuration();
 									event.getTarget().removeEffect(MobEffects.BLINDNESS);
-									event.getTarget().addEffect(new MobEffectInstance(MobEffects.BLINDNESS,glowing_dur+40,glowing_amp+(5*(1+(sweeping_edge/3))),true,false,false));
+									event.getTarget().addEffect(new MobEffectInstance(MobEffects.BLINDNESS,blindess_dur,blindess_amp + (5*(1+(sweeping_edge/3))),true,false,false));
 								}
 								
 								if (event.getTarget().hasEffect(MobEffects.GLOWING)) {
+									if (event.getPlayerPatch().getOriginal().hasEffect(MobEffects.INVISIBILITY)) {
+										event.getPlayerPatch().getOriginal().removeEffect(MobEffects.INVISIBILITY);
+									}
+									event.getPlayerPatch().getOriginal().addEffect(new MobEffectInstance(MobEffects.INVISIBILITY,20*7,0,true,false,false));
 									container.getDataManager().setDataSync(TIMER, 20*7,event.getPlayerPatch().getOriginal());
 									container.getDataManager().setDataSync(LUNAR_ECLIPSE_STACK, container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK) + event.getAttackDamage(),event.getPlayerPatch().getOriginal());
 									((ServerLevel) event.getTarget().level()).playSound(null,
@@ -187,6 +168,9 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 				}
 				if (container.getDataManager().getDataValue(CRESCENT) && event.getDamageSource().getAnimation().equals(WOMAnimations.MOONLESS_CRESCENT) && container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK) > 0	) {
 					Entity player = event.getPlayerPatch().getOriginal();
+					if (event.getPlayerPatch().getOriginal().hasEffect(MobEffects.INVISIBILITY)) {
+						event.getPlayerPatch().getOriginal().removeEffect(MobEffects.INVISIBILITY);
+					}
 					int blindness_amp = 0;
 					if (event.getTarget().hasEffect(MobEffects.BLINDNESS)) {
 						blindness_amp = event.getTarget().getEffect(MobEffects.BLINDNESS).getAmplifier();
@@ -338,6 +322,9 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 					
 					if (phase == anim.phases[anim.phases.length-1]) {
 						Entity player = event.getPlayerPatch().getOriginal();
+						if (event.getPlayerPatch().getOriginal().hasEffect(MobEffects.INVISIBILITY)) {
+							event.getPlayerPatch().getOriginal().removeEffect(MobEffects.INVISIBILITY);
+						}
 						int blindness_amp = 0;
 						if (event.getTarget().hasEffect(MobEffects.BLINDNESS)) {
 							blindness_amp = event.getTarget().getEffect(MobEffects.BLINDNESS).getAmplifier();
