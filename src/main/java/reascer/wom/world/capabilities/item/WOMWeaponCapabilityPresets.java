@@ -371,7 +371,12 @@ public class WOMWeaponCapabilityPresets {
 				.hitSound(EpicFightSounds.BLADE_HIT.get())
 				.swingSound(EpicFightSounds.WHOOSH_BIG.get())
 				.canBePlacedOffhand(false)
-				.newStyleCombo(Styles.TWO_HAND, WOMAnimations.SOLAR_AUTO_1, WOMAnimations.SOLAR_AUTO_2, WOMAnimations.SOLAR_AUTO_3, WOMAnimations.SOLAR_AUTO_4, WOMAnimations.SOLAR_QUEMADURA, WOMAnimations.SOLAR_HORNO)
+				.newStyleCombo(Styles.TWO_HAND,
+						WOMAnimations.SOLAR_AUTO_1, WOMAnimations.SOLAR_AUTO_1_POLVORA,
+						WOMAnimations.SOLAR_AUTO_2, WOMAnimations.SOLAR_AUTO_2_POLVORA,
+						WOMAnimations.SOLAR_AUTO_3, WOMAnimations.SOLAR_AUTO_3_POLVORA,
+						WOMAnimations.SOLAR_AUTO_4, WOMAnimations.SOLAR_AUTO_4_POLVORA,
+						WOMAnimations.TORMENT_AIRSLAM, WOMAnimations.SOLAR_HORNO)
 				.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
 				.innateSkill(Styles.TWO_HAND,(itemstack) -> EpicFightSkills.STEEL_WHIRLWIND)
 				.comboCancel((style) -> {

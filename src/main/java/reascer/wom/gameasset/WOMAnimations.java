@@ -332,6 +332,10 @@ public class WOMAnimations {
 	public static StaticAnimation SOLAR_AUTO_2;
 	public static StaticAnimation SOLAR_AUTO_3;
 	public static StaticAnimation SOLAR_AUTO_4;
+	public static StaticAnimation SOLAR_AUTO_1_POLVORA;
+	public static StaticAnimation SOLAR_AUTO_2_POLVORA;
+	public static StaticAnimation SOLAR_AUTO_3_POLVORA;
+	public static StaticAnimation SOLAR_AUTO_4_POLVORA;
 	public static StaticAnimation SOLAR_QUEMADURA;
 	public static StaticAnimation SOLAR_HORNO;
 	
@@ -4532,13 +4536,49 @@ public class WOMAnimations {
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.1F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true);
 				
-				SOLAR_AUTO_4 = new BasicMultipleAttackAnimation(0.15F, 0.25F, 0.40F, 0.75F,null, biped.toolR, "biped/combat/solar_auto_4", biped)
+				SOLAR_AUTO_4 = new BasicMultipleAttackAnimation(0.15F, 0.25F, 0.40F, 0.75F ,null, biped.toolR, "biped/combat/solar_auto_4", biped)
 						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.0F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
 						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT_UP)
 						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER.get())
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.1F)
+						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true);
+				
+				SOLAR_AUTO_1_POLVORA = new BasicAttackNoAntiStunAnimation(0.05F, 0.35F, 0.40F, 0.45F, WOMColliders.ANTITHEUS_ASCENDED_PUNCHES, biped.rootJoint, "biped/skill/solar_auto_1_polvora", biped)
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.5F))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.0F))
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, WOMSounds.SOLAR_HIT.get())
+						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.2F)
+						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true);
+				
+				SOLAR_AUTO_2_POLVORA = new BasicAttackNoAntiStunAnimation(0.05F, 0.30F, 0.35F, 0.45F, WOMColliders.SOLAR_HORNO, biped.rootJoint, "biped/skill/solar_auto_2_polvora", biped)
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.5F))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F))
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
+						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, WOMSounds.SOLAR_HIT.get())
+						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.2F)
+						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true);
+				
+				SOLAR_AUTO_3_POLVORA = new BasicAttackNoAntiStunAnimation(0.05F, 0.15F, 0.25F, 0.35F, WOMColliders.ANTITHEUS_ASCENDED_PUNCHES, biped.rootJoint, "biped/skill/solar_auto_3_polvora", biped)
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.5F))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.0F))
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, WOMSounds.SOLAR_HIT.get())
+						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.2F)
+						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true);
+				
+				SOLAR_AUTO_4_POLVORA = new BasicAttackNoAntiStunAnimation(0.05F, 0.25F, 0.50F, 0.75F ,null, biped.toolR, "biped/skill/solar_auto_4_polvora", biped)
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2.0F))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.0F))
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
+						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, WOMSounds.SOLAR_HIT.get())
+						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.2F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true);
 				
 				SOLAR_QUEMADURA = new BasicMultipleAttackAnimation(0.05F, 0.10F, 0.40F, 0.45F,null, biped.toolR, "biped/combat/solar_quemadura", biped)
