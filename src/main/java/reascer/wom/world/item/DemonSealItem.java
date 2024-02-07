@@ -6,6 +6,8 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -23,8 +25,8 @@ public class DemonSealItem extends Item {
 		super(properties);
 		if (EpicFightMod.isPhysicalClient()) {
 			this.tooltipExpand = new ArrayList<Component> ();
-			this.tooltipExpand.add(Component.literal(""));
-			this.tooltipExpand.add(Component.translatable("item." + WeaponsOfMinecraft.MODID + ".demon_seal.tooltip"));
+			this.tooltipExpand.add(new TextComponent(""));
+			this.tooltipExpand.add(new TranslatableComponent("item." + WeaponsOfMinecraft.MODID + ".demon_seal.tooltip"));
 		}
 	}
 	

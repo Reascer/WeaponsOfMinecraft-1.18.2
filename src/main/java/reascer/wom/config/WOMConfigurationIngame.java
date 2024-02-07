@@ -1,6 +1,16 @@
 package reascer.wom.config;
 
-import reascer.wom.config.Option.IntegerOption;
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraftforge.registries.ForgeRegistries;
+import yesman.epicfight.api.utils.math.Vec2i;
+import yesman.epicfight.client.gui.widget.ColorSlider;
+import yesman.epicfight.config.Option.DoubleOption;
+import yesman.epicfight.config.Option.IntegerOption;
 
 public class WOMConfigurationIngame {
 	public static final float A_TICK = 0.05F;

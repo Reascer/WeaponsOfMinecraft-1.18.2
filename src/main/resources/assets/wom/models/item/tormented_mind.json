@@ -1,12 +1,12 @@
 {
-	"loader": "forge:separate_transforms",
+	"loader": "forge:separate-perspective",
 	"base":
 	{
 		"loader": "forge:obj",
   		"model": "wom:models/item/obj/tormented_mind.obj",
   		"flip-v": true,
 		"textures": { "#grip": "wom:item/swords.png" },
-		"mtl_override": "tormented_mind.mtl",
+		"materialLibraryOverride": "tormented_mind.mtl",
 		"display":
   		{
     		"thirdperson_righthand":

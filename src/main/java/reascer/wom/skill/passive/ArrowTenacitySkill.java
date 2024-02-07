@@ -2,7 +2,7 @@ package reascer.wom.skill.passive;
 
 import java.util.UUID;
 
-import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.damagesource.IndirectEntityDamageSource;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.passive.PassiveSkill;
@@ -19,7 +19,7 @@ public class ArrowTenacitySkill extends PassiveSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_POST, EVENT_UUID, (event) -> {
-            if (event.getDamageSource().is(DamageTypes.MOB_PROJECTILE)) {
+            if (event.getDamageSource() instanceof IndirectEntityDamageSource) {
                 event.getDamageSource().setStunType(StunType.NONE);
             }
         });

@@ -2,24 +2,29 @@ package reascer.wom.client.particle;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.client.model.EFClientModels;
 import reascer.wom.main.WeaponsOfMinecraft;
 import yesman.epicfight.api.client.model.Mesh.RawMesh;
-import yesman.epicfight.api.utils.math.QuaternionUtils;
 import yesman.epicfight.client.particle.EpicFightParticleRenderTypes;
 import yesman.epicfight.client.particle.TexturedCustomModelParticle;
+import yesman.epicfight.main.EpicFightMod;
+import yesman.epicfight.world.capabilities.EpicFightCapabilities;
+import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 
 @OnlyIn(Dist.CLIENT)
 public class RuinePlunderSwordParticle extends TexturedCustomModelParticle {
@@ -78,9 +83,9 @@ public class RuinePlunderSwordParticle extends TexturedCustomModelParticle {
 		float z = (float)(Mth.lerp((double)partialTicks, this.zo, this.z) - vec3.z());
 		float scale = (float)Mth.lerp((double)partialTicks, this.scaleO, this.scale);
 		poseStack.translate(x, y, z);
-		poseStack.mulPose(QuaternionUtils.XP.rotationDegrees(this.pitch));
-		poseStack.mulPose(QuaternionUtils.YP.rotationDegrees(yaw));
-		poseStack.mulPose(QuaternionUtils.ZP.rotationDegrees(this.roll));
+		poseStack.mulPose(Vector3f.XP.rotationDegrees(this.pitch));
+		poseStack.mulPose(Vector3f.YP.rotationDegrees(yaw));
+		poseStack.mulPose(Vector3f.ZP.rotationDegrees(this.roll));
 		poseStack.scale(scale, scale, scale);
 	}
 	

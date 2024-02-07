@@ -1,7 +1,6 @@
 package reascer.wom.animation.dodges;
 
-import net.minecraft.tags.DamageTypeTags;
-import net.minecraft.world.damagesource.DamageTypes;
+import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.entity.EntityDimensions;
 import yesman.epicfight.api.animation.property.AnimationEvent;
 import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimationProperty;
@@ -36,7 +35,7 @@ public class CancelableDodgeAnimation extends ActionAnimation {
 			.addState(EntityState.INACTION, true)
 			.newTimePair(delayTime, Float.MAX_VALUE)
 			.addState(EntityState.ATTACK_RESULT, (damagesource) -> {
-				if (damagesource.getEntity() != null && !damagesource.is(DamageTypeTags.IS_EXPLOSION) && !damagesource.is(DamageTypes.MAGIC) && !damagesource.is(DamageTypeTags.BYPASSES_ARMOR) && !damagesource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+				if (damagesource instanceof EntityDamageSource && !damagesource.isExplosion() && !damagesource.isMagic() && !damagesource.isBypassArmor() && !damagesource.isBypassInvul()) {
 					return AttackResult.ResultType.MISSED;
 				}
 				
@@ -61,7 +60,7 @@ public class CancelableDodgeAnimation extends ActionAnimation {
 			.addState(EntityState.INACTION, true)
 			.newTimePair(0.0F, Float.MAX_VALUE)
 			.addState(EntityState.ATTACK_RESULT, (damagesource) -> {
-				if (damagesource.getEntity() != null && !damagesource.is(DamageTypeTags.IS_EXPLOSION) && !damagesource.is(DamageTypes.MAGIC) && !damagesource.is(DamageTypeTags.BYPASSES_ARMOR) && !damagesource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+				if (damagesource instanceof EntityDamageSource && !damagesource.isExplosion() && !damagesource.isMagic() && !damagesource.isBypassArmor() && !damagesource.isBypassInvul()) {
 					return AttackResult.ResultType.MISSED;
 				}
 				

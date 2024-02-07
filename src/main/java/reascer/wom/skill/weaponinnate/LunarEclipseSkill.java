@@ -1,14 +1,16 @@
 package reascer.wom.skill.weaponinnate;
 
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
+
+import org.lwjgl.opengl.ARBTextureMirrorClampToEdge;
 
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -19,6 +21,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.Npc;
+import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -30,8 +33,8 @@ import reascer.wom.skill.weaponpassive.LunarEchoPassiveSkill;
 import yesman.epicfight.api.animation.AnimationPlayer;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.AttackAnimation;
-import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
 import yesman.epicfight.api.animation.types.EntityState;
+import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
@@ -40,8 +43,8 @@ import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
-import yesman.epicfight.world.damagesource.EpicFightDamageSource;
-import yesman.epicfight.world.damagesource.EpicFightDamageType;
+import yesman.epicfight.world.damagesource.EpicFightEntityDamageSource;
+import yesman.epicfight.world.damagesource.SourceTags;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
@@ -78,7 +81,7 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 						
 						AABB box = AABB.ofSize(event.getPlayerPatch().getOriginal().position(),10 + (Math.min(40, 1 * glowing_amp)), 10, 10 + (Math.min(40, 1 * glowing_amp)));
 						
-						List<Entity> list = event.getPlayerPatch().getOriginal().level().getEntities(event.getPlayerPatch().getOriginal(),box);
+						List<Entity> list = event.getPlayerPatch().getOriginal().level.getEntities(event.getPlayerPatch().getOriginal(),box);
 						
 						for (Entity entity : list) {
 							if (entity instanceof LivingEntity) {
@@ -107,12 +110,12 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 									
 									container.getDataManager().setDataSync(TIMER, 20*7,event.getPlayerPatch().getOriginal());
 									container.getDataManager().setDataSync(LUNAR_ECLIPSE_STACK, container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK) + (event.getAttackDamage() * 2),event.getPlayerPatch().getOriginal());
-									((ServerLevel) event.getTarget().level()).playSound(null,
+									((ServerLevel) event.getTarget().level).playSound(null,
 											event.getTarget().getX(),
 											event.getTarget().getY()+0.75f,
 											event.getTarget().getZ(),
 											SoundEvents.BEACON_ACTIVATE, event.getPlayerPatch().getOriginal().getSoundSource(), 4.0F, 2.0F);
-									((ServerLevel) event.getPlayerPatch().getOriginal().level()).sendParticles(ParticleTypes.FLASH,
+									((ServerLevel) event.getPlayerPatch().getOriginal().level).sendParticles(ParticleTypes.FLASH,
 											event.getTarget().getX(),
 											event.getTarget().getY(),
 											event.getTarget().getZ(),
@@ -143,12 +146,12 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 									event.getPlayerPatch().getOriginal().addEffect(new MobEffectInstance(MobEffects.INVISIBILITY,20*7,0,true,false,false));
 									container.getDataManager().setDataSync(TIMER, 20*7,event.getPlayerPatch().getOriginal());
 									container.getDataManager().setDataSync(LUNAR_ECLIPSE_STACK, container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK) + event.getAttackDamage(),event.getPlayerPatch().getOriginal());
-									((ServerLevel) event.getTarget().level()).playSound(null,
+									((ServerLevel) event.getTarget().level).playSound(null,
 											event.getTarget().getX(),
 											event.getTarget().getY()+0.75f,
 											event.getTarget().getZ(),
 											SoundEvents.BEACON_ACTIVATE, event.getPlayerPatch().getOriginal().getSoundSource(), 4.0F, 2.0F);
-									((ServerLevel) event.getPlayerPatch().getOriginal().level()).sendParticles(ParticleTypes.FLASH,
+									((ServerLevel) event.getPlayerPatch().getOriginal().level).sendParticles(ParticleTypes.FLASH,
 											event.getTarget().getX(),
 											event.getTarget().getY(),
 											event.getTarget().getZ(),
@@ -181,16 +184,16 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 						glowing_amp = event.getTarget().getEffect(MobEffects.GLOWING).getAmplifier();
 						event.getTarget().removeEffect(MobEffects.GLOWING);
 					}
-					EpicFightDamageSource epicFightDamageSource = event.getPlayerPatch().getDamageSource(WOMAnimations.MOONLESS_LUNAR_ECLIPSE, InteractionHand.MAIN_HAND);
+					EpicFightEntityDamageSource epicFightDamageSource = new EpicFightEntityDamageSource("lunar_eclipse", player,WOMAnimations.MOONLESS_LUNAR_ECLIPSE);
 					epicFightDamageSource.setImpact(4.0f);
 					epicFightDamageSource.setStunType(StunType.HOLD);
-					epicFightDamageSource.addRuntimeTag(EpicFightDamageType.WEAPON_INNATE);
+					epicFightDamageSource.addTag(SourceTags.WEAPON_INNATE);
 					DamageSource damage = epicFightDamageSource;
 					float lunar_eclipse_stack = container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK);
 					float lunar_eclipse_damage = (float) (4f * lunar_eclipse_stack*(1f/Math.sqrt((lunar_eclipse_stack/8f)+1f)));
 					float lunar_power = lunar_eclipse_damage + (lunar_eclipse_damage * ((blindness_amp)/100F));
 					
-					((ServerLevel) player.level()).sendParticles(ParticleTypes.END_ROD,
+					((ServerLevel) player.level).sendParticles(ParticleTypes.END_ROD,
 							event.getTarget().getX(),
 							event.getTarget().getY()+ 0.25 * (int) (lunar_power*(1f/Math.sqrt((lunar_power/8f)+1f))),
 							event.getTarget().getZ(),
@@ -201,7 +204,7 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 							0);
 					
 					AABB box = AABB.ofSize(event.getTarget().position(),10 + (Math.min(40, glowing_amp)), 10, 10 + (Math.min(40, glowing_amp)));
-					List<Entity> list = event.getTarget().level().getEntities(player,box);
+					List<Entity> list = event.getTarget().level.getEntities(player,box);
 					
 					LivingEntity livingEntityLowestHP = null;
 					float distance_to_stored_target = -1;
@@ -222,7 +225,7 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 								if (livingEntity.isAlive()) {
 									livingEntity.hurt(damage,lunar_power);
 									if (!livingEntity.isInvulnerable()) {
-										((ServerLevel) livingEntity.level()).sendParticles(ParticleTypes.DAMAGE_INDICATOR,
+										((ServerLevel) livingEntity.level).sendParticles(ParticleTypes.DAMAGE_INDICATOR,
 												livingEntity.getX(),
 												livingEntity.getY()+1,
 												livingEntity.getZ(),
@@ -232,7 +235,7 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 												0.2,
 												0.2);
 									}
-									((ServerLevel) event.getTarget().level()).sendParticles(ParticleTypes.FLASH,
+									((ServerLevel) event.getTarget().level).sendParticles(ParticleTypes.FLASH,
 											livingEntity.getX(),
 											livingEntity.getY()+1,
 											livingEntity.getZ(),
@@ -241,7 +244,7 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 											0.0,
 											0.0,
 											0);
-									((ServerLevel) event.getTarget().level()).sendParticles(ParticleTypes.END_ROD,
+									((ServerLevel) event.getTarget().level).sendParticles(ParticleTypes.END_ROD,
 											livingEntity.getX(),
 											livingEntity.getY()+1,
 											livingEntity.getZ(),
@@ -331,17 +334,17 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 							event.getTarget().removeEffect(MobEffects.BLINDNESS);
 						}
 						
-						EpicFightDamageSource epicFightDamageSource = event.getPlayerPatch().getDamageSource(WOMAnimations.MOONLESS_LUNAR_ECLIPSE, InteractionHand.MAIN_HAND);
+						EpicFightEntityDamageSource epicFightDamageSource = new EpicFightEntityDamageSource("lunar_eclipse", player,WOMAnimations.MOONLESS_LUNAR_ECLIPSE);
 						epicFightDamageSource.setImpact(4.0f);
 						epicFightDamageSource.setStunType(StunType.LONG);
-						epicFightDamageSource.addRuntimeTag(EpicFightDamageType.WEAPON_INNATE);
+						epicFightDamageSource.addTag(SourceTags.WEAPON_INNATE);
 						DamageSource damage = epicFightDamageSource;
 						float lunar_eclipse_stack = container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK);
 						float lunar_eclipse_damage = (float) (4f * lunar_eclipse_stack*(1f/Math.sqrt((lunar_eclipse_stack/8f)+1f)));
 						float lunar_power = lunar_eclipse_damage + (lunar_eclipse_damage * ((blindness_amp)/100F));
 						lunar_power = lunar_power * 0.7f;
 						
-						((ServerLevel) player.level()).sendParticles(ParticleTypes.END_ROD,
+						((ServerLevel) player.level).sendParticles(ParticleTypes.END_ROD,
 								event.getTarget().getX(),
 								event.getTarget().getY()+ 0.25 * (int) (lunar_power*(1f/Math.sqrt((lunar_power/8f)+1f))),
 								event.getTarget().getZ(),
@@ -351,13 +354,13 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 								0.1,
 								0);
 						
-						((ServerLevel) event.getTarget().level()).playSound(null,
+						((ServerLevel) event.getTarget().level).playSound(null,
 								event.getTarget().getX(),
 								event.getTarget().getY()+0.75f,
 								event.getTarget().getZ(),
 								SoundEvents.LIGHTNING_BOLT_IMPACT, event.getPlayerPatch().getOriginal().getSoundSource(), 2.0F, 2.0F);
 						
-						((ServerLevel) player.level()).sendParticles(ParticleTypes.FIREWORK,
+						((ServerLevel) player.level).sendParticles(ParticleTypes.FIREWORK,
 								event.getTarget().getX(),
 								event.getTarget().getY()+ 0.25f,
 								event.getTarget().getZ(),
@@ -368,7 +371,7 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 								0.5);
 						
 						AABB box = AABB.ofSize(event.getTarget().position(),15, 15, 15);
-						List<Entity> list = event.getTarget().level().getEntities(player,box);
+						List<Entity> list = event.getTarget().level.getEntities(player,box);
 						
 						for (Entity entity : list) {
 							if (entity instanceof LivingEntity) {
@@ -390,7 +393,7 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 									}
 									
 									livingEntity.hurt(damage,lunar_power + (lunar_power * aoe_blindness_amp));
-									((ServerLevel) event.getTarget().level()).sendParticles(ParticleTypes.FLASH,
+									((ServerLevel) event.getTarget().level).sendParticles(ParticleTypes.FLASH,
 											livingEntity.getX(),
 											livingEntity.getY()+1,
 											livingEntity.getZ(),
@@ -399,7 +402,7 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 											0.0,
 											0.0,
 											0);
-									((ServerLevel) event.getTarget().level()).sendParticles(ParticleTypes.END_ROD,
+									((ServerLevel) event.getTarget().level).sendParticles(ParticleTypes.END_ROD,
 											livingEntity.getX(),
 											livingEntity.getY()+1,
 											livingEntity.getZ(),

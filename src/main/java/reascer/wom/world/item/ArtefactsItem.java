@@ -2,15 +2,16 @@ package reascer.wom.world.item;
 
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
-import java.util.EnumMap;
+import com.google.common.collect.ImmutableMultimap.Builder;
 import java.util.List;
 import java.util.UUID;
-import net.minecraft.Util;
+import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.EntitySelector;
@@ -23,32 +24,28 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.Equipable;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Wearable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.phys.AABB;
+import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 
 public class ArtefactsItem extends ArmorItem {
-   private static final EnumMap<ArmorItem.Type, UUID> ARMOR_MODIFIER_UUID_PER_TYPE = Util.make(new EnumMap<>(ArmorItem.Type.class), (p_266744_) -> {
-      p_266744_.put(ArmorItem.Type.BOOTS, UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B"));
-      p_266744_.put(ArmorItem.Type.LEGGINGS, UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D"));
-      p_266744_.put(ArmorItem.Type.CHESTPLATE, UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"));
-      p_266744_.put(ArmorItem.Type.HELMET, UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150"));
-   });
-   
+   private static final UUID[] ARMOR_MODIFIER_UUID_PER_SLOT = new UUID[]{UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B6B"), UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E0D"), UUID.fromString("9F3D476D-C118-4544-8365-64846904B48E"), UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150")};
    public static final DispenseItemBehavior DISPENSE_ITEM_BEHAVIOR = new DefaultDispenseItemBehavior() {
       protected ItemStack execute(BlockSource p_40408_, ItemStack p_40409_) {
          return ArtefactsItem.dispenseArmor(p_40408_, p_40409_) ? p_40409_ : super.execute(p_40408_, p_40409_);
       }
    };
-   protected final ArmorItem.Type type;
+   protected final EquipmentSlot slot;
    private final int defense;
-   private final int health;
    private final float toughness;
+   private final int health;
+   private final int stamina;
    protected final float knockbackResistance;
-   protected final ArmorMaterial material;
+   protected final WomArmorMaterials material;
    private final Multimap<Attribute, AttributeModifier> defaultModifiers;
 
    public static boolean dispenseArmor(BlockSource p_40399_, ItemStack p_40400_) {
@@ -69,21 +66,23 @@ public class ArtefactsItem extends ArmorItem {
          return true;
       }
    }
-
-   public ArtefactsItem(WomArmorMaterials p_40386_, ArmorItem.Type p_266831_, Item.Properties p_40388_) {
-      super(p_40386_,p_266831_,p_40388_);
+   
+   public ArtefactsItem(WomArmorMaterials p_40386_, EquipmentSlot p_40387_, Item.Properties p_40388_) {
+      super(p_40386_,p_40387_,p_40388_);
+      this.health = p_40386_.getAddHealthAmountArray(p_40387_);
+      this.stamina = p_40386_.getAddStaminaAmountArray(p_40387_);
       this.material = p_40386_;
-      this.type = p_266831_;
-      this.health = p_40386_.getAddHealthAmountArray(getEquipmentSlot());
-      this.defense = p_40386_.getDefenseForType(p_266831_);
+      this.slot = p_40387_;
+      this.defense = p_40386_.getDefenseForSlot(p_40387_);
       this.toughness = p_40386_.getToughness();
       this.knockbackResistance = p_40386_.getKnockbackResistance();
       DispenserBlock.registerBehavior(this, DISPENSE_ITEM_BEHAVIOR);
-      ImmutableMultimap.Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-      UUID uuid = ARMOR_MODIFIER_UUID_PER_TYPE.get(p_266831_);
+      Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
+      UUID uuid = ARMOR_MODIFIER_UUID_PER_SLOT[p_40387_.getIndex()];
       builder.put(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", (double)this.defense, AttributeModifier.Operation.ADDITION));
       builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(uuid, "Armor toughness", (double)this.toughness, AttributeModifier.Operation.ADDITION));
       builder.put(Attributes.MAX_HEALTH, new AttributeModifier(uuid, "health modifier", (double)this.health, AttributeModifier.Operation.ADDITION));
+      //builder.put(EpicFightAttributes.MAX_STAMINA.get(), new AttributeModifier(uuid, "Stamina modifier", (double)this.stamina, AttributeModifier.Operation.ADDITION));
       if (this.knockbackResistance > 0) {
          builder.put(Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(uuid, "Armor knockback resistance", (double)this.knockbackResistance, AttributeModifier.Operation.ADDITION));
       }
@@ -91,8 +90,8 @@ public class ArtefactsItem extends ArmorItem {
       this.defaultModifiers = builder.build();
    }
 
-   public ArmorItem.Type getType() {
-      return this.type;
+   public EquipmentSlot getSlot() {
+      return this.slot;
    }
 
    public int getEnchantmentValue() {
@@ -108,11 +107,24 @@ public class ArtefactsItem extends ArmorItem {
    }
 
    public InteractionResultHolder<ItemStack> use(Level p_40395_, Player p_40396_, InteractionHand p_40397_) {
-      return this.swapWithEquipmentSlot(this, p_40395_, p_40396_, p_40397_);
+      ItemStack itemstack = p_40396_.getItemInHand(p_40397_);
+      EquipmentSlot equipmentslot = Mob.getEquipmentSlotForItem(itemstack);
+      ItemStack itemstack1 = p_40396_.getItemBySlot(equipmentslot);
+      if (itemstack1.isEmpty()) {
+         p_40396_.setItemSlot(equipmentslot, itemstack.copy());
+         if (!p_40395_.isClientSide()) {
+            p_40396_.awardStat(Stats.ITEM_USED.get(this));
+         }
+
+         itemstack.setCount(0);
+         return InteractionResultHolder.sidedSuccess(itemstack, p_40395_.isClientSide());
+      } else {
+         return InteractionResultHolder.fail(itemstack);
+      }
    }
 
    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot p_40390_) {
-      return p_40390_ == this.type.getSlot() ? this.defaultModifiers : super.getDefaultAttributeModifiers(p_40390_);
+      return p_40390_ == this.slot ? this.defaultModifiers : super.getDefaultAttributeModifiers(p_40390_);
    }
 
    public int getDefense() {
@@ -123,34 +135,9 @@ public class ArtefactsItem extends ArmorItem {
       return this.toughness;
    }
 
-   public EquipmentSlot getEquipmentSlot() {
-      return this.type.getSlot();
-   }
-
+   @Nullable
    public SoundEvent getEquipSound() {
       return this.getMaterial().getEquipSound();
    }
-
-   public static enum Type {
-      HELMET(EquipmentSlot.HEAD, "helmet"),
-      CHESTPLATE(EquipmentSlot.CHEST, "chestplate"),
-      LEGGINGS(EquipmentSlot.LEGS, "leggings"),
-      BOOTS(EquipmentSlot.FEET, "boots");
-
-      private final EquipmentSlot slot;
-      private final String name;
-
-      private Type(EquipmentSlot p_266754_, String p_266886_) {
-         this.slot = p_266754_;
-         this.name = p_266886_;
-      }
-
-      public EquipmentSlot getSlot() {
-         return this.slot;
-      }
-
-      public String getName() {
-         return this.name;
-      }
-   }
 }
+

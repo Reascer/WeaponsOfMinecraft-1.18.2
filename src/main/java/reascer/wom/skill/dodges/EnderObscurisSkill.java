@@ -7,11 +7,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMSkills;
@@ -25,8 +26,8 @@ import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.dodge.DodgeSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
-import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
+import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class EnderObscurisSkill extends DodgeSkill {
 	public static final SkillDataKey<Integer> TARGET_ID = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
@@ -112,7 +113,7 @@ public class EnderObscurisSkill extends DodgeSkill {
 		int i = args.readInt();
 		float yaw = args.readFloat();
 		boolean tag = false;
-		LivingEntity target = (LivingEntity) executer.getOriginal().level().getEntity(executer.getSkill(this).getDataManager().getDataValue(EnderObscurisSkill.TARGET_ID));
+		LivingEntity target = (LivingEntity) executer.getOriginal().level.getEntity(executer.getSkill(this).getDataManager().getDataValue(EnderObscurisSkill.TARGET_ID));
 		if (target != null) {
 			if (target.distanceTo(executer.getOriginal()) < 30) {
 				tag = true;
@@ -134,7 +135,7 @@ public class EnderObscurisSkill extends DodgeSkill {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldDraw(SkillContainer container) {
-		LivingEntity target = (LivingEntity) container.getExecuter().getOriginal().level().getEntity(container.getDataManager().getDataValue(EnderObscurisSkill.TARGET_ID));
+		LivingEntity target = (LivingEntity) container.getExecuter().getOriginal().level.getEntity(container.getDataManager().getDataValue(EnderObscurisSkill.TARGET_ID));
 		boolean tag = false;
 		if (target != null) {
 			if (target.distanceTo(container.getExecuter().getOriginal()) < 30) {
@@ -147,12 +148,11 @@ public class EnderObscurisSkill extends DodgeSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void drawOnGui(BattleModeGui gui, SkillContainer container, GuiGraphics guiGraphics, float x, float y) {
-		PoseStack poseStack = guiGraphics.pose();
+	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack poseStack, float x, float y) {
 		poseStack.pushPose();
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, this.getSkillTexture());
-		guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
+		GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		poseStack.popPose();
 	}
 	
@@ -161,7 +161,7 @@ public class EnderObscurisSkill extends DodgeSkill {
 		super.updateContainer(container);
 		if(!container.getExecuter().isLogicalClient()) {
 			if (container.getDataManager().getDataValue(TARGET_ID) != null) {
-				Entity target = container.getExecuter().getOriginal().level().getEntity(container.getDataManager().getDataValue(TARGET_ID));
+				Entity target = container.getExecuter().getOriginal().level.getEntity(container.getDataManager().getDataValue(TARGET_ID));
 				if (target != null) {
 					if (target instanceof LivingEntity) {
 						if (((LivingEntity)target).isDeadOrDying()) {

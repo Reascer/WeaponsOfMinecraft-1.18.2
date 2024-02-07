@@ -1,25 +1,25 @@
 {
-	"loader": "forge:separate_transforms",
+	"loader": "forge:separate-perspective",
 	"base":
 	{
 		"loader": "forge:obj",
-		"model": "wom:models/item/obj/agony.obj",
-		"flip-v": true,
+  		"model": "wom:models/item/obj/agony.obj",
+  		"flip-v": true,
 		"display":
-		{
-			"thirdperson_righthand":
-			{
-	  			"translation": [6, -10.5, 7.8],
-	  			"rotation": [86, 0, 0],
-	  			"scale": [0.75, 0.75, 0.75]
-			},
-			"firstperson_righthand":
-			{
-	  			"translation": [10,-1,-5],
-	  			"rotation": [75,0,0],
-	  			"scale": [0.45, 0.45, 0.45]
-			}
-		}
+  		{
+    		"thirdperson_righthand":
+    		{
+      			"translation": [6, -10.5, 7.8],
+      			"rotation": [86, 0, 0],
+      			"scale": [0.75, 0.75, 0.75]
+    		},
+    		"firstperson_righthand":
+    		{
+      			"translation": [10,-1,-5],
+      			"rotation": [75,0,0],
+      			"scale": [0.45, 0.45, 0.45]
+    		}
+  		}
 	},
 	"perspectives":
 	{

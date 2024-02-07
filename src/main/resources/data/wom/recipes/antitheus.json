@@ -1,6 +1,6 @@
 {
-"type": "minecraft:smithing_transform",
-	"base": {
+    "type": "minecraft:smithing",
+    "base": {
         "item": "wom:demon_seal"
     },
     "addition": {
@@ -8,8 +8,5 @@
     },
     "result": {
         "item": "wom:antitheus"
-    },
-	"template": {
-		"item": "minecraft:netherite_upgrade_smithing_template"
-	}
+    }
 }

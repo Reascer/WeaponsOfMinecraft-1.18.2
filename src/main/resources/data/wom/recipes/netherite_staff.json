@@ -1,5 +1,5 @@
 {
-    "type": "minecraft:smithing_transform",
+    "type": "minecraft:smithing",
     "base": {
         "item": "wom:diamond_staff"
     },
@@ -8,8 +8,5 @@
     },
     "result": {
         "item": "wom:netherite_staff"
-    },
-	"template": {
-		"item": "minecraft:netherite_upgrade_smithing_template"
-	}
+    }
 }

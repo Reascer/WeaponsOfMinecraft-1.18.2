@@ -4,7 +4,6 @@ import java.util.function.Function;
 
 import com.mojang.datafixers.util.Pair;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TieredItem;
@@ -24,7 +23,6 @@ import yesman.epicfight.api.forgeevent.WeaponCapabilityPresetRegistryEvent;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.gameasset.EpicFightSounds;
-import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
@@ -32,7 +30,6 @@ import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategories;
-import yesman.epicfight.world.capabilities.item.ShieldCapability;
 import yesman.epicfight.world.capabilities.item.WeaponCapability;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 
@@ -43,7 +40,7 @@ public class WOMWeaponCapabilityPresets {
 			.category(WeaponCategories.SPEAR)
 			.styleProvider((playerpatch) -> Styles.TWO_HAND)
 			.collider(WOMColliders.STAFF)
-			.hitSound(EpicFightSounds.BLUNT_HIT.get())
+			.hitSound(EpicFightSounds.BLUNT_HIT)
 			.hitParticle(EpicFightParticles.HIT_BLUNT.get())
 			.canBePlacedOffhand(false)
 			.newStyleCombo(Styles.TWO_HAND, WOMAnimations.STAFF_AUTO_1, WOMAnimations.STAFF_AUTO_2, WOMAnimations.STAFF_AUTO_3, WOMAnimations.STAFF_DASH, WOMAnimations.STAFF_KINKONG)
@@ -66,7 +63,7 @@ public class WOMWeaponCapabilityPresets {
 				.category(WeaponCategories.SPEAR)
 				.styleProvider((playerpatch) -> Styles.TWO_HAND)
 				.collider(WOMColliders.AGONY)
-				.hitSound(EpicFightSounds.BLADE_HIT.get())
+				.hitSound(EpicFightSounds.BLADE_HIT)
 				.canBePlacedOffhand(false)
 				.newStyleCombo(Styles.TWO_HAND, WOMAnimations.AGONY_AUTO_1, WOMAnimations.AGONY_AUTO_2, WOMAnimations.AGONY_AUTO_3, WOMAnimations.AGONY_AUTO_4, WOMAnimations.AGONY_CLAWSTRIKE, WOMAnimations.AGONY_AIR_SLASH)
 				.newStyleCombo(Styles.MOUNT, Animations.SPEAR_MOUNT_ATTACK)
@@ -95,8 +92,8 @@ public class WOMWeaponCapabilityPresets {
 					return Styles.TWO_HAND;
 				})
 				.collider(WOMColliders.TORMENT)
-				.hitSound(EpicFightSounds.BLADE_HIT.get())
-				.swingSound(EpicFightSounds.WHOOSH_BIG.get())
+				.hitSound(EpicFightSounds.BLADE_HIT)
+				.swingSound(EpicFightSounds.WHOOSH_BIG)
 				.canBePlacedOffhand(false)
 				.newStyleCombo(Styles.TWO_HAND, WOMAnimations.TORMENT_AUTO_1, WOMAnimations.TORMENT_AUTO_2, WOMAnimations.TORMENT_AUTO_3, WOMAnimations.TORMENT_AUTO_4, WOMAnimations.TORMENT_DASH, WOMAnimations.TORMENT_AIRSLAM)
 				.newStyleCombo(Styles.OCHS, WOMAnimations.TORMENT_BERSERK_AUTO_1, WOMAnimations.TORMENT_BERSERK_AUTO_2, WOMAnimations.TORMENT_BERSERK_DASH, WOMAnimations.TORMENT_BERSERK_AIRSLAM)
@@ -134,7 +131,7 @@ public class WOMWeaponCapabilityPresets {
 				}
 				return Styles.TWO_HAND;
 			})
-			.hitSound(EpicFightSounds.BLADE_HIT.get())
+			.hitSound(EpicFightSounds.BLADE_HIT)
 			.collider(WOMColliders.RUINE)
 			.canBePlacedOffhand(false)
 			.newStyleCombo(Styles.TWO_HAND, WOMAnimations.RUINE_AUTO_1, WOMAnimations.RUINE_AUTO_2, WOMAnimations.RUINE_AUTO_3, WOMAnimations.RUINE_AUTO_4, WOMAnimations.RUINE_DASH, WOMAnimations.RUINE_COMET)
@@ -181,7 +178,7 @@ public class WOMWeaponCapabilityPresets {
 				return Styles.TWO_HAND;
 			})
 			.passiveSkill(WOMSkills.SATSUJIN_PASSIVE)
-			.hitSound(EpicFightSounds.BLADE_HIT.get())
+			.hitSound(EpicFightSounds.BLADE_HIT)
 			.collider(WOMColliders.KATANA)
 			.canBePlacedOffhand(false)
 			.newStyleCombo(Styles.SHEATH, WOMAnimations.KATANA_SHEATHED_AUTO_1, WOMAnimations.KATANA_SHEATHED_AUTO_2, WOMAnimations.KATANA_SHEATHED_AUTO_3, WOMAnimations.KATANA_SHEATHED_DASH, WOMAnimations.HERRSCHER_AUSROTTUNG)
@@ -218,7 +215,7 @@ public class WOMWeaponCapabilityPresets {
 		CapabilityItem.Builder builder = WeaponCapability.builder()
 			.category(WOMWeaponCategories.ENDERBLASTER)
 			.styleProvider((playerpatch) -> playerpatch.getHoldingItemCapability(InteractionHand.OFF_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER ? Styles.TWO_HAND : Styles.ONE_HAND)
-			.hitSound(EpicFightSounds.BLADE_HIT.get())
+			.hitSound(EpicFightSounds.BLADE_HIT)
 			.collider(WOMColliders.PUNCH)
 			.newStyleCombo(Styles.ONE_HAND, WOMAnimations.ENDERBLASTER_ONEHAND_AUTO_1, WOMAnimations.ENDERBLASTER_ONEHAND_AUTO_2, WOMAnimations.ENDERBLASTER_ONEHAND_AUTO_3, WOMAnimations.ENDERBLASTER_ONEHAND_AUTO_4, WOMAnimations.ENDERBLASTER_ONEHAND_DASH, WOMAnimations.ENDERBLASTER_ONEHAND_JUMPKICK)
 			.newStyleCombo(Styles.TWO_HAND, WOMAnimations.ENDERBLASTER_TWOHAND_AUTO_1, WOMAnimations.ENDERBLASTER_TWOHAND_AUTO_2, WOMAnimations.ENDERBLASTER_TWOHAND_AUTO_3, WOMAnimations.ENDERBLASTER_TWOHAND_AUTO_4, WOMAnimations.ENDERBLASTER_ONEHAND_DASH, WOMAnimations.ENDERBLASTER_TWOHAND_TISHNAW)
@@ -256,8 +253,8 @@ public class WOMWeaponCapabilityPresets {
 					return Styles.TWO_HAND;
 				})
 				.collider(WOMColliders.ANTITHEUS)
-				.hitSound(EpicFightSounds.BLADE_HIT.get())
-				.swingSound(EpicFightSounds.WHOOSH.get())
+				.hitSound(EpicFightSounds.BLADE_HIT)
+				.swingSound(EpicFightSounds.WHOOSH)
 				.passiveSkill(WOMSkills.DEMON_MARK_PASSIVE)
 				.canBePlacedOffhand(false)
 				.newStyleCombo(Styles.TWO_HAND, WOMAnimations.ANTITHEUS_AUTO_1, WOMAnimations.ANTITHEUS_AUTO_2, WOMAnimations.ANTITHEUS_AUTO_3, WOMAnimations.ANTITHEUS_AUTO_4, WOMAnimations.ANTITHEUS_AGRESSION, WOMAnimations.ANTITHEUS_GUILLOTINE)
@@ -296,7 +293,7 @@ public class WOMWeaponCapabilityPresets {
 			})
 			
 			.collider(WOMColliders.HERSCHER)
-			.hitSound(EpicFightSounds.BLADE_HIT.get())
+			.hitSound(EpicFightSounds.BLADE_HIT)
 			.comboCancel((style) -> {
 				return false;
 			})
@@ -337,7 +334,7 @@ public class WOMWeaponCapabilityPresets {
 					return Styles.TWO_HAND;
 				})
 				.collider(WOMColliders.MOONLESS)
-				.hitSound(EpicFightSounds.BLADE_HIT.get())
+				.hitSound(EpicFightSounds.BLADE_HIT)
 				.comboCancel((style) -> {
 					return false;
 				})
@@ -368,15 +365,10 @@ public class WOMWeaponCapabilityPresets {
 				.category(WeaponCategories.GREATSWORD)
 				.styleProvider((playerpatch) -> Styles.TWO_HAND)
 				.collider(WOMColliders.SOLAR)
-				.hitSound(EpicFightSounds.BLADE_HIT.get())
-				.swingSound(EpicFightSounds.WHOOSH_BIG.get())
+				.hitSound(EpicFightSounds.BLADE_HIT)
+				.swingSound(EpicFightSounds.WHOOSH_BIG)
 				.canBePlacedOffhand(false)
-				.newStyleCombo(Styles.TWO_HAND,
-						WOMAnimations.SOLAR_AUTO_1, WOMAnimations.SOLAR_AUTO_1_POLVORA,
-						WOMAnimations.SOLAR_AUTO_2, WOMAnimations.SOLAR_AUTO_2_POLVORA,
-						WOMAnimations.SOLAR_AUTO_3, WOMAnimations.SOLAR_AUTO_3_POLVORA,
-						WOMAnimations.SOLAR_AUTO_4, WOMAnimations.SOLAR_AUTO_4_POLVORA,
-						WOMAnimations.TORMENT_AIRSLAM, WOMAnimations.SOLAR_HORNO)
+				.newStyleCombo(Styles.TWO_HAND, WOMAnimations.SOLAR_AUTO_1, WOMAnimations.SOLAR_AUTO_2, WOMAnimations.SOLAR_AUTO_3, WOMAnimations.SOLAR_AUTO_4, WOMAnimations.SOLAR_QUEMADURA, WOMAnimations.SOLAR_HORNO)
 				.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
 				.innateSkill(Styles.TWO_HAND,(itemstack) -> EpicFightSkills.STEEL_WHIRLWIND)
 				.comboCancel((style) -> {
@@ -393,16 +385,16 @@ public class WOMWeaponCapabilityPresets {
 	
 	@SubscribeEvent
 	public static void register(WeaponCapabilityPresetRegistryEvent event) {
-		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"staff"), STAFF);
-		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"agony"), AGONY);
-		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"torment"), TORMENT);
-		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"ruine"), RUINE);
-		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"satsujin"), SATSUJIN);
-		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"ender_blaster"), ENDER_BLASTER);
-		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"antitheus"), ANTITHEUS);
-		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"herrscher"), HERRSCHER);
-		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"moonless"), MOONLESS);
-		event.getTypeEntry().put(new ResourceLocation(WeaponsOfMinecraft.MODID,"solar"), SOLAR);
+		event.getTypeEntry().put("staff", STAFF);
+		event.getTypeEntry().put("agony", AGONY);
+		event.getTypeEntry().put("torment", TORMENT);
+		event.getTypeEntry().put("ruine", RUINE);
+		event.getTypeEntry().put("satsujin", SATSUJIN);
+		event.getTypeEntry().put("ender_blaster", ENDER_BLASTER);
+		event.getTypeEntry().put("antitheus", ANTITHEUS);
+		event.getTypeEntry().put("herrscher", HERRSCHER);
+		event.getTypeEntry().put("moonless", MOONLESS);
+		event.getTypeEntry().put("solar", SOLAR);
 	}
 	
 }

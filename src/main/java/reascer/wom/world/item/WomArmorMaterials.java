@@ -6,7 +6,6 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.LazyLoadedValue;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -68,8 +67,8 @@ public enum WomArmorMaterials implements ArmorMaterial {
 	}
 
 	@Override
-	public int getDurabilityForType(ArmorItem.Type type) {
-		return HEALTH_PER_SLOT[type.getSlot().getIndex()] * this.durabilityMultiplier;
+	public int getDurabilityForSlot(EquipmentSlot slotIn) {
+		return HEALTH_PER_SLOT[slotIn.getIndex()] * this.durabilityMultiplier;
 	}
 	
 	public int getAddHealthAmountArray(EquipmentSlot slotIn) {
@@ -81,8 +80,8 @@ public enum WomArmorMaterials implements ArmorMaterial {
 	}
 	
 	@Override
-	public int getDefenseForType(ArmorItem.Type type) {
-		return this.damageReductionAmountArray[type.getSlot().getIndex()];
+	public int getDefenseForSlot(EquipmentSlot slotIn) {
+		return this.damageReductionAmountArray[slotIn.getIndex()];
 	}
 
 	@Override

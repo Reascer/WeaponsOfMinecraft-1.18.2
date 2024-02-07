@@ -7,15 +7,17 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
+import com.google.common.collect.ImmutableMultimap.Builder;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -39,8 +41,8 @@ public class EnderBlasterItem extends WeaponItem {
 		super(EpicFightItemTier.UCHIGATANA, 0, -2.00F, build.defaultDurability(EpicFightItemTier.UCHIGATANA.getUses()*2));
 		if (EpicFightMod.isPhysicalClient()) {
 			this.tooltipExpand = new ArrayList<Component> ();
-			this.tooltipExpand.add(Component.literal(""));
-			this.tooltipExpand.add(Component.translatable("item." + WeaponsOfMinecraft.MODID + ".ender_blaster.tooltip"));
+			this.tooltipExpand.add(new TextComponent(""));
+			this.tooltipExpand.add(new TranslatableComponent("item." + WeaponsOfMinecraft.MODID + ".ender_blaster.tooltip"));
 		}
 		this.attackDamage = 6F;
 		this.attackSpeed = -2.0F;

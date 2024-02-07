@@ -1,5 +1,5 @@
 {
-    "type": "minecraft:smithing_transform",
+    "type": "minecraft:smithing",
     "base": {
         "item": "minecraft:diamond_boots"
     },
@@ -9,8 +9,5 @@
     "result":
     {
         "item" : "wom:diamond_legbottomseal"
-    },
-	"template": {
-		"item": "minecraft:netherite_upgrade_smithing_template"
-	}
+    }
 }

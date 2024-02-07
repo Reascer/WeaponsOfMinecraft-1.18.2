@@ -36,8 +36,8 @@ public class CriticalKnowledgeSkill extends PassiveSkill {
 			int fire = 0;
 			int blast = 0;
 			for (ItemStack ArmorPiece : container.getExecuter().getOriginal().getArmorSlots()) {
-				fire += ArmorPiece.getEnchantmentLevel(Enchantments.FIRE_PROTECTION);
-				blast += ArmorPiece.getEnchantmentLevel(Enchantments.BLAST_PROTECTION);
+				fire += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FIRE_PROTECTION, ArmorPiece);
+				blast += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLAST_PROTECTION, ArmorPiece);
 			}
 			critRate = ((fire/16f)*80f)+20f;
 			critDamage = ( 1 + (0.15f * blast)) * 100;
@@ -50,7 +50,7 @@ public class CriticalKnowledgeSkill extends PassiveSkill {
 					ServerPlayerPatch executer = (ServerPlayerPatch) event.getPlayerPatch();
 					event.getTarget().playSound(SoundEvents.FIREWORK_ROCKET_BLAST, 1.5f, 0.5f);
 					event.getTarget().playSound(SoundEvents.FIREWORK_ROCKET_TWINKLE, 1.5f, 2.0f);
-					((ServerLevel) executer.getOriginal().level()).sendParticles( ParticleTypes.CRIT,
+					((ServerLevel) executer.getOriginal().level).sendParticles( ParticleTypes.CRIT,
 							event.getTarget().getX(), 
 							event.getTarget().getY() + 1.2D, 
 							event.getTarget().getZ(), 
@@ -79,8 +79,8 @@ public class CriticalKnowledgeSkill extends PassiveSkill {
 		int fire = 0;
 		int blast = 0;
 		for (ItemStack ArmorPiece : container.getExecuter().getOriginal().getArmorSlots()) {
-			fire += ArmorPiece.getEnchantmentLevel(Enchantments.FIRE_PROTECTION);
-			blast += ArmorPiece.getEnchantmentLevel(Enchantments.BLAST_PROTECTION);
+			fire += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.FIRE_PROTECTION, ArmorPiece);
+			blast += EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLAST_PROTECTION, ArmorPiece);
 		}
 		critRate = ((fire/16f)*80f)+20f;
 		critDamage = ( 1 + (0.15f * blast)) * 100;

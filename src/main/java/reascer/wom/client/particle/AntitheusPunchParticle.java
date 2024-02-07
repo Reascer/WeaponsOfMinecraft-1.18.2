@@ -48,6 +48,7 @@ public class AntitheusPunchParticle extends HitParticle {
 	    
 		@Override
 		public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+
 			AntitheusPunchParticle particle = new AntitheusPunchParticle(worldIn, x, y, z, spriteSet);
 			return particle;
 		}

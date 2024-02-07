@@ -2,7 +2,7 @@
 	"loader": "forge:obj",
   	"model": "wom:models/item/obj/satsujin_sheath.obj",
   	"flip-v": true,
-  	"mtl_override": "satsujin_sheath.mtl",
+  	"materialLibraryOverride": "satsujin_sheath.mtl",
 	"display":
   	{
     	"thirdperson_righthand":

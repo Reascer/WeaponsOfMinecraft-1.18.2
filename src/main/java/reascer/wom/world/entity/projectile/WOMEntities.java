@@ -13,7 +13,7 @@ import reascer.wom.main.WeaponsOfMinecraft;
 import yesman.epicfight.main.EpicFightMod;
 
 public class WOMEntities {
-	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, WeaponsOfMinecraft.MODID);
+	public static final DeferredRegister<EntityType<?>> ENTITIES = DeferredRegister.create(ForgeRegistries.ENTITIES, WeaponsOfMinecraft.MODID);
 	
 	public static final RegistryObject<EntityType<EnderBullet>> ENDERBLAST = ENTITIES.register("enderblast", () ->
 		EntityType.Builder.<EnderBullet>of(EnderBullet::new, MobCategory.MISC)

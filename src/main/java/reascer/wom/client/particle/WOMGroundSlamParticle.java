@@ -24,10 +24,10 @@ public class WOMGroundSlamParticle extends NoRenderParticle {
 	protected WOMGroundSlamParticle(ClientLevel level, double x, double y, double z, double dx, double dy, double dz) {
 		super(level, x, y, z, dx, dy, dz);
 		
-		BlockPos blockpos = new BlockPos.MutableBlockPos(x, y, z);
+		BlockPos blockpos = new BlockPos(x, y, z);
 		if (y < 0) {
 			y = y-1;
-			blockpos = new BlockPos.MutableBlockPos(x, y, z);
+			blockpos = new BlockPos(x, y, z);
 		}
 		BlockState blockstate = level.getBlockState(blockpos.below());
 		Minecraft mc = Minecraft.getInstance();
@@ -35,7 +35,7 @@ public class WOMGroundSlamParticle extends NoRenderParticle {
 		float floorY = (float) y; 
 		
 		while (blockstate instanceof FractureBlockState) {
-			blockpos = new BlockPos.MutableBlockPos(x, floorY--, z);
+			blockpos = new BlockPos(x, floorY--, z);
 			blockstate = level.getBlockState(blockpos.below());
 		}
 		
