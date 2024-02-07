@@ -8,8 +8,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -153,8 +151,8 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 						knockback += Math.min(impact * 0.1F, 1.0F);
 					}
 					ServerPlayer playerentity = event.getPlayerPatch().getOriginal();
-					event.getPlayerPatch().playSound(EpicFightSounds.CLASH, -0.05F, 0.1F);
-					EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)playerentity.level), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, playerentity, damageSource.getDirectEntity());
+					event.getPlayerPatch().playSound(EpicFightSounds.CLASH.get(), -0.05F, 0.1F);
+					EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)playerentity.level()), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, playerentity, damageSource.getDirectEntity());
 					
 					StaticAnimation animation = Animations.BIPED_HIT_SHIELD;;
 					float convert = -0.05f;
@@ -231,7 +229,7 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		ServerPlayer player = executer.getOriginal();
-		if ((!player.isOnGround() && !player.isInWater()) && (player.level.isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
+		if ((!player.onGround() && !player.isInWater()) && (player.level().isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
 			if (!executer.consumeStamina(3)) {
 				executer.setStamina(0);
 			} else {
@@ -285,8 +283,8 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 		List<Component> list = Lists.newArrayList();
 		String traslatableText = this.getTranslationKey();
 		
-		list.add(new TranslatableComponent(traslatableText).withStyle(ChatFormatting.WHITE).append(new TextComponent(String.format("[%.0f]", this.consumption)).withStyle(ChatFormatting.AQUA)));
-		list.add(new TranslatableComponent(traslatableText + ".tooltip").withStyle(ChatFormatting.DARK_GRAY));
+		list.add(Component.translatable(traslatableText).withStyle(ChatFormatting.WHITE).append(Component.literal(String.format("[%.0f]", this.consumption)).withStyle(ChatFormatting.AQUA)));
+		list.add(Component.translatable(traslatableText + ".tooltip").withStyle(ChatFormatting.DARK_GRAY));
 		return list;
 	}
 	

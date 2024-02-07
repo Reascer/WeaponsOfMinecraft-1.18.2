@@ -5,11 +5,7 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.mojang.math.Vector3f;
-
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -23,8 +19,6 @@ import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
-import net.minecraftforge.internal.TextComponentMessageFormatHandler;
-import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMColliders;
 import reascer.wom.world.entity.projectile.EnderBullet;
 import reascer.wom.world.entity.projectile.WOMEntities;
@@ -34,22 +28,22 @@ import yesman.epicfight.api.animation.JointTransform;
 import yesman.epicfight.api.animation.Keyframe;
 import yesman.epicfight.api.animation.Pose;
 import yesman.epicfight.api.animation.TransformSheet;
-import yesman.epicfight.api.animation.property.MoveCoordFunctions;
 import yesman.epicfight.api.animation.property.AnimationProperty.ActionAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackAnimationProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.AttackPhaseProperty;
 import yesman.epicfight.api.animation.property.AnimationProperty.StaticAnimationProperty;
+import yesman.epicfight.api.animation.property.MoveCoordFunctions;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.DynamicAnimation;
 import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.animation.types.LinkAnimation;
-import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
 import yesman.epicfight.api.collider.Collider;
 import yesman.epicfight.api.model.Armature;
 import yesman.epicfight.api.utils.AttackResult;
 import yesman.epicfight.api.utils.HitEntityList;
 import yesman.epicfight.api.utils.math.MathUtils;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
+import yesman.epicfight.api.utils.math.QuaternionUtils;
 import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
@@ -119,15 +113,15 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 				float pitch = (float) Math.toDegrees(entitypatch.getOriginal().getViewVector(1.0f).y);
 				
 				JointTransform armR = pose.getOrDefaultTransform("Arm_R");
-				armR.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
+				armR.frontResult(JointTransform.getRotation(QuaternionUtils.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
 				
 				if (((AttackAnimation) self).getPhaseByTime(1).getColliders().get(0).getFirst() != Armatures.BIPED.armR) {
 					JointTransform armL = pose.getOrDefaultTransform("Arm_L");
-					armL.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
+					armL.frontResult(JointTransform.getRotation(QuaternionUtils.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
 				}
 				
 				JointTransform chest = pose.getOrDefaultTransform("Chest");
-				chest.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees((float) (pitch > 35f ? (-pitch + 35f):0f))), OpenMatrix4f::mulAsOriginFront);	
+				chest.frontResult(JointTransform.getRotation(QuaternionUtils.XP.rotationDegrees((float) (pitch > 35f ? (-pitch + 35f):0f))), OpenMatrix4f::mulAsOriginFront);	
 			}
 		});
 	}
@@ -263,8 +257,8 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 								if (source.getStunType() == StunType.KNOCKDOWN) {
 									hitHurtableEntityPatch.getOriginal().addEffect(new MobEffectInstance(EpicFightMobEffects.STUN_IMMUNITY.get(), 60, 0,true,false,false));
 								}
-								hitten.level.playSound(null, hitten.getX(), hitten.getY(), hitten.getZ(), this.getHitSound(entitypatch, phase), hitten.getSoundSource(), 1.0F, 1.0F);
-								this.spawnHitParticle(((ServerLevel) hitten.level), entitypatch, hitten, phase);
+								hitten.level().playSound(null, hitten.getX(), hitten.getY(), hitten.getZ(), this.getHitSound(entitypatch, phase), hitten.getSoundSource(), 1.0F, 1.0F);
+								this.spawnHitParticle(((ServerLevel) hitten.level()), entitypatch, hitten, phase);
 								if (hitHurtableEntityPatch != null) {
 									if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).isPresent()) {
 										if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.NONE && !(trueEntity instanceof Player)) {
@@ -287,7 +281,7 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 													hitten.hasImpulse = true;
 													Vec3 vec3 = hitten.getDeltaMovement();
 													Vec3 vec31 = (new Vec3(d1, 0.0D, d0)).normalize().scale(power);
-													hitten.setDeltaMovement(vec3.x / 2.0D - vec31.x, hitten.isOnGround() ? Math.min(0.4D, vec3.y / 2.0D) : vec3.y, vec3.z / 2.0D - vec31.z);
+													hitten.setDeltaMovement(vec3.x / 2.0D - vec31.x, hitten.onGround() ? Math.min(0.4D, vec3.y / 2.0D) : vec3.y, vec3.z / 2.0D - vec31.z);
 												}
 											}
 										}
@@ -364,7 +358,7 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 			if (prevState.attacking() || state.attacking() || (prevState.getLevel() < 2 && state.getLevel() > 2)) {
 				if (!prevState.attacking() || (phase != this.getPhaseByTime(prevElapsedTime) && (state.attacking() || (prevState.getLevel() < 2 && state.getLevel() > 2)))) {
 					
-					Level worldIn = entitypatch.getOriginal().getLevel();
+					Level worldIn = entitypatch.getOriginal().level();
 					entitypatch.getArmature().initializeTransform();
 					float prevPoseTime = prevElapsedTime;
 					float poseTime = elapsedTime;
@@ -423,19 +417,19 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 			Pose pose = super.getPoseByTime(entitypatch, time, partialTicks);
 			float pitch = (float) Math.toDegrees(entitypatch.getOriginal().getViewVector(1.0f).y);
 			JointTransform armR = pose.getOrDefaultTransform("Arm_R");
-			armR.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
+			armR.frontResult(JointTransform.getRotation(QuaternionUtils.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
 			
 			if (this.getPhaseByTime(partialTicks).getColliders().get(0).getFirst() != Armatures.BIPED.armR) {
 				JointTransform armL = pose.getOrDefaultTransform("Arm_L");
-				armL.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
+				armL.frontResult(JointTransform.getRotation(QuaternionUtils.XP.rotationDegrees(-pitch)), OpenMatrix4f::mulAsOriginFront);
 			}
 			
 			JointTransform chest = pose.getOrDefaultTransform("Chest");
-			chest.frontResult(JointTransform.getRotation(Vector3f.XP.rotationDegrees((float) (pitch > 35f ? (-pitch + 35f):0f))), OpenMatrix4f::mulAsOriginFront);
+			chest.frontResult(JointTransform.getRotation(QuaternionUtils.XP.rotationDegrees((float) (pitch > 35f ? (-pitch + 35f):0f))), OpenMatrix4f::mulAsOriginFront);
 			
 			if (entitypatch instanceof PlayerPatch) {
 				JointTransform head = pose.getOrDefaultTransform("Head");
-				MathUtils.mulQuaternion(Vector3f.XP.rotationDegrees(-entitypatch.getAttackDirectionPitch()), head.rotation(), head.rotation());
+				MathUtils.mulQuaternion(QuaternionUtils.XP.rotationDegrees(-entitypatch.getAttackDirectionPitch()), head.rotation(), head.rotation());
 			}
 			
 			return pose;
@@ -448,7 +442,7 @@ public class EnderblasterShootAttackAnimation extends AttackAnimation {
 	
 	public float applyAntiStunLock(Entity hitten, float anti_stunlock, EpicFightDamageSource source, Phase phase, String tag, String replaceTag) {
 		boolean isPhaseFromSameAnimnation = false;
-		if (hitten.level.getBlockState(new BlockPos(new Vec3(hitten.getX(), hitten.getY()-1, hitten.getZ()))).isAir() && source.getStunType() != StunType.FALL ) {
+		if (hitten.level().getBlockState(new BlockPos.MutableBlockPos( hitten.getX(), hitten.getY()-1, hitten.getZ())).isAir() && source.getStunType() != StunType.FALL ) {
 			String phaseID = String.valueOf(this.getId())+"-"+String.valueOf(phase.contact);
 			if (tag.split(":").length > 3) {
 				if ((String.valueOf(this.getId()).equals(tag.split(":")[3].split("-")[0])) && (!String.valueOf(phase.contact).equals(tag.split(":")[3].split("-")[1]))) {

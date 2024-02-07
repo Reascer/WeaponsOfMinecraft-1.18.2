@@ -1,27 +1,19 @@
 package reascer.wom.skill.passive;
 
-import java.util.Iterator;
-import java.util.Random;
 import java.util.UUID;
+
+import org.joml.Vector3f;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
@@ -32,7 +24,6 @@ import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.passive.PassiveSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
-import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class MeditationSkill extends PassiveSkill {
@@ -112,7 +103,8 @@ public class MeditationSkill extends PassiveSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack poseStack, float x, float y) {
+	public void drawOnGui(BattleModeGui gui, SkillContainer container, GuiGraphics guiGraphics, float x, float y) {
+		PoseStack poseStack = guiGraphics.pose();
 		poseStack.pushPose();
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, this.getSkillTexture());
@@ -139,8 +131,9 @@ public class MeditationSkill extends PassiveSkill {
 				break;
 			}
 			
-			GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
-			gui.font.drawShadow(poseStack,(((container.getDataManager().getDataValue(DUREE)/20)/60) / 10 == 0 ? "0" : "") + String.valueOf((container.getDataManager().getDataValue(DUREE)/20)/60)+":"+ (((container.getDataManager().getDataValue(DUREE)/20)%60) / 10 == 0 ? "0" : "")+String.valueOf((container.getDataManager().getDataValue(DUREE)/20)%60), x, y+17, 16777215);
+			guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
+			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+			guiGraphics.drawString(gui.font,(((container.getDataManager().getDataValue(DUREE)/20)/60) / 10 == 0 ? "0" : "") + String.valueOf((container.getDataManager().getDataValue(DUREE)/20)/60)+":"+ (((container.getDataManager().getDataValue(DUREE)/20)%60) / 10 == 0 ? "0" : "")+String.valueOf((container.getDataManager().getDataValue(DUREE)/20)%60), x, y+17, 16777215,true);
 		} else {
 			RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.5F);
 			if (container.getDataManager().getDataValue(TIMER) >= 20*300) {
@@ -157,9 +150,10 @@ public class MeditationSkill extends PassiveSkill {
 				
 			}
 			
-			GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
+			guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 			if (container.getDataManager().getDataValue(TIMER) > 0) {
-				gui.font.drawShadow(poseStack,(((container.getDataManager().getDataValue(TIMER)/20)/60) / 10 == 0 ? "0" : "") + String.valueOf((container.getDataManager().getDataValue(TIMER)/20)/60)+":"+ (((container.getDataManager().getDataValue(TIMER)/20)%60) / 10 == 0 ? "0" : "")+String.valueOf((container.getDataManager().getDataValue(TIMER)/20)%60), x, y+17, 16777215);
+				RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+				guiGraphics.drawString(gui.font,(((container.getDataManager().getDataValue(TIMER)/20)/60) / 10 == 0 ? "0" : "") + String.valueOf((container.getDataManager().getDataValue(TIMER)/20)/60)+":"+ (((container.getDataManager().getDataValue(TIMER)/20)%60) / 10 == 0 ? "0" : "")+String.valueOf((container.getDataManager().getDataValue(TIMER)/20)%60), x, y+17, 16777215,true);
 			}
 		}
 		poseStack.popPose();
@@ -193,7 +187,7 @@ public class MeditationSkill extends PassiveSkill {
 					}
 					if (container.getDataManager().getDataValue(TIMER) >= 20*300 || container.getDataManager().getDataValue(STAGE) == 4) {
 						container.getDataManager().setDataSync(STAGE, 4,((ServerPlayerPatch) container.getExecuter()).getOriginal());
-						((ServerLevel) container.getExecuter().getOriginal().level).sendParticles( new DustParticleOptions(new Vector3f(1.0f, 0.0f, 1.0f),1.0f), 
+						((ServerLevel) container.getExecuter().getOriginal().level()).sendParticles( new DustParticleOptions(new Vector3f(1.0f, 0.0f, 1.0f),1.0f), 
 								container.getExecuter().getOriginal().getX(), 
 								container.getExecuter().getOriginal().getY() + 0.5D, 
 								container.getExecuter().getOriginal().getZ(), 
@@ -201,7 +195,7 @@ public class MeditationSkill extends PassiveSkill {
 					
 					} else if (container.getDataManager().getDataValue(TIMER) >= 20*60 || container.getDataManager().getDataValue(STAGE) == 3) {
 						container.getDataManager().setDataSync(STAGE, 3,((ServerPlayerPatch) container.getExecuter()).getOriginal());
-						((ServerLevel) container.getExecuter().getOriginal().level).sendParticles(new DustParticleOptions(new Vector3f(1.0f, 1.0f, 0.4f),1.0f),
+						((ServerLevel) container.getExecuter().getOriginal().level()).sendParticles(new DustParticleOptions(new Vector3f(1.0f, 1.0f, 0.4f),1.0f),
 								container.getExecuter().getOriginal().getX(), 
 								container.getExecuter().getOriginal().getY() + 0.5D, 
 								container.getExecuter().getOriginal().getZ(), 
@@ -209,14 +203,14 @@ public class MeditationSkill extends PassiveSkill {
 						
 					} else if (container.getDataManager().getDataValue(TIMER) >= 20*40 || container.getDataManager().getDataValue(STAGE) == 2) {
 						container.getDataManager().setDataSync(STAGE, 2,((ServerPlayerPatch) container.getExecuter()).getOriginal());
-						((ServerLevel) container.getExecuter().getOriginal().level).sendParticles(new DustParticleOptions(new Vector3f(0.0f, 1.0f, 1.0f),1.0f),
+						((ServerLevel) container.getExecuter().getOriginal().level()).sendParticles(new DustParticleOptions(new Vector3f(0.0f, 1.0f, 1.0f),1.0f),
 								container.getExecuter().getOriginal().getX(), 
 								container.getExecuter().getOriginal().getY() + 0.5D, 
 								container.getExecuter().getOriginal().getZ(), 
 								2, 0.6D, 0.6D, 0.6D, 0.05);
 					} else if (container.getDataManager().getDataValue(TIMER) >= 20*20 || container.getDataManager().getDataValue(STAGE) == 1) {
 						container.getDataManager().setDataSync(STAGE, 1,((ServerPlayerPatch) container.getExecuter()).getOriginal());
-						((ServerLevel) container.getExecuter().getOriginal().level).sendParticles(new DustParticleOptions(new Vector3f(1.0f, 0.0f, 0.0f),1.0f),
+						((ServerLevel) container.getExecuter().getOriginal().level()).sendParticles(new DustParticleOptions(new Vector3f(1.0f, 0.0f, 0.0f),1.0f),
 								container.getExecuter().getOriginal().getX(), 
 								container.getExecuter().getOriginal().getY() + 0.5D, 
 								container.getExecuter().getOriginal().getZ(), 

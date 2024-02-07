@@ -5,7 +5,6 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
-import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -17,6 +16,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.entity.PartEntity;
+import reascer.wom.config.WOMConfigurationIngame;
 import reascer.wom.gameasset.WOMAnimations;
 import yesman.epicfight.api.animation.Joint;
 import yesman.epicfight.api.animation.Keyframe;
@@ -39,9 +39,7 @@ import yesman.epicfight.api.utils.AttackResult;
 import yesman.epicfight.api.utils.HitEntityList;
 import yesman.epicfight.api.utils.TypeFlexibleHashMap;
 import yesman.epicfight.api.utils.math.Vec3f;
-import yesman.epicfight.config.ConfigurationIngame;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
-import yesman.epicfight.world.capabilities.entitypatch.HumanoidMobPatch;
 import yesman.epicfight.world.capabilities.entitypatch.HurtableEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -143,7 +141,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 										source.setStunType(StunType.NONE);
 									} else if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.KNOCKDOWN && hitHurtableEntityPatch.getOriginal().hasEffect(EpicFightMobEffects.STUN_IMMUNITY.get())) {
 										source.setStunType(StunType.NONE);
-									}else {
+									} else {
 										source = this.getEpicFightDamageSource(entitypatch, hitten, phase);
 									}
 								} else {
@@ -221,8 +219,8 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 									truehittenEntity.addEffect(new MobEffectInstance(EpicFightMobEffects.STUN_IMMUNITY.get(), 60, 0,true,false,false));
 								}
 								
-								hitten.level.playSound(null, hitten.getX(), hitten.getY(), hitten.getZ(), this.getHitSound(entitypatch, phase), hitten.getSoundSource(), 1.0F, 1.0F);
-								this.spawnHitParticle(((ServerLevel) hitten.level), entitypatch, hitten, phase);
+								hitten.level().playSound(null, hitten.getX(), hitten.getY(), hitten.getZ(), this.getHitSound(entitypatch, phase), hitten.getSoundSource(), 1.0F, 1.0F);
+								this.spawnHitParticle(((ServerLevel) hitten.level()), entitypatch, hitten, phase);
 								if (hitHurtableEntityPatch != null) {
 									if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).isPresent() && !hitHurtableEntityPatch.getOriginal().hasEffect(EpicFightMobEffects.STUN_IMMUNITY.get())) {
 										if (phase.getProperty(AttackPhaseProperty.STUN_TYPE).get() == StunType.NONE && !(truehittenEntity instanceof Player)) {
@@ -250,7 +248,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 													Vec3 vec3 = hitten.getDeltaMovement();
 													Vec3 vec31 = (new Vec3(d1, 0.0D, d0)).normalize().scale(power);
 													if (!(truehittenEntity instanceof Player)) {
-														hitten.setDeltaMovement(vec3.x / 2.0D - vec31.x, hitten.isOnGround() ? Math.min(0.4D, vec3.y / 2.0D) : vec3.y, vec3.z / 2.0D - vec31.z);
+														hitten.setDeltaMovement(vec3.x / 2.0D - vec31.x, hitten.onGround() ? Math.min(0.4D, vec3.y / 2.0D) : vec3.y, vec3.z / 2.0D - vec31.z);
 													}
 												}
 											}
@@ -320,10 +318,10 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 	public void end(LivingEntityPatch<?> entitypatch, DynamicAnimation nextAnimation, boolean isEnd) {
 		super.end(entitypatch, nextAnimation, isEnd);
 		
-		boolean stiffAttack = entitypatch.getOriginal().level.getGameRules().getRule(EpicFightGamerules.STIFF_COMBO_ATTACKS).get();
+		boolean stiffAttack = entitypatch.getOriginal().level().getGameRules().getRule(EpicFightGamerules.STIFF_COMBO_ATTACKS).get();
 		
 		if (!isEnd && !nextAnimation.isMainFrameAnimation() && entitypatch.isLogicalClient() && !stiffAttack) {
-			float playbackSpeed = ConfigurationIngame.A_TICK * this.getPlaySpeed(entitypatch);
+			float playbackSpeed = WOMConfigurationIngame.A_TICK * this.getPlaySpeed(entitypatch);
 			entitypatch.getClientAnimator().baseLayer.copyLayerTo(entitypatch.getClientAnimator().baseLayer.getLayer(Layer.Priority.HIGHEST), playbackSpeed);
 		}
 	}
@@ -332,7 +330,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 	public TypeFlexibleHashMap<StateFactor<?>> getStatesMap(LivingEntityPatch<?> entitypatch, float time) {
 		TypeFlexibleHashMap<StateFactor<?>> stateMap = super.getStatesMap(entitypatch, time);
 		
-		if (!entitypatch.getOriginal().level.getGameRules().getRule(EpicFightGamerules.STIFF_COMBO_ATTACKS).get()) {
+		if (!entitypatch.getOriginal().level().getGameRules().getRule(EpicFightGamerules.STIFF_COMBO_ATTACKS).get()) {
 			stateMap.put(EntityState.MOVEMENT_LOCKED, (Object)false);
 		}
 		
@@ -382,7 +380,7 @@ public class BasicMultipleAttackAnimation extends AttackAnimation {
 	
 	public float applyAntiStunLock(Entity hitten, float anti_stunlock, EpicFightDamageSource source, Phase phase, String tag, String replaceTag) {
 		boolean isPhaseFromSameAnimnation = false;
-		if (hitten.level.getBlockState(new BlockPos(new Vec3(hitten.getX(), hitten.getY()-1, hitten.getZ()))).isAir() && source.getStunType() != StunType.FALL ) {
+		if (hitten.level().getBlockState(new BlockPos.MutableBlockPos(hitten.getX(), hitten.getY()-1,hitten.getZ())).isAir() && source.getStunType() != StunType.FALL ) {
 			String phaseID = String.valueOf(this.getId())+"-"+String.valueOf(phase.contact);
 			if (tag.split(":").length > 3) {
 				if ((String.valueOf(this.getId()).equals(tag.split(":")[3].split("-")[0])) && (!String.valueOf(phase.contact).equals(tag.split(":")[3].split("-")[1]))) {

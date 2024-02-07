@@ -1,0 +1,15 @@
+{
+ 	"type": "minecraft:smithing_transform",
+    "base": {
+		"item": "minecraft:netherite_helmet" 
+	},
+    "addition": {
+        "item" : "minecraft:ghast_tear"
+    },
+    "result": {
+        "item": "wom:netherite_mask"
+    },
+	"template": {
+		"item": "minecraft:netherite_upgrade_smithing_template"
+	}
+}

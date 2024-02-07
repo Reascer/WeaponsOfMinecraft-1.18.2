@@ -4,10 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -17,7 +16,6 @@ import yesman.epicfight.api.utils.math.OpenMatrix4f;
 import yesman.epicfight.client.renderer.patched.item.RenderItemBase;
 import yesman.epicfight.model.armature.HumanoidArmature;
 import yesman.epicfight.world.capabilities.entitypatch.LivingEntityPatch;
-import yesman.epicfight.world.item.EpicFightItems;
 
 @OnlyIn(Dist.CLIENT)
 public class RenderMoonless extends RenderItemBase {
@@ -35,8 +33,8 @@ public class RenderMoonless extends RenderItemBase {
 		
 		poseStack.pushPose();
 		this.mulPoseStack(poseStack, modelMatrix);
-		TransformType transformType = isInMainhand ? TransformType.THIRD_PERSON_RIGHT_HAND : TransformType.THIRD_PERSON_LEFT_HAND;
-		Minecraft.getInstance().getItemInHandRenderer().renderItem(entitypatch.getOriginal(), stack, transformType, !isInMainhand, poseStack, buffer, packedLight);
+		ItemDisplayContext transformType = isInMainhand ? ItemDisplayContext.THIRD_PERSON_RIGHT_HAND : ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
+		Minecraft.getInstance().getItemRenderer().renderStatic(stack, transformType, packedLight, OverlayTexture.NO_OVERLAY, poseStack, buffer, null, 0);
 		
 		poseStack.popPose();
 		
@@ -46,7 +44,7 @@ public class RenderMoonless extends RenderItemBase {
 		
 		poseStack.pushPose();
 		this.mulPoseStack(poseStack, modelMatrix);
-		Minecraft.getInstance().getItemInHandRenderer().renderItem(entitypatch.getOriginal(), Secondmodel, transformType, !isInMainhand, poseStack, buffer, packedLight);
+		Minecraft.getInstance().getItemRenderer().renderStatic(Secondmodel, transformType, packedLight, OverlayTexture.NO_OVERLAY, poseStack, buffer, null, 0);
 		
 		poseStack.popPose();
     }

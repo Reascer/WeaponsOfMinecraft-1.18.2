@@ -51,7 +51,6 @@ public class EnderblasterbulletParticle extends HitParticle {
 	    
 		@Override
 		public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-
 			EnderblasterbulletParticle particle = new EnderblasterbulletParticle(worldIn, x, y, z, spriteSet);
 			return particle;
 		}

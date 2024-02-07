@@ -8,5 +8,5 @@
 			"max_strikes":7
 		}
 	},
-	"type":"solar"
+	"type":"wom:solar"
 }

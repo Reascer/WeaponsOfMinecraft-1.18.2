@@ -11,12 +11,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
@@ -44,12 +40,9 @@ import yesman.epicfight.skill.SkillDataManager;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
-import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
-import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
-import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 
@@ -235,7 +228,7 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 		int i = args.readInt();
 		boolean double_cost = false;
 		ServerPlayer player = executer.getOriginal();
-		if ((!player.isOnGround() && !player.isInWater()) && (player.level.isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
+		if ((!player.onGround() && !player.isInWater()) && (player.level().isEmptyBlock(player.blockPosition().below()) || (player.yo - player.blockPosition().getY()) > 0.2D)) {
 			executer.playAnimationSynchronized(this.attackAnimations[this.attackAnimations.length - 1], 0);
 		} else {
 			if(executer.getOriginal().isSprinting()) {
@@ -282,8 +275,8 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 				} else {
 					this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()+1);
 				}
-				executer.getOriginal().level.playSound(null, executer.getOriginal().getX(),executer.getOriginal().getY(), executer.getOriginal().getZ(),
-		    			WOMSounds.ENDERBLASTER_RELOAD, executer.getOriginal().getSoundSource(), 1.0F, 2.0F);
+				executer.getOriginal().level().playSound(null, executer.getOriginal().getX(),executer.getOriginal().getY(), executer.getOriginal().getZ(),
+		    			WOMSounds.ENDERBLASTER_RELOAD.get(), executer.getOriginal().getSoundSource(), 1.0F, 2.0F);
 			}
 		}
 		executer.getSkill(this).activate();
@@ -300,8 +293,8 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 		List<Component> list = Lists.<Component>newArrayList();
 		String traslatableText = this.getTranslationKey();
 		
-		list.add(new TranslatableComponent(traslatableText).withStyle(ChatFormatting.WHITE).append(new TextComponent(String.format("[%.0f]", this.consumption)).withStyle(ChatFormatting.AQUA)));
-		list.add(new TranslatableComponent(traslatableText + ".tooltip").withStyle(ChatFormatting.DARK_GRAY));
+		list.add(Component.translatable(traslatableText).withStyle(ChatFormatting.WHITE).append(Component.literal(String.format("[%.0f]", this.consumption)).withStyle(ChatFormatting.AQUA)));
+		list.add(Component.translatable(traslatableText + ".tooltip").withStyle(ChatFormatting.DARK_GRAY));
 		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(0), "Close range shot:");
 		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(1), "Bullet shot:");
 		this.generateTooltipforPhase(list, itemStack, cap, playerCap, this.properties.get(2), "Laser beam:");
@@ -376,8 +369,8 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 								this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()-1);
 								if (Math.abs(new Random().nextInt()) % 100 < (100 * (-(1f/(Math.sqrt(sweeping_edge+1)))+1))) {
 									this.setStackSynchronize((ServerPlayerPatch) executer, executer.getSkill(this).getStack()+1);
-									container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
-							    			WOMSounds.ENDERBLASTER_RELOAD, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
+									container.getExecuter().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+							    			WOMSounds.ENDERBLASTER_RELOAD.get(), container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 								}
 							}
 						}

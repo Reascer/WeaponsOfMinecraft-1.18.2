@@ -6,21 +6,20 @@ import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import org.joml.Vector3f;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -51,8 +50,7 @@ import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategories;
 import yesman.epicfight.world.damagesource.EpicFightDamageSource;
-import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
-import yesman.epicfight.world.damagesource.SourceTags;
+import yesman.epicfight.world.damagesource.EpicFightDamageType;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.HurtEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
@@ -120,7 +118,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 				container.getDataManager().setDataSync(PARRYING, true, event.getPlayerPatch().getOriginal());
 			} else {
 				if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && event.getPlayerPatch().getEntityState().canBasicAttack() && container.getDataManager().getDataValue(COOLDOWN) > 0) {
-					event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+					event.getPlayerPatch().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 							SoundEvents.LAVA_EXTINGUISH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 				}
 			}
@@ -181,9 +179,9 @@ public class PerfectBulwarkSkill extends GuardSkill {
 					event.getPlayerPatch().setStamina(0);
 				}
 				
-				event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
-						EpicFightSounds.CLASH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 0.5F);
-				((ServerLevel) event.getPlayerPatch().getOriginal().level).sendParticles(ParticleTypes.CLOUD, 
+				event.getPlayerPatch().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+						EpicFightSounds.CLASH.get(), container.getExecuter().getOriginal().getSoundSource(), 1.0F, 0.5F);
+				((ServerLevel) event.getPlayerPatch().getOriginal().level()).sendParticles(ParticleTypes.CLOUD, 
 						container.getExecuter().getOriginal().getX(), 
 						container.getExecuter().getOriginal().getY() + 0.75D, 
 						container.getExecuter().getOriginal().getZ(), 
@@ -193,7 +191,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 				
 				AABB box = AABB.ofSize(event.getPlayerPatch().getOriginal().position(),10, 5, 10);
 				
-				List<Entity> list = container.getExecuter().getOriginal().level.getEntities(container.getExecuter().getOriginal(),box);
+				List<Entity> list = container.getExecuter().getOriginal().level().getEntities(container.getExecuter().getOriginal(),box);
 				
 				for (Entity entity : list) {
 					double power = 1.00;
@@ -210,7 +208,8 @@ public class PerfectBulwarkSkill extends GuardSkill {
 						entity.hasImpulse = true;
 						Vec3 vec3 = entity.getDeltaMovement();
 						Vec3 vec31 = (new Vec3(d1, d2, d0)).normalize().scale(power);
-						IndirectEpicFightDamageSource damage = (IndirectEpicFightDamageSource) new IndirectEpicFightDamageSource("perfect_bulkwark_shockwave", container.getExecuter().getOriginal(), container.getExecuter().getOriginal(), StunType.LONG);
+						EpicFightDamageSource damage = container.getExecuter().getDamageSource(animation, InteractionHand.MAIN_HAND);
+						damage.setStunType(StunType.LONG);
 						damage.setImpact(3.0f);
 						LivingEntity target = (LivingEntity) entity;
 						target.hurt(damage,container.getDataManager().getDataValue(CHARGE)*2);
@@ -228,7 +227,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 				container.getDataManager().setDataSync(CHARGE,1 + container.getDataManager().getDataValue(CHARGE) , event.getPlayerPatch().getOriginal());
 				
 				if (container.getDataManager().getDataValue(CHARGE) >= 5){
-					((ServerLevel) container.getExecuter().getOriginal().level).sendParticles(new DustParticleOptions(new Vector3f(0.8f,0.75f,0.65f), 1.0F), 
+					((ServerLevel) container.getExecuter().getOriginal().level()).sendParticles(new DustParticleOptions(new Vector3f(0.8f,0.75f,0.65f), 1.0F), 
 							container.getExecuter().getOriginal().getX() - 0.2D, 
 							container.getExecuter().getOriginal().getY() + 1.3D, 
 							container.getExecuter().getOriginal().getZ() - 0.2D, 
@@ -238,7 +237,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 				float knockback = 0.25F;
 				
 				if (event.getDamageSource() instanceof EpicFightDamageSource epicfightDamageSource) {
-					if (epicfightDamageSource.hasTag(SourceTags.GUARD_PUNCTURE)) {
+					if (epicfightDamageSource.is(EpicFightDamageType.GUARD_PUNCTURE)) {
 						return;
 					}
 					
@@ -265,11 +264,11 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		DamageSource damageSource = event.getDamageSource();
 		
 		if (this.isBlockableSource(damageSource, advanced)) {
-			event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
-					EpicFightSounds.CLASH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 0.9F + (0.15f * container.getDataManager().getDataValue(CHARGE)));
+			event.getPlayerPatch().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+					EpicFightSounds.CLASH.get(), container.getExecuter().getOriginal().getSoundSource(), 1.0F, 0.9F + (0.15f * container.getDataManager().getDataValue(CHARGE)));
 			
 			ServerPlayer serveerPlayer = event.getPlayerPatch().getOriginal();
-			EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)serveerPlayer.level), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, serveerPlayer, damageSource.getDirectEntity());
+			EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)serveerPlayer.level()), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, serveerPlayer, damageSource.getDirectEntity());
 			
 			if (damageSource.getDirectEntity() instanceof LivingEntity) {
 				knockback += EnchantmentHelper.getKnockbackBonus((LivingEntity)damageSource.getDirectEntity()) * 0.1F;
@@ -287,7 +286,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 			}
 			
 			if (blockType == BlockType.GUARD_BREAK) {
-				event.getPlayerPatch().playSound(EpicFightSounds.NEUTRALIZE_MOBS, 3.0F, 0.0F, 0.1F);
+				event.getPlayerPatch().playSound(EpicFightSounds.NEUTRALIZE_MOBS.get(), 3.0F, 0.0F, 0.1F);
 			}
 			
 			this.dealEvent(event.getPlayerPatch(), event, advanced);
@@ -296,7 +295,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 	
 	@Override
 	protected boolean isBlockableSource(DamageSource damageSource, boolean advanced) {
-		return (damageSource.isProjectile() && advanced) || super.isBlockableSource(damageSource, false);
+		return (damageSource.is(DamageTypes.MOB_PROJECTILE) && advanced) || super.isBlockableSource(damageSource, false);
 	}
 	
 	@Nullable
@@ -336,6 +335,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		return super.getGuardMotion(playerpatch, itemCapability, blockType);
 	}
 	
+	
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldDraw(SkillContainer container) {
@@ -344,7 +344,8 @@ public class PerfectBulwarkSkill extends GuardSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack poseStack, float x, float y) {
+	public void drawOnGui(BattleModeGui gui, SkillContainer container, GuiGraphics guiGraphics, float x, float y) {
+		PoseStack poseStack = guiGraphics.pose();
 		poseStack.pushPose();
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, this.getSkillTexture());
@@ -355,10 +356,10 @@ public class PerfectBulwarkSkill extends GuardSkill {
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		}
 		
-		GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
+		guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		
 		String string = "";
-		
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
 			string = String.valueOf((container.getDataManager().getDataValue(COOLDOWN)/20)+1);
 		} else {
@@ -367,8 +368,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 				string = "";
 			}
 		}
-		
-		gui.font.drawShadow(poseStack, string, x+5, y+6, 16777215);
+		guiGraphics.drawString(gui.font, string, x+5, y+6, 16777215,true);
 		
 		poseStack.popPose();
 	}

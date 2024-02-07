@@ -1,24 +1,24 @@
 package reascer.wom.skill.guard;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
 import javax.annotation.Nullable;
 
+import org.joml.Vector3f;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraftforge.api.distmarker.Dist;
@@ -30,8 +30,8 @@ import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import yesman.epicfight.api.animation.AnimationPlayer;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.AttackAnimation;
-import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
+import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.client.gui.BattleModeGui;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.ColliderPreset;
@@ -41,7 +41,6 @@ import yesman.epicfight.particle.HitParticleType;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.guard.GuardSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -49,8 +48,6 @@ import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategories;
-import yesman.epicfight.world.damagesource.IndirectEpicFightDamageSource;
-import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.entity.eventlistener.HurtEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
@@ -153,8 +150,8 @@ public class VengefulParry extends GuardSkill {
 				if(!event.getPlayerPatch().consumeStamina(8)){
 					event.getPlayerPatch().setStamina(0);
 				}
-				event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
-		    			EpicFightSounds.CLASH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
+				event.getPlayerPatch().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+		    			EpicFightSounds.CLASH.get(), container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 				event.getPlayerPatch().playAnimationSynchronized(animation, convert);
 				event.getPlayerPatch().currentLivingMotion = LivingMotions.BLOCK;
 				
@@ -164,7 +161,7 @@ public class VengefulParry extends GuardSkill {
 				
 			} else {
 				if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && event.getPlayerPatch().getEntityState().canBasicAttack() && container.getDataManager().getDataValue(TIMER) == 0) {
-					event.getPlayerPatch().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+					event.getPlayerPatch().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 							SoundEvents.LAVA_EXTINGUISH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 				}
 			}
@@ -186,14 +183,14 @@ public class VengefulParry extends GuardSkill {
 				Phase phase = anim.getPhaseByTime(elapsedTime);
 				
 				if (phase == anim.phases[0]) {
-					((ServerLevel) container.getExecuter().getOriginal().level).playSound(null,
+					((ServerLevel) container.getExecuter().getOriginal().level()).playSound(null,
 							event.getTarget().getX(),
 							event.getTarget().getY(),
 							event.getTarget().getZ(),
 			    			SoundEvents.CREEPER_DEATH, event.getTarget().getSoundSource(), 2.0F, 0.5f);
 					
 					for (int i = 0; i < (container.getDataManager().getDataValue(CHARGE)+1); i++) {
-						((ServerLevel) event.getPlayerPatch().getOriginal().level).sendParticles(new DustParticleOptions(new Vector3f(0.0f,0.0f,0f),1.0f),
+						((ServerLevel) event.getPlayerPatch().getOriginal().level()).sendParticles(new DustParticleOptions(new Vector3f(0.0f,0.0f,0f),1.0f),
 								event.getTarget().getX() + (new Random().nextFloat()-0.5f)*3,
 								event.getTarget().getY() + event.getTarget().getBbHeight()/2,
 								event.getTarget().getZ() + (new Random().nextFloat()-0.5f)*3,
@@ -251,9 +248,9 @@ public class VengefulParry extends GuardSkill {
 			DamageSource damageSource = event.getDamageSource();
 			
 			if (this.isBlockableSource(damageSource, true)) {
-				event.getPlayerPatch().playSound(EpicFightSounds.CLASH, -0.05F, 0.1F);
+				event.getPlayerPatch().playSound(EpicFightSounds.CLASH.get(), -0.05F, 0.1F);
 				ServerPlayer serveerPlayer = event.getPlayerPatch().getOriginal();
-				EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)serveerPlayer.level), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, serveerPlayer, damageSource.getDirectEntity());
+				EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)serveerPlayer.level()), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, serveerPlayer, damageSource.getDirectEntity());
 				
 				container.getDataManager().setDataSync(CHARGE, container.getDataManager().getDataValue(CHARGE) + (int) event.getAmount(), serveerPlayer);
 				this.dealEvent(event.getPlayerPatch(), event,advanced);
@@ -266,7 +263,7 @@ public class VengefulParry extends GuardSkill {
 	
 	@Override
 	protected boolean isBlockableSource(DamageSource damageSource, boolean advanced) {
-		return (damageSource.isProjectile() && advanced) || super.isBlockableSource(damageSource, false);
+		return (damageSource.is(DamageTypes.MOB_PROJECTILE) && advanced) || super.isBlockableSource(damageSource, false);
 	}
 	
 	@Nullable
@@ -324,7 +321,8 @@ public class VengefulParry extends GuardSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack poseStack, float x, float y) {
+	public void drawOnGui(BattleModeGui gui, SkillContainer container, GuiGraphics guiGraphics, float x, float y) {
+		PoseStack poseStack = guiGraphics.pose();
 		poseStack.pushPose();
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, this.getSkillTexture());
@@ -335,13 +333,13 @@ public class VengefulParry extends GuardSkill {
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		}
 		
-		GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
+		guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		
 		String damage = String.valueOf(container.getDataManager().getDataValue(CHARGE));
 		if (container.getDataManager().getDataValue(CHARGE) == 0) {
 			damage = "";
 		}
-		gui.font.drawShadow(poseStack, damage, x+5, y+6, 16777215);
+		guiGraphics.drawString(gui.font, damage, x+5, y+6, 16777215,true);
 		
 		poseStack.popPose();
 	}

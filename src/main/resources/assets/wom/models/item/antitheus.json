@@ -1,5 +1,5 @@
 {
-	"loader": "forge:separate-perspective",
+	"loader": "forge:separate_transforms",
 	"base":
 	{
 		"loader": "forge:obj",

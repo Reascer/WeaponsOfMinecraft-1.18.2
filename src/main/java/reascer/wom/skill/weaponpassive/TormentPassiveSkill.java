@@ -3,12 +3,12 @@ package reascer.wom.skill.weaponpassive;
 import java.util.Random;
 import java.util.UUID;
 
+import org.joml.Vector3f;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -27,7 +27,6 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BushBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
@@ -125,13 +124,13 @@ public class TormentPassiveSkill extends PassiveSkill {
 			
 			if (container.getDataManager().getDataValue(CHARGED_ATTACK) && phase == anim.phases[0]) {
 				container.getDataManager().setDataSync(CHARGED, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				((ServerLevel) event.getPlayerPatch().getOriginal().level).sendParticles( ParticleTypes.SMOKE, 
+				((ServerLevel) event.getPlayerPatch().getOriginal().level()).sendParticles( ParticleTypes.SMOKE, 
 						event.getTarget().getX() - 0.15D, 
 						event.getTarget().getY() + 1.2D, 
 						event.getTarget().getZ() - 0.15D, 
 						25, 0.0D, 0.0D, 0.0D,
 						0.2D);
-				((ServerLevel) event.getPlayerPatch().getOriginal().level).sendParticles( ParticleTypes.LAVA, 
+				((ServerLevel) event.getPlayerPatch().getOriginal().level()).sendParticles( ParticleTypes.LAVA, 
 						event.getTarget().getX() - 0.15D, 
 						event.getTarget().getY() + 1.2D, 
 						event.getTarget().getZ() - 0.15D, 
@@ -207,12 +206,13 @@ public class TormentPassiveSkill extends PassiveSkill {
 	
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void drawOnGui(BattleModeGui gui, SkillContainer container, PoseStack poseStack, float x, float y) {
+	public void drawOnGui(BattleModeGui gui, SkillContainer container, GuiGraphics guiGraphics, float x, float y) {
+		PoseStack poseStack = guiGraphics.pose();
 		poseStack.pushPose();
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, WOMSkills.TRUE_BERSERK.getSkillTexture());
-		
-		GuiComponent.blit(poseStack, (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		guiGraphics.blit(WOMSkills.TRUE_BERSERK.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		int charge = 0;
 		if (container.getDataManager().getDataValue(SAVED_CHARGE) > 0) {
 			charge = (container.getDataManager().getDataValue(SAVED_CHARGE)+10)/30;
@@ -221,82 +221,82 @@ public class TormentPassiveSkill extends PassiveSkill {
 		}
 			
 		if (container.getDataManager().getDataValue(CHARGED)) {
-			gui.font.drawShadow(poseStack, String.valueOf(charge), x+8, y+4, 16777215);
-			gui.font.drawShadow(poseStack, "x3", x+5, y+13, 16777215);
+			guiGraphics.drawString(gui.font, String.valueOf(charge), x+10, y+4, 16777215,true);
+			guiGraphics.drawString(gui.font, "x3", x+7, y+13, 16777215,true);
 		} else {
-			gui.font.drawShadow(poseStack, String.valueOf(charge), x+8, y+6, 16777215);
+			guiGraphics.drawString(gui.font, String.valueOf(charge), x+10, y+6, 16777215,true);
 		}
 		poseStack.popPose();
 	}
 	
 	@Override
 	public void updateContainer(SkillContainer container) {
-		if(container.getExecuter().isLogicalClient()) {
-			if ((container.getExecuter().getCurrentLivingMotion() == LivingMotions.WALK || container.getExecuter().getCurrentLivingMotion() == LivingMotions.RUN) && !container.getExecuter().getOriginal().isUsingItem()) {
-				PlayerPatch<?> entitypatch = container.getExecuter();
-				float interpolation = 0.0F;
-				OpenMatrix4f transformMatrix;
-				transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.toolR);
-				transformMatrix.translate(new Vec3f(0,-0.0F,-1.2F));
-				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
-					transformMatrix.translate(new Vec3f(0,0.0F,-(new Random().nextFloat() * 1.0f)));
-				
-				float dpx = transformMatrix.m30 + (float) entitypatch.getOriginal().getX();
-				float dpy = transformMatrix.m31 + (float) entitypatch.getOriginal().getY();
-				float dpz = transformMatrix.m32 + (float) entitypatch.getOriginal().getZ();
-				BlockState blockstate = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
-				BlockPos blockpos = new BlockPos(new Vec3(dpx,dpy,dpz));
-				while ((blockstate.getBlock() instanceof BushBlock || blockstate.isAir()) && !blockstate.is(Blocks.VOID_AIR)) {
-					dpy--;
-					blockstate = entitypatch.getOriginal().level.getBlockState(new BlockPos(new Vec3(dpx,dpy,dpz)));
-				}
-				
-				while (blockstate instanceof FractureBlockState) {
-					blockpos = new BlockPos(dpx, dpy--, dpz);
-					blockstate = entitypatch.getOriginal().level.getBlockState(blockpos.below());
-				}
-				if ((transformMatrix.m31 + entitypatch.getOriginal().getY()) < dpy+1.50f) {
-					for (int i = 0; i < 2; i++) {
-						entitypatch.getOriginal().level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate),
-								(transformMatrix.m30 + entitypatch.getOriginal().getX()),
-								(transformMatrix.m31 + entitypatch.getOriginal().getY())-0.2f,
-								(transformMatrix.m32 + entitypatch.getOriginal().getZ()),
-								(new Random().nextFloat() - 0.5F)*0.005f,
-								(new Random().nextFloat()) * 0.02f,
-								(new Random().nextFloat() - 0.5F)*0.005f);
-					}
-				}
-			}
-		}
-		
-		if (container.getDataManager().getDataValue(CHARGED)) {
-			PlayerPatch<?> entitypatch = container.getExecuter();
-			int numberOf = 2;
-			float partialScale = 1.0F / (numberOf - 1);
-			float interpolation = 0.0F;
-			OpenMatrix4f transformMatrix;
-			for (int i = 0; i < numberOf; i++) {
-				transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.toolR);
-				transformMatrix.translate(new Vec3f(0,0.0F,-1.0F));
-				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
-					transformMatrix.translate(new Vec3f(0,0.0F,-(new Random().nextFloat() * 1.0f)));
-					entitypatch.getOriginal().level.addParticle(new DustParticleOptions(new Vector3f(0.8f,0.6f,0f),1.0f),
-						(transformMatrix.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.55f),
-						(transformMatrix.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.55f),
-						(transformMatrix.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.55f),
-						0,
-						0,
-						0);
-					entitypatch.getOriginal().level.addParticle(ParticleTypes.FLAME,
-							(transformMatrix.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.75f),
-							(transformMatrix.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.75f),
-							(transformMatrix.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.75f),
-							0,
-							0,
-							0);
-				interpolation += partialScale;
-			}
-		}
+//		if(container.getExecuter().isLogicalClient()) {
+//			if ((container.getExecuter().getCurrentLivingMotion() == LivingMotions.WALK || container.getExecuter().getCurrentLivingMotion() == LivingMotions.RUN) && !container.getExecuter().getOriginal().isUsingItem()) {
+//				PlayerPatch<?> entitypatch = container.getExecuter();
+//				float interpolation = 0.0F;
+//				OpenMatrix4f transformMatrix;
+//				transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.toolR);
+//				transformMatrix.translate(new Vec3f(0,-0.0F,-1.2F));
+//				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
+//					transformMatrix.translate(new Vec3f(0,0.0F,-(new Random().nextFloat() * 1.0f)));
+//				
+//				float dpx = transformMatrix.m30 + (float) entitypatch.getOriginal().getX();
+//				float dpy = transformMatrix.m31 + (float) entitypatch.getOriginal().getY();
+//				float dpz = transformMatrix.m32 + (float) entitypatch.getOriginal().getZ();
+//				BlockState blockstate = entitypatch.getOriginal().level().getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
+//				BlockPos blockpos = new BlockPos.MutableBlockPos(dpx,dpy,dpz);
+//				while ((blockstate.getBlock() instanceof BushBlock || blockstate.isAir()) && !blockstate.is(Blocks.VOID_AIR)) {
+//					dpy--;
+//					blockstate = entitypatch.getOriginal().level().getBlockState(new BlockPos.MutableBlockPos(dpx,dpy,dpz));
+//				}
+//				
+//				while (blockstate instanceof FractureBlockState) {
+//					blockpos = new BlockPos.MutableBlockPos(dpx,dpy--,dpz);
+//					blockstate = entitypatch.getOriginal().level().getBlockState(blockpos.below());
+//				}
+//				if ((transformMatrix.m31 + entitypatch.getOriginal().getY()) < dpy+1.50f) {
+//					for (int i = 0; i < 2; i++) {
+//						entitypatch.getOriginal().level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, blockstate),
+//								(transformMatrix.m30 + entitypatch.getOriginal().getX()),
+//								(transformMatrix.m31 + entitypatch.getOriginal().getY())-0.2f,
+//								(transformMatrix.m32 + entitypatch.getOriginal().getZ()),
+//								(new Random().nextFloat() - 0.5F)*0.005f,
+//								(new Random().nextFloat()) * 0.02f,
+//								(new Random().nextFloat() - 0.5F)*0.005f);
+//					}
+//				}
+//			}
+//		}
+//		
+//		if (container.getDataManager().getDataValue(CHARGED)) {
+//			PlayerPatch<?> entitypatch = container.getExecuter();
+//			int numberOf = 2;
+//			float partialScale = 1.0F / (numberOf - 1);
+//			float interpolation = 0.0F;
+//			OpenMatrix4f transformMatrix;
+//			for (int i = 0; i < numberOf; i++) {
+//				transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(interpolation), Armatures.BIPED.toolR);
+//				transformMatrix.translate(new Vec3f(0,0.0F,-1.0F));
+//				OpenMatrix4f.mul(new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO + 180F), new Vec3f(0, 1, 0)),transformMatrix,transformMatrix);
+//					transformMatrix.translate(new Vec3f(0,0.0F,-(new Random().nextFloat() * 1.0f)));
+//					entitypatch.getOriginal().level().addParticle(new DustParticleOptions(new Vector3f(0.8f,0.6f,0f),1.0f),
+//						(transformMatrix.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.55f),
+//						(transformMatrix.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.55f),
+//						(transformMatrix.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.55f),
+//						0,
+//						0,
+//						0);
+//					entitypatch.getOriginal().level().addParticle(ParticleTypes.FLAME,
+//							(transformMatrix.m30 + entitypatch.getOriginal().getX() + (new Random().nextFloat() - 0.5F)*0.75f),
+//							(transformMatrix.m31 + entitypatch.getOriginal().getY() + (new Random().nextFloat() - 0.5F)*0.75f),
+//							(transformMatrix.m32 + entitypatch.getOriginal().getZ() + (new Random().nextFloat() - 0.5F)*0.75f),
+//							0,
+//							0,
+//							0);
+//				interpolation += partialScale;
+//			}
+//		}
 		if(!container.getExecuter().isLogicalClient()) {
 			AttributeModifier charging_Movementspeed = new AttributeModifier(EVENT_UUID, "torment.charging_movespeed", 3, Operation.MULTIPLY_TOTAL);
 			ServerPlayerPatch executer = (ServerPlayerPatch) container.getExecuter();
@@ -310,11 +310,11 @@ public class TormentPassiveSkill extends PassiveSkill {
 				}
 				if (container.getDataManager().getDataValue(CHARGING_TIME) >= 110) {
 					container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,4, 2,true,false,false));
-					container.getExecuter().getOriginal().level.playSound(null,
+					container.getExecuter().getOriginal().level().playSound(null,
 							container.getExecuter().getOriginal().getX(),
 							container.getExecuter().getOriginal().getY(),
 							container.getExecuter().getOriginal().getZ(),
-							EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS,
+							EpicFightSounds.WHOOSH_BIG.get(), SoundSource.PLAYERS,
 							1.0F, 1.2F);
 					if (!container.getExecuter().getOriginal().isCreative()) {
 						if (!container.getExecuter().consumeStamina(3)) {
@@ -331,11 +331,11 @@ public class TormentPassiveSkill extends PassiveSkill {
 					
 					if (!container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(TrueBerserkSkill.ACTIVE)) {
 						container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,4, 1,true,false,false));
-						container.getExecuter().getOriginal().level.playSound(null,
+						container.getExecuter().getOriginal().level().playSound(null,
 								container.getExecuter().getOriginal().getX(),
 								container.getExecuter().getOriginal().getY(),
 								container.getExecuter().getOriginal().getZ(),
-								EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS,
+								EpicFightSounds.WHOOSH_BIG.get(), SoundSource.PLAYERS,
 								1.0F, 1.2F);
 						if (!container.getExecuter().getOriginal().isCreative()) {
 							if (!container.getExecuter().consumeStamina(3)) {
@@ -344,11 +344,11 @@ public class TormentPassiveSkill extends PassiveSkill {
 						}
 					} else {
 						container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,7, 3,true,false,false));
-						container.getExecuter().getOriginal().level.playSound(null,
+						container.getExecuter().getOriginal().level().playSound(null,
 								container.getExecuter().getOriginal().getX(),
 								container.getExecuter().getOriginal().getY(),
 								container.getExecuter().getOriginal().getZ(),
-								EpicFightSounds.WHOOSH_BIG, SoundSource.PLAYERS,
+								EpicFightSounds.WHOOSH_BIG.get(), SoundSource.PLAYERS,
 								1.0F, 1.2F);
 						float stamina = container.getExecuter().getStamina();
 						float maxStamina = container.getExecuter().getMaxStamina();
@@ -387,7 +387,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 				if (container.getDataManager().getDataValue(CHARGING_TIME) <= 130) {
 					if (container.getDataManager().getDataValue(CHARGING_TIME) == 20) {
 						container.getDataManager().setDataSync(SAVED_CHARGE, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-						container.getExecuter().getOriginal().level.playSound(null,
+						container.getExecuter().getOriginal().level().playSound(null,
 								container.getExecuter().getOriginal().getX(),
 								container.getExecuter().getOriginal().getY(),
 								container.getExecuter().getOriginal().getZ(),
@@ -396,7 +396,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 						this.consume_stamina(container);
 					}
 					if (container.getDataManager().getDataValue(CHARGING_TIME) == 50) {
-						container.getExecuter().getOriginal().level.playSound(null,
+						container.getExecuter().getOriginal().level().playSound(null,
 								container.getExecuter().getOriginal().getX(),
 								container.getExecuter().getOriginal().getY(),
 								container.getExecuter().getOriginal().getZ(),
@@ -405,7 +405,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 						this.consume_stamina(container);
 					}
 					if (container.getDataManager().getDataValue(CHARGING_TIME) == 80) {
-						container.getExecuter().getOriginal().level.playSound(null,
+						container.getExecuter().getOriginal().level().playSound(null,
 								container.getExecuter().getOriginal().getX(),
 								container.getExecuter().getOriginal().getY(),
 								container.getExecuter().getOriginal().getZ(),
@@ -415,13 +415,13 @@ public class TormentPassiveSkill extends PassiveSkill {
 					}
 					if (container.getDataManager().getDataValue(CHARGING_TIME) == 110) {
 						container.getDataManager().setDataSync(CHARGED, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-						container.getExecuter().getOriginal().level.playSound(null,
+						container.getExecuter().getOriginal().level().playSound(null,
 								container.getExecuter().getOriginal().getX(),
 								container.getExecuter().getOriginal().getY(),
 								container.getExecuter().getOriginal().getZ(),
 								SoundEvents.ANVIL_LAND, SoundSource.PLAYERS,
 								1.0F, 0.5F);
-						container.getExecuter().getOriginal().level.playSound(null,
+						container.getExecuter().getOriginal().level().playSound(null,
 								container.getExecuter().getOriginal().getX(),
 								container.getExecuter().getOriginal().getY(),
 								container.getExecuter().getOriginal().getZ(),
@@ -447,7 +447,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 			}
 			if (!container.getExecuter().consumeStamina(3)) {
 				container.getExecuter().setStamina(0);
-				container.getExecuter().getOriginal().level.playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
+				container.getExecuter().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 						SoundEvents.LAVA_EXTINGUISH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 			}
 		}

@@ -1,5 +1,5 @@
 {
-	"loader": "forge:separate-perspective",
+	"loader": "forge:separate_transforms",
 	"base":
 	{
 		"loader": "forge:obj",
@@ -21,7 +21,7 @@
     		},
 			"thirdperson_lefthand":
     		{
-      			"translation": [-8, -9.5, 10],
+      			"translation": [8, -9.5, 10],
       			"rotation": [90, 0, 0],
       			"scale": [1, 1, 1]
     		},
