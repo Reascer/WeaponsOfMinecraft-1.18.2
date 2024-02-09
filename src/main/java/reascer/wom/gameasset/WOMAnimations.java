@@ -334,6 +334,10 @@ public class WOMAnimations {
 	public static StaticAnimation SOLAR_AUTO_2;
 	public static StaticAnimation SOLAR_AUTO_3;
 	public static StaticAnimation SOLAR_AUTO_4;
+	public static StaticAnimation SOLAR_AUTO_1_POLVORA;
+	public static StaticAnimation SOLAR_AUTO_2_POLVORA;
+	public static StaticAnimation SOLAR_AUTO_3_POLVORA;
+	public static StaticAnimation SOLAR_AUTO_4_POLVORA;
 	public static StaticAnimation SOLAR_QUEMADURA;
 	public static StaticAnimation SOLAR_HORNO;
 	
@@ -4480,7 +4484,7 @@ public class WOMAnimations {
 				
 				SOLAR_AUTO_1 = new BasicMultipleAttackAnimation(0.05F, 0.40F, 0.70F, 0.75F,null, biped.toolR, "biped/combat/solar_auto_1", biped)
 						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
-						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.2F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
 						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT)
 						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
@@ -4495,24 +4499,63 @@ public class WOMAnimations {
 						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.1F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, false)
-						.addEvents(TimeStampedEvent.create(0.65F, ReuseableEvents.TORMENT_GROUNDSLAM_SMALL, Side.CLIENT));
+						.addEvents(TimeStampedEvent.create(0.80F, ReuseableEvents.TORMENT_GROUNDSLAM_SMALL, Side.CLIENT));
 				
 				SOLAR_AUTO_3 = new BasicMultipleAttackAnimation(0.15F, 0.40F, 0.75F, 0.85F,null, biped.toolR, "biped/combat/solar_auto_3", biped)
 						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
-						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.2F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
 						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT)
 						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.1F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true);
 				
-				SOLAR_AUTO_4 = new BasicMultipleAttackAnimation(0.15F, 0.25F, 0.40F, 0.75F,null, biped.toolR, "biped/combat/solar_auto_4", biped)
+				SOLAR_AUTO_4 = new BasicMultipleAttackAnimation(0.15F, 0.25F, 0.40F, 0.45F,null, biped.toolR, "biped/combat/solar_auto_4", biped)
 						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.0F))
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.0F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
 						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT_UP)
 						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.1F)
+						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true);
+				
+				SOLAR_AUTO_1_POLVORA = new BasicAttackNoAntiStunAnimation(0.05F, 0.35F, 0.40F, 0.45F, WOMColliders.SOLAR_POLVORA, biped.rootJoint, "biped/skill/solar_auto_1_polvora", biped)
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.5F))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.0F))
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, WOMSounds.SOLAR_HIT)
+						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 0.9F)
+						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+						.addEvents(TimeStampedEvent.create(0.40F, ReuseableEvents.POLVORA, Side.CLIENT));
+
+				SOLAR_AUTO_2_POLVORA = new BasicAttackNoAntiStunAnimation(0.05F, 0.30F, 0.35F, 0.45F, WOMColliders.SOLAR_HORNO, biped.rootJoint, "biped/skill/solar_auto_2_polvora", biped)
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(1.5F))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F))
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
+						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, WOMSounds.SOLAR_HIT)
+						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.2F)
+						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+						.addEvents(TimeStampedEvent.create(0.30F, ReuseableEvents.TORMENT_GROUNDSLAM, Side.CLIENT));
+
+				SOLAR_AUTO_3_POLVORA = new BasicAttackNoAntiStunAnimation(0.05F, 0.15F, 0.25F, 0.35F, WOMColliders.SOLAR_POLVORA, biped.rootJoint, "biped/skill/solar_auto_3_polvora", biped)
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(0.5F))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.0F))
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
+						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, WOMSounds.SOLAR_HIT)
+						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.2F)
+						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
+						.addEvents(TimeStampedEvent.create(0.15F, ReuseableEvents.POLVORA, Side.CLIENT));
+
+				SOLAR_AUTO_4_POLVORA = new BasicAttackNoAntiStunAnimation(0.05F, 0.25F, 0.50F, 0.75F ,null, biped.toolR, "biped/skill/solar_auto_4_polvora", biped)
+						.addProperty(AttackPhaseProperty.DAMAGE_MODIFIER, ValueModifier.multiplier(2.0F))
+						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.0F))
+						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
+						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT_UP)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
+						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.2F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true);
 				
 				SOLAR_QUEMADURA = new BasicMultipleAttackAnimation(0.05F, 0.10F, 0.40F, 0.45F,null, biped.toolR, "biped/combat/solar_quemadura", biped)
@@ -5553,6 +5596,82 @@ public class WOMAnimations {
 			        (float)(direction.x),
 			        (float)(direction.y),
 			        (float)(direction.z));
+			}
+		};
+		
+		private static final AnimationEvent.AnimationEventConsumer POLVORA = (entitypatch, self, params) -> {
+			if (entitypatch instanceof PlayerPatch) {
+				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.PLAYERS, 0.5F, 0.7F);
+				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 0.5F, 0.7F);
+			}
+			OpenMatrix4f transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(0.0f), Armatures.BIPED.rootJoint);
+			transformMatrix.translate(new Vec3f(-1.4f,1.0F,-0.5F));
+			OpenMatrix4f CORRECTION = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yRotO-180), new Vec3f(0, 1, 0));
+			OpenMatrix4f.mul(CORRECTION,transformMatrix,transformMatrix);
+			
+			//System.out.println((transformMatrix.m11+0.07f)*1.2f);
+			
+			int n = 40; // set the number of particles to emit
+			double r = 0.1; // set the radius of the disk to 1
+			double t = 0.01; // set the thickness of the disk to 0.1
+			
+			for (int i = 0; i < n; i++) {
+			    double theta = 2 * Math.PI * new Random().nextDouble(); // generate a random azimuthal angle
+			    double phi = (new Random().nextDouble() - 0.5) * Math.PI * t / r; // generate a random angle within the disk thickness
+
+			    // calculate the emission direction in Cartesian coordinates using the polar coordinates
+			    double x = r * Math.cos(phi) * Math.cos(theta);
+			    double y = r * Math.cos(phi) * Math.sin(theta);
+			    double z = r * Math.sin(phi);
+			    
+			 // create a Vector3f object to represent the emission direction
+			    Vec3f direction = new Vec3f((float)x, (float)y, (float)z);
+
+			 // rotate the direction vector to align with the forward vector
+			    OpenMatrix4f rotation = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO), new Vec3f(0, 1, 0));
+			    //rotation.rotate((float) ((transformMatrix.m11-1.07f)*1.5f), new Vec3f(1, 0, 0));
+			    OpenMatrix4f.transform3v(rotation, direction, direction);
+			    
+			    // emit the particle in the calculated direction, with some random velocity added
+			    entitypatch.getOriginal().level.addParticle(ParticleTypes.FLAME,
+			        (transformMatrix.m30 + entitypatch.getOriginal().getX()),
+			        (transformMatrix.m31 + entitypatch.getOriginal().getY()),
+			        (transformMatrix.m32 + entitypatch.getOriginal().getZ()),
+			        (float)(direction.x),
+			        (float)(direction.y),
+			        (float)(direction.z));
+			}
+			
+			n = 80;
+			r = 0.2;
+			for (int i = 0; i < n; i++) {
+			    double theta = 2 * Math.PI * new Random().nextDouble(); // generate a random azimuthal angle
+			    double phi = Math.acos(new Random().nextDouble()); // generate a random angle within the disk thickness
+
+			    // calculate the emission direction in Cartesian coordinates using the polar coordinates
+			    double x = r * Math.sin(phi) * Math.cos(theta);
+			    double y = r * Math.sin(phi) * Math.sin(theta);
+			    double z = r * Math.cos(phi);
+			    
+			 // create a Vector3f object to represent the emission direction
+			    float randomVelocity =  new Random().nextFloat();
+			    Vec3f direction = new Vec3f((float)x * randomVelocity * 0.8f, (float)y * randomVelocity * 0.8f, (float)z * randomVelocity *2.5f);
+
+			 // rotate the direction vector to align with the forward vector
+			    OpenMatrix4f rotation = new OpenMatrix4f().rotate(-(float) Math.toRadians(entitypatch.getOriginal().yBodyRotO), new Vec3f(0, 1, 0));
+			    //rotation.rotate((float) Math.toRadians(-90), new Vec3f(1, 0, 0));
+			    rotation.translate(new Vec3f(0, 0.0F, 0.05f));
+			    OpenMatrix4f.transform3v(rotation, direction, direction);
+			    
+			    // emit the particle in the calculated direction, with some random velocity added
+			    entitypatch.getOriginal().level.addParticle(ParticleTypes.FLAME,
+			        (transformMatrix.m30 + entitypatch.getOriginal().getX()),
+			        (transformMatrix.m31 + entitypatch.getOriginal().getY()),
+			        (transformMatrix.m32 + entitypatch.getOriginal().getZ()),
+			        (float)(direction.x),
+			        (float)(direction.y),
+			        (float)(direction.z)
+			        );
 			}
 		};
 		
