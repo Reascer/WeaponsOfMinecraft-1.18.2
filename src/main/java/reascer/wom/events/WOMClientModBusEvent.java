@@ -42,7 +42,6 @@ import reascer.wom.world.entity.projectile.WOMEntities;
 public class WOMClientModBusEvent {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public static void onParticleRegistry(final RegisterParticleProvidersEvent event) {
-		Minecraft mc = Minecraft.getInstance();
     	event.register(WOMParticles.ANTITHEUS_HIT.get(), new AntitheusHitParticle.Provider());
     	event.register(WOMParticles.ANTITHEUS_HIT_DOWN.get(), new AntitheusHitDownParticle.Provider());
     	event.register(WOMParticles.ANTITHEUS_HIT_UP.get(), new AntitheusHitUpParticle.Provider());
