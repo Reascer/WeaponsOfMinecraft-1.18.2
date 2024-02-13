@@ -41,6 +41,8 @@ public class WOMParticles {
 	
 	public static final RegistryObject<SimpleParticleType> SOLAR_CUT = PARTICLES.register("solar_cut", () -> new SimpleParticleType(true));
 	public static final RegistryObject<HitParticleType> SOLAR_HIT = PARTICLES.register("solar_hit", () -> new HitParticleType(true, HitParticleType.RANDOM_WITHIN_BOUNDING_BOX, HitParticleType.ZERO));
+	public static final RegistryObject<HitParticleType> SOLAR_HIT_REVERSE = PARTICLES.register("solar_hit_reverse", () -> new HitParticleType(true, HitParticleType.RANDOM_WITHIN_BOUNDING_BOX, HitParticleType.ZERO));
+	public static final RegistryObject<HitParticleType> SOLAR_HIT_DOWN = PARTICLES.register("solar_hit_down", () -> new HitParticleType(true, HitParticleType.RANDOM_WITHIN_BOUNDING_BOX, HitParticleType.ZERO));
 	public static final RegistryObject<HitParticleType> SOLAR_HIT_UP = PARTICLES.register("solar_hit_up", () -> new HitParticleType(true, HitParticleType.RANDOM_WITHIN_BOUNDING_BOX, HitParticleType.ZERO));
 	
 }
