@@ -19,6 +19,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMColliders;
+import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.StaticAnimation;
@@ -30,12 +31,9 @@ import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.particle.HitParticleType;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
+import yesman.epicfight.skill.SkillDataKeys;
 import yesman.epicfight.skill.guard.GuardSkill;
-import yesman.epicfight.skill.guard.GuardSkill.BlockType;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
-import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategories;
@@ -45,9 +43,6 @@ import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType
 
 public class CounterAttack extends GuardSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("ad8def54-20a4-4806-be95-ce3f5054627c");
-	private static final SkillDataKey<Integer> LAST_ACTIVE = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	public static final SkillDataKey<Float> CONSUMPTION_VALUE = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
-	private static final SkillDataKey<Boolean> PARRYING = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	
 	public static GuardSkill.Builder createCounterAttackBuilder() {
 		return GuardSkill.createGuardBuilder()
@@ -76,10 +71,6 @@ public class CounterAttack extends GuardSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
-		container.getDataManager().registerData(LAST_ACTIVE);
-		container.getDataManager().registerData(PARRYING);
-		container.getDataManager().registerData(CONSUMPTION_VALUE);
-		container.getDataManager().setData(PARRYING, false);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
 			CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND);
@@ -92,12 +83,12 @@ public class CounterAttack extends GuardSkill {
 		container.getExecuter().getEventListener().addEventListener(EventType.SERVER_ITEM_USE_EVENT, CounterAttack.EVENT_UUID, (event) -> {
 			CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND);
 			
-			if (event.getPlayerPatch().getOriginal().tickCount - container.getDataManager().getDataValue(LAST_ACTIVE) > 20) {
-				container.getDataManager().setDataSync(PARRYING, false,event.getPlayerPatch().getOriginal());
+			if (event.getPlayerPatch().getOriginal().tickCount - container.getDataManager().getDataValue(WOMSkillDataKeys.LAST_ACTIVE.get()) > 20) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.PARRYING.get(), false,event.getPlayerPatch().getOriginal());
 			}
 			
-			if (!container.getDataManager().getDataValue(PARRYING) && event.getPlayerPatch().getStamina() > 0) {
-				if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.ADVANCED_GUARD) && event.getPlayerPatch().getOriginal().tickCount - container.getDataManager().getDataValue(LAST_ACTIVE) > 20 && !(event.getPlayerPatch().getOriginal().isFallFlying() || event.getPlayerPatch().currentLivingMotion == LivingMotions.FALL || !event.getPlayerPatch().getEntityState().canUseSkill() || !event.getPlayerPatch().getEntityState().canBasicAttack())) {
+			if (!container.getDataManager().getDataValue(WOMSkillDataKeys.PARRYING.get()) && event.getPlayerPatch().getStamina() > 0) {
+				if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.ADVANCED_GUARD) && event.getPlayerPatch().getOriginal().tickCount - container.getDataManager().getDataValue(WOMSkillDataKeys.LAST_ACTIVE.get()) > 20 && !(event.getPlayerPatch().getOriginal().isFallFlying() || event.getPlayerPatch().currentLivingMotion == LivingMotions.FALL || !event.getPlayerPatch().getEntityState().canUseSkill() || !event.getPlayerPatch().getEntityState().canBasicAttack())) {
 					StaticAnimation animation;
 					switch (new Random().nextInt() %3) {
 					case 0: {
@@ -161,24 +152,24 @@ public class CounterAttack extends GuardSkill {
 			    			EpicFightSounds.CLASH.get(), container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 					event.getPlayerPatch().playAnimationSynchronized(animation, convert);
 					event.getPlayerPatch().currentLivingMotion = LivingMotions.BLOCK;
-						container.getDataManager().setDataSync(LAST_ACTIVE, event.getPlayerPatch().getOriginal().tickCount,event.getPlayerPatch().getOriginal());
-						container.getDataManager().setDataSync(PARRYING, true,event.getPlayerPatch().getOriginal());
+						container.getDataManager().setDataSync(WOMSkillDataKeys.LAST_ACTIVE.get(), event.getPlayerPatch().getOriginal().tickCount,event.getPlayerPatch().getOriginal());
+						container.getDataManager().setDataSync(WOMSkillDataKeys.PARRYING.get(), true,event.getPlayerPatch().getOriginal());
 					
 					
 				} else {
 					if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.ADVANCED_GUARD) && event.getPlayerPatch().getEntityState().canBasicAttack()) {
 						event.getPlayerPatch().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 								SoundEvents.LAVA_EXTINGUISH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
-						container.getDataManager().setDataSync(LAST_ACTIVE, event.getPlayerPatch().getOriginal().tickCount - 4,event.getPlayerPatch().getOriginal());
+						container.getDataManager().setDataSync(WOMSkillDataKeys.LAST_ACTIVE.get(), event.getPlayerPatch().getOriginal().tickCount - 4,event.getPlayerPatch().getOriginal());
 					}
 				}
 			}
 			
 			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.ADVANCED_GUARD)) {
-				if ((event.getPlayerPatch().getStamina() == 0 || event.getPlayerPatch().getOriginal().tickCount - container.getDataManager().getDataValue(LAST_ACTIVE) > 10) && event.getPlayerPatch().getEntityState().canBasicAttack()) {
+				if ((event.getPlayerPatch().getStamina() == 0 || event.getPlayerPatch().getOriginal().tickCount - container.getDataManager().getDataValue(WOMSkillDataKeys.LAST_ACTIVE.get()) > 10) && event.getPlayerPatch().getEntityState().canBasicAttack()) {
 					event.getPlayerPatch().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 							SoundEvents.LAVA_EXTINGUISH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
-					container.getDataManager().setDataSync(LAST_ACTIVE, event.getPlayerPatch().getOriginal().tickCount - 4,event.getPlayerPatch().getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.LAST_ACTIVE.get(), event.getPlayerPatch().getOriginal().tickCount - 4,event.getPlayerPatch().getOriginal());
 				}
 			}
 			
@@ -191,8 +182,8 @@ public class CounterAttack extends GuardSkill {
 		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_PRE, EVENT_UUID, (event) -> {
 			CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(event.getPlayerPatch().getOriginal().getUsedItemHand());
 			
-			if (event.getPlayerPatch().getOriginal().tickCount - container.getDataManager().getDataValue(LAST_ACTIVE) < 10 && container.getDataManager().getDataValue(PARRYING)) {
-				container.getDataManager().setDataSync(PARRYING, false,event.getPlayerPatch().getOriginal());
+			if (event.getPlayerPatch().getOriginal().tickCount - container.getDataManager().getDataValue(WOMSkillDataKeys.LAST_ACTIVE.get()) < 10 && container.getDataManager().getDataValue(WOMSkillDataKeys.PARRYING.get())) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.PARRYING.get(), false,event.getPlayerPatch().getOriginal());
 				DamageSource damageSource = event.getDamageSource();
 				boolean isFront = false;
 				Vec3 sourceLocation = damageSource.getSourcePosition();
@@ -263,12 +254,12 @@ public class CounterAttack extends GuardSkill {
 			
 			if (this.isBlockableSource(damageSource, true)) {
 				ServerPlayer playerentity = event.getPlayerPatch().getOriginal();
-				int timing = (playerentity.tickCount - container.getDataManager().getDataValue(LAST_ACTIVE));
+				int timing = (playerentity.tickCount - container.getDataManager().getDataValue(WOMSkillDataKeys.LAST_ACTIVE.get()));
 					//container.getExecuter().getOriginal().sendMessage(new TextComponent("timming : " + timing), UUID.randomUUID());
 				
 				boolean successParrying = timing < 10;
 				
-				float penalty = container.getDataManager().getDataValue(PENALTY);
+				float penalty = container.getDataManager().getDataValue(SkillDataKeys.PENALTY.get());
 				event.getPlayerPatch().playSound(EpicFightSounds.CLASH.get(), -0.05F, 0.1F);
 				EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)playerentity.level()), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, playerentity, damageSource.getDirectEntity());
 				
@@ -277,7 +268,7 @@ public class CounterAttack extends GuardSkill {
 					knockback *= 0.4F;
 				} else {
 					penalty += this.getPenalizer(itemCapability);
-					container.getDataManager().setDataSync(PENALTY, penalty, playerentity);
+					container.getDataManager().setDataSync(SkillDataKeys.PENALTY.get(), penalty, playerentity);
 				}
 				
 				if (damageSource.getDirectEntity() instanceof LivingEntity) {
@@ -285,15 +276,15 @@ public class CounterAttack extends GuardSkill {
 				}
 				
 				event.getPlayerPatch().knockBackEntity(damageSource.getDirectEntity().position(), knockback);
-				if (container.getDataManager().getDataValue(CONSUMPTION_VALUE) != null && container.getDataManager().getDataValue(CONSUMPTION_VALUE) != 0) {
-					penalty *= container.getDataManager().getDataValue(CONSUMPTION_VALUE);
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.CONSUMPTION_VALUE.get()) != null && container.getDataManager().getDataValue(WOMSkillDataKeys.CONSUMPTION_VALUE.get()) != 0) {
+					penalty *= container.getDataManager().getDataValue(WOMSkillDataKeys.CONSUMPTION_VALUE.get());
 				}
 				
 				boolean enoughStamina = true;
 				if (penalty > 0.0f) {
 					enoughStamina = event.getPlayerPatch().consumeStamina(penalty * impact);
 				} else {
-					container.getDataManager().setDataSync(PENALTY, penalty, playerentity);
+					container.getDataManager().setDataSync(SkillDataKeys.PENALTY.get(), penalty, playerentity);
 					enoughStamina = true;
 				}
 				

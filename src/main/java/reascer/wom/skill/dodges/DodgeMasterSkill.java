@@ -7,9 +7,9 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import reascer.wom.skill.WOMSkillDataKeys;
 import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.api.utils.AttackResult.ResultType;
 import yesman.epicfight.client.events.engine.ControllEngine;
@@ -18,21 +18,14 @@ import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.network.client.CPExecuteSkill;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillSlot;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.dodge.DodgeSkill;
-import yesman.epicfight.skill.passive.TechnicianSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
-import yesman.epicfight.world.entity.eventlistener.DealtDamageEvent;
 import yesman.epicfight.world.entity.eventlistener.DodgeSuccessEvent;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class DodgeMasterSkill extends DodgeSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("691d9d1e-05ce-11ed-b939-0242ac120002");
-	private static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Boolean> DODGE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	
 	public DodgeMasterSkill(Builder builder) {
 		super(builder);
@@ -40,14 +33,11 @@ public class DodgeMasterSkill extends DodgeSkill {
 	
 	@Override
 	public void onInitiate(SkillContainer container) {
-		container.getDataManager().registerData(TIMER);
-		container.getDataManager().registerData(DODGE);
-		
 		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_PRE, EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(TIMER) > 4) {
-				if (!container.getDataManager().getDataValue(DODGE)) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) > 4) {
+				if (!container.getDataManager().getDataValue(WOMSkillDataKeys.DODGE.get())) {
 					event.getPlayerPatch().getEventListener().triggerEvents(EventType.DODGE_SUCCESS_EVENT, new DodgeSuccessEvent(event.getPlayerPatch(), event.getDamageSource()));
-					container.getDataManager().setDataSync(DODGE, true,event.getPlayerPatch().getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.DODGE.get(), true,event.getPlayerPatch().getOriginal());
 				}
 				event.setCanceled(true);
 				event.setResult(ResultType.MISSED);
@@ -55,8 +45,8 @@ public class DodgeMasterSkill extends DodgeSkill {
         });
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.BASIC_ATTACK_EVENT, EVENT_UUID, (event) -> {
-					container.getDataManager().setDataSync(DODGE, false,event.getPlayerPatch().getOriginal());
-					container.getDataManager().setDataSync(TIMER, 0,event.getPlayerPatch().getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.DODGE.get(), false,event.getPlayerPatch().getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), 0,event.getPlayerPatch().getOriginal());
         });
 	}
 	
@@ -117,15 +107,15 @@ public class DodgeMasterSkill extends DodgeSkill {
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		int i = args.readInt();
 		float yaw = args.readFloat();
-		if (executer.getSkill(this).getDataManager().getDataValue(TIMER) > 0 && !executer.getSkill(this).getDataManager().getDataValue(DODGE)) {
+		if (executer.getSkill(this).getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) > 0 && !executer.getSkill(this).getDataManager().getDataValue(WOMSkillDataKeys.DODGE.get())) {
 			executer.playAnimationSynchronized(this.animations[i], 0);
 			executer.changeModelYRot(yaw);
 			if(!executer.consumeStamina(this.getConsumption()*3)){
 				executer.setStamina(0);
 			}
 		}
-		executer.getSkill(this).getDataManager().setDataSync(TIMER, 14,executer.getOriginal());
-		executer.getSkill(this).getDataManager().setDataSync(DODGE, false, executer.getOriginal());
+		executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), 14,executer.getOriginal());
+		executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.DODGE.get(), false, executer.getOriginal());
 	}
 	
 	@Override
@@ -149,19 +139,19 @@ public class DodgeMasterSkill extends DodgeSkill {
 	public void updateContainer(SkillContainer container) {
 
 	super.updateContainer(container);
-		if (container.getDataManager().getDataValue(TIMER) > 0) {
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) > 0) {
 			if(!container.getExecuter().isLogicalClient()) {
-				container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER)-1,((ServerPlayerPatch) container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get())-1,((ServerPlayerPatch) container.getExecuter()).getOriginal());
 				if (((ServerPlayerPatch) container.getExecuter()).getStamina() > 0) {
-					if (container.getDataManager().getDataValue(TIMER) < 14 && container.getDataManager().getDataValue(DODGE)) {
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) < 14 && container.getDataManager().getDataValue(WOMSkillDataKeys.DODGE.get())) {
 						container.getExecuter().playAnimationSynchronized(this.animations[(Math.abs(new Random().nextInt()) % 2)+2], 0);
-						container.getDataManager().setDataSync(TIMER, 14,((ServerPlayerPatch) container.getExecuter()).getOriginal());
+						container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), 14,((ServerPlayerPatch) container.getExecuter()).getOriginal());
 						if(!container.getExecuter().consumeStamina(this.getConsumption()+1)){
 							container.getExecuter().setStamina(0);
 						}
 					}
-					if (container.getDataManager().getDataValue(TIMER) > 5 && container.getDataManager().getDataValue(DODGE)) {
-						container.getDataManager().setDataSync(DODGE, false,((ServerPlayerPatch) container.getExecuter()).getOriginal());
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) > 5 && container.getDataManager().getDataValue(WOMSkillDataKeys.DODGE.get())) {
+						container.getDataManager().setDataSync(WOMSkillDataKeys.DODGE.get(), false,((ServerPlayerPatch) container.getExecuter()).getOriginal());
 					}
 				}
 			}

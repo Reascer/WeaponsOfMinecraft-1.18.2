@@ -15,21 +15,20 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMSkills;
+import reascer.wom.skill.WOMSkillDataKeys;
 import yesman.epicfight.client.events.engine.ControllEngine;
 import yesman.epicfight.client.gui.BattleModeGui;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.network.client.CPExecuteSkill;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.dodge.DodgeSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 
 public class EnderObscurisSkill extends DodgeSkill {
-	public static final SkillDataKey<Integer> TARGET_ID = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
+	
 	private static final UUID EVENT_UUID = UUID.fromString("38cb04e1-9751-445f-82bd-fb61426a58c7");
 	
 	public EnderObscurisSkill(DodgeSkill.Builder builder) {
@@ -39,10 +38,9 @@ public class EnderObscurisSkill extends DodgeSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
-		container.getDataManager().registerData(TARGET_ID);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID, (event) -> {
-			container.getDataManager().setDataSync(TARGET_ID, event.getTarget().getId(), event.getPlayerPatch().getOriginal());
+			container.getDataManager().setDataSync(WOMSkillDataKeys.TARGET_ID.get(), event.getTarget().getId(), event.getPlayerPatch().getOriginal());
 			
 		});
 	}
@@ -112,7 +110,7 @@ public class EnderObscurisSkill extends DodgeSkill {
 		int i = args.readInt();
 		float yaw = args.readFloat();
 		boolean tag = false;
-		LivingEntity target = (LivingEntity) executer.getOriginal().level().getEntity(executer.getSkill(this).getDataManager().getDataValue(EnderObscurisSkill.TARGET_ID));
+		LivingEntity target = (LivingEntity) executer.getOriginal().level().getEntity(executer.getSkill(this).getDataManager().getDataValue(WOMSkillDataKeys.TARGET_ID.get()));
 		if (target != null) {
 			if (target.distanceTo(executer.getOriginal()) < 30) {
 				tag = true;
@@ -134,7 +132,7 @@ public class EnderObscurisSkill extends DodgeSkill {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldDraw(SkillContainer container) {
-		LivingEntity target = (LivingEntity) container.getExecuter().getOriginal().level().getEntity(container.getDataManager().getDataValue(EnderObscurisSkill.TARGET_ID));
+		LivingEntity target = (LivingEntity) container.getExecuter().getOriginal().level().getEntity(container.getDataManager().getDataValue(WOMSkillDataKeys.TARGET_ID.get()));
 		boolean tag = false;
 		if (target != null) {
 			if (target.distanceTo(container.getExecuter().getOriginal()) < 30) {
@@ -160,12 +158,12 @@ public class EnderObscurisSkill extends DodgeSkill {
 	public void updateContainer(SkillContainer container) {
 		super.updateContainer(container);
 		if(!container.getExecuter().isLogicalClient()) {
-			if (container.getDataManager().getDataValue(TARGET_ID) != null) {
-				Entity target = container.getExecuter().getOriginal().level().getEntity(container.getDataManager().getDataValue(TARGET_ID));
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.TARGET_ID.get()) != null) {
+				Entity target = container.getExecuter().getOriginal().level().getEntity(container.getDataManager().getDataValue(WOMSkillDataKeys.TARGET_ID.get()));
 				if (target != null) {
 					if (target instanceof LivingEntity) {
 						if (((LivingEntity)target).isDeadOrDying()) {
-							container.getDataManager().setDataSync(TARGET_ID, -1, (ServerPlayer)container.getExecuter().getOriginal());
+							container.getDataManager().setDataSync(WOMSkillDataKeys.TARGET_ID.get(), -1, (ServerPlayer)container.getExecuter().getOriginal());
 						}
 					}
 				}

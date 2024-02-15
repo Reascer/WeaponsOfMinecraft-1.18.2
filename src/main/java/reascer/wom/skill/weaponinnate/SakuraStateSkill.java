@@ -21,13 +21,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.main.WeaponsOfMinecraft;
-import reascer.wom.skill.weaponpassive.SatsujinPassive;
+import reascer.wom.skill.WOMSkillDataKeys;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
-import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.weaponinnate.ConditionalWeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
@@ -36,15 +33,6 @@ import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 
 public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("1a56d169-416a-4206-ba3d-e7100d55d603");
-	public static final SkillDataKey<Boolean> ACTIVE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Integer> COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	public static final SkillDataKey<Boolean> SECOND_DRAW = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	
-	public static final SkillDataKey<Boolean> TIMEDSLASH = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	public static final SkillDataKey<Integer> FREQUENCY = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	public static final SkillDataKey<Integer> ATTACKS = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	public static final SkillDataKey<Float> DAMAGE = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
 	
 	public SakuraStateSkill(ConditionalWeaponInnateSkill.Builder builder) {
 		super(builder);
@@ -53,18 +41,9 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
-		container.getDataManager().registerData(ACTIVE);
-		container.getDataManager().registerData(SECOND_DRAW);
-		container.getDataManager().registerData(COOLDOWN);
-		
-		container.getDataManager().registerData(TIMEDSLASH);
-		container.getDataManager().registerData(TIMER);
-		container.getDataManager().registerData(FREQUENCY);
-		container.getDataManager().registerData(ATTACKS);
-		container.getDataManager().registerData(DAMAGE);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
-			container.getDataManager().setData(TIMEDSLASH, false);
+			container.getDataManager().setData(WOMSkillDataKeys.TIMEDSLASH.get(), false);
 			ServerPlayer serverPlayer = event.getPlayerPatch().getOriginal();
 			StaticAnimation[] resetAnimations = {
 					WOMAnimations.KATANA_SHEATHED_AUTO_1,
@@ -74,44 +53,44 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 					WOMAnimations.KATANA_FATAL_DRAW_SECOND};
 			
 			if (event.getAnimation().equals(WOMAnimations.KATANA_SHEATHED_DASH)) {
-				container.getDataManager().setDataSync(TIMEDSLASH, true,serverPlayer);
-				container.getDataManager().setDataSync(FREQUENCY, 1,serverPlayer);
-				container.getDataManager().setDataSync(ATTACKS, 3 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()),serverPlayer);
-				container.getDataManager().setDataSync(SECOND_DRAW, false,serverPlayer);
-				container.getDataManager().setDataSync(TIMER, 20,serverPlayer);
+				container.getDataManager().setDataSync(WOMSkillDataKeys.TIMEDSLASH.get(), true,serverPlayer);
+				container.getDataManager().setDataSync(WOMSkillDataKeys.FREQUENCY.get(), 1,serverPlayer);
+				container.getDataManager().setDataSync(WOMSkillDataKeys.ATTACKS.get(), 3 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()),serverPlayer);
+				container.getDataManager().setDataSync(WOMSkillDataKeys.SECOND_DRAW.get(), false,serverPlayer);
+				container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), 20,serverPlayer);
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.KATANA_SHEATHED_COUNTER)) {
-				container.getDataManager().setDataSync(TIMEDSLASH, true,serverPlayer);
-				container.getDataManager().setDataSync(FREQUENCY, 1,serverPlayer);
-				container.getDataManager().setDataSync(ATTACKS, 3 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()),serverPlayer);
-				container.getDataManager().setDataSync(SECOND_DRAW, false,serverPlayer);
-				container.getDataManager().setDataSync(TIMER, 20,serverPlayer);
+				container.getDataManager().setDataSync(WOMSkillDataKeys.TIMEDSLASH.get(), true,serverPlayer);
+				container.getDataManager().setDataSync(WOMSkillDataKeys.FREQUENCY.get(), 1,serverPlayer);
+				container.getDataManager().setDataSync(WOMSkillDataKeys.ATTACKS.get(), 3 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()),serverPlayer);
+				container.getDataManager().setDataSync(WOMSkillDataKeys.SECOND_DRAW.get(), false,serverPlayer);
+				container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), 20,serverPlayer);
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.KATANA_FATAL_DRAW_DASH)) {
-				container.getDataManager().setDataSync(TIMEDSLASH, true,serverPlayer);
-				container.getDataManager().setDataSync(FREQUENCY, 1,serverPlayer);
-				container.getDataManager().setDataSync(ATTACKS, 3 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()),serverPlayer);
-				container.getDataManager().setDataSync(SECOND_DRAW, false,serverPlayer);
-				container.getDataManager().setDataSync(TIMER, 40,serverPlayer);
+				container.getDataManager().setDataSync(WOMSkillDataKeys.TIMEDSLASH.get(), true,serverPlayer);
+				container.getDataManager().setDataSync(WOMSkillDataKeys.FREQUENCY.get(), 1,serverPlayer);
+				container.getDataManager().setDataSync(WOMSkillDataKeys.ATTACKS.get(), 3 + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()),serverPlayer);
+				container.getDataManager().setDataSync(WOMSkillDataKeys.SECOND_DRAW.get(), false,serverPlayer);
+				container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), 40,serverPlayer);
 			}
 			
 			for (StaticAnimation staticAnimation : resetAnimations) {
 				if (event.getAnimation().equals(staticAnimation)) {
-					container.getDataManager().setDataSync(TIMEDSLASH, true,serverPlayer);
-					container.getDataManager().setDataSync(FREQUENCY, 1,serverPlayer);
-					container.getDataManager().setDataSync(ATTACKS,0,serverPlayer);
-					container.getDataManager().setDataSync(TIMER, 20,serverPlayer);
+					container.getDataManager().setDataSync(WOMSkillDataKeys.TIMEDSLASH.get(), true,serverPlayer);
+					container.getDataManager().setDataSync(WOMSkillDataKeys.FREQUENCY.get(), 1,serverPlayer);
+					container.getDataManager().setDataSync(WOMSkillDataKeys.ATTACKS.get(),0,serverPlayer);
+					container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), 20,serverPlayer);
 					
 					if (staticAnimation.equals(WOMAnimations.KATANA_FATAL_DRAW)) {
-						container.getDataManager().setDataSync(SECOND_DRAW, true,serverPlayer);
+						container.getDataManager().setDataSync(WOMSkillDataKeys.SECOND_DRAW.get(), true,serverPlayer);
 					}
 					
 					if (staticAnimation.equals(WOMAnimations.KATANA_FATAL_DRAW) ||
 						staticAnimation.equals(WOMAnimations.KATANA_FATAL_DRAW_SECOND)	) {
-						container.getDataManager().setDataSync(FREQUENCY, 0,serverPlayer);
-						container.getDataManager().setDataSync(TIMER, 0,serverPlayer);
+						container.getDataManager().setDataSync(WOMSkillDataKeys.FREQUENCY.get(), 0,serverPlayer);
+						container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), 0,serverPlayer);
 					}
 				}
 			}
@@ -119,7 +98,7 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID, (event) -> {
-			container.getDataManager().setData(DAMAGE, event.getDamage());
+			container.getDataManager().setData(WOMSkillDataKeys.DAMAGE.get(), event.getDamage());
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID, (event) -> {
@@ -142,20 +121,20 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 			}
 			if (!event.getDamageSource().getAnimation().equals(WOMAnimations.KATANA_SAKURA_TIMED_SLASH)) {
 				if (container.getExecuter().getStamina() > 0) {
-					if(container.getDataManager().getDataValue(TIMEDSLASH)){
+					if(container.getDataManager().getDataValue(WOMSkillDataKeys.TIMEDSLASH.get())){
 						boolean tsa = false;
 						for (String tag : event.getTarget().getTags()) {
 							if (tag.contains("timed_katana_slashes:")) {
 								int attacks = Integer.valueOf(tag.split(":")[3]);
 								event.getTarget().removeTag(tag);
 								event.getTarget().addTag("timed_katana_slashes:"+
-										container.getDataManager().getDataValue(TIMER)+":"+
-										(container.getDataManager().getDataValue(FREQUENCY)-1)+":"+
-										(attacks + container.getDataManager().getDataValue(ATTACKS))+":"+
+										container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get())+":"+
+										(container.getDataManager().getDataValue(WOMSkillDataKeys.FREQUENCY.get())-1)+":"+
+										(attacks + container.getDataManager().getDataValue(WOMSkillDataKeys.ATTACKS.get()))+":"+
 										0+":"+
-										container.getDataManager().getDataValue(DAMAGE)+":"+
+										container.getDataManager().getDataValue(WOMSkillDataKeys.DAMAGE.get())+":"+
 										event.getPlayerPatch().getOriginal().getId()+":"+
-										(attacks + container.getDataManager().getDataValue(ATTACKS))
+										(attacks + container.getDataManager().getDataValue(WOMSkillDataKeys.ATTACKS.get()))
 										);
 								tsa = true;
 								break;
@@ -163,13 +142,13 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 						}
 						if (!tsa) {
 							event.getTarget().addTag("timed_katana_slashes:"+
-									container.getDataManager().getDataValue(TIMER)+":"+
-									container.getDataManager().getDataValue(FREQUENCY)+":"+
-									container.getDataManager().getDataValue(ATTACKS)+":"+
+									container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get())+":"+
+									container.getDataManager().getDataValue(WOMSkillDataKeys.FREQUENCY.get())+":"+
+									container.getDataManager().getDataValue(WOMSkillDataKeys.ATTACKS.get())+":"+
 									1+":"+
-									container.getDataManager().getDataValue(DAMAGE)+":"+
+									container.getDataManager().getDataValue(WOMSkillDataKeys.DAMAGE.get())+":"+
 									event.getPlayerPatch().getOriginal().getId()+":"+
-									container.getDataManager().getDataValue(ATTACKS)
+									container.getDataManager().getDataValue(WOMSkillDataKeys.ATTACKS.get())
 							);
 						}
 					}
@@ -187,10 +166,10 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 	
 	@Override
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
-		if (executer.getSkill(this).getDataManager().getDataValue(COOLDOWN) < 80) {
-			executer.getSkill(this).getDataManager().setData(COOLDOWN, 80);
-			boolean isSheathed = executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(SatsujinPassive.SHEATH);
-			if (isSheathed || executer.getSkill(this).getDataManager().getDataValue(ACTIVE)) {
+		if (executer.getSkill(this).getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) < 80) {
+			executer.getSkill(this).getDataManager().setData(WOMSkillDataKeys.COOLDOWN.get(), 80);
+			boolean isSheathed = executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(WOMSkillDataKeys.SHEATH.get());
+			if (isSheathed || executer.getSkill(this).getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get())) {
 				float convertTime =  -0.45F;
 				executer.playAnimationSynchronized(this.attackAnimations[this.getAnimationInCondition(executer)], convertTime);
 			} else {
@@ -207,13 +186,13 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 				}
 			}
 			
-			if (!executer.getSkill(this).getDataManager().getDataValue(ACTIVE)) {
+			if (!executer.getSkill(this).getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get())) {
 				//executer.getOriginal().sendMessage(new TextComponent("katana stack:"+Math.round(Math.min(6,executer.getSkill(this).getStack()+1) * (1.0f + (EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())/3.0f))-1)), UUID.randomUUID());
 				this.setStackSynchronize(executer, (int) Math.min(12,Math.round(Math.min(6,executer.getSkill(this).getStack()+1)* (1.0f + (EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())/3.0f)))-1));
-				executer.getSkill(this).getDataManager().setDataSync(ACTIVE, true, executer.getOriginal());
+				executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.ACTIVE.get(), true, executer.getOriginal());
 			}
 			if (executer.getSkill(this).getStack() == 0) {
-				executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false, executer.getOriginal());
+				executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.ACTIVE.get(), false, executer.getOriginal());
 			}
 			executer.getSkill(this).activate();
 		}
@@ -222,7 +201,7 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onScreen(LocalPlayerPatch playerpatch, float resolutionX, float resolutionY) {
-		if (playerpatch.getSkill(this).getDataManager().getDataValue(ACTIVE)) {
+		if (playerpatch.getSkill(this).getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get())) {
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			RenderSystem.setShaderTexture(0, new ResourceLocation(WeaponsOfMinecraft.MODID, "textures/gui/overlay/katana_eternity.png"));
 			GlStateManager._enableBlend();
@@ -242,13 +221,13 @@ public class SakuraStateSkill extends ConditionalWeaponInnateSkill {
 	@Override
 	public void updateContainer(SkillContainer container) {
 		super.updateContainer(container);
-		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
-			container.getDataManager().setData(COOLDOWN, container.getDataManager().getDataValue(COOLDOWN)-1);
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) > 0) {
+			container.getDataManager().setData(WOMSkillDataKeys.COOLDOWN.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get())-1);
 		} else {
-			if (container.getDataManager().getDataValue(ACTIVE)) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get())) {
 				if(!container.getExecuter().isLogicalClient()) {
 					this.setStackSynchronize((ServerPlayerPatch)container.getExecuter(),0);
-					container.getExecuter().getSkill(this).getDataManager().setDataSync(ACTIVE, false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getExecuter().getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.ACTIVE.get(), false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				}
 			}
 		}

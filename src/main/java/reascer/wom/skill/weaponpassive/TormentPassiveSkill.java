@@ -1,17 +1,11 @@
 package reascer.wom.skill.weaponpassive;
 
-import java.util.Random;
 import java.util.UUID;
-
-import org.joml.Vector3f;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -24,50 +18,28 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.BushBlock;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
+import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.skill.weaponinnate.TrueBerserkSkill;
 import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import yesman.epicfight.api.animation.AnimationPlayer;
-import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
-import yesman.epicfight.api.animation.types.StaticAnimation;
-import yesman.epicfight.api.utils.math.OpenMatrix4f;
-import yesman.epicfight.api.utils.math.Vec3f;
 import yesman.epicfight.client.gui.BattleModeGui;
-import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.passive.PassiveSkill;
-import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.damagesource.StunType;
 import yesman.epicfight.world.effect.EpicFightMobEffects;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
-import yesman.epicfight.world.level.block.FractureBlockState;
 
 public class TormentPassiveSkill extends PassiveSkill {
-	private static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Boolean> ACTIVE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Integer> CHARGING_TIME = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	public static final SkillDataKey<Integer> SAVED_CHARGE = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Boolean> CHARGING = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	private static final SkillDataKey<Boolean> SUPER_ARMOR = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	private static final SkillDataKey<Boolean> CHARGED = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	private static final SkillDataKey<Boolean> CHARGED_ATTACK = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	private static final SkillDataKey<Boolean> MOVESPEED = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	
-
 	private static final UUID EVENT_UUID = UUID.fromString("72eabb8f-f889-4302-80bb-690bb557a008");
 	
 	public TormentPassiveSkill(Builder<?> builder) {
@@ -76,18 +48,8 @@ public class TormentPassiveSkill extends PassiveSkill {
 	
 	@Override
 	public void onInitiate(SkillContainer container) {
-		container.getDataManager().registerData(TIMER);
-		container.getDataManager().registerData(ACTIVE);
-		container.getDataManager().registerData(CHARGING);
-		container.getDataManager().registerData(CHARGING_TIME);
-		container.getDataManager().registerData(SAVED_CHARGE);
-		container.getDataManager().registerData(SUPER_ARMOR);
-		container.getDataManager().registerData(CHARGED);
-		container.getDataManager().registerData(CHARGED_ATTACK);
-		container.getDataManager().registerData(MOVESPEED);
-		
 		if(!container.getExecuter().isLogicalClient()) {
-			container.getDataManager().setDataSync(MOVESPEED, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(WOMSkillDataKeys.MOVESPEED.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 		}
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
@@ -103,14 +65,14 @@ public class TormentPassiveSkill extends PassiveSkill {
 			if (event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.TORMENT && container.getExecuter().getEntityState().canBasicAttack()) {
 				if (container.getExecuter().getStamina() > 0) {
 					event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
-					container.getDataManager().setDataSync(CHARGING, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGING.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 					container.getExecuter().getOriginal().setSprinting(false);
 				}
 			}
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(CHARGED_ATTACK) || container.getDataManager().getDataValue(CHARGED)) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGED_ATTACK.get()) || container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGED_ATTACK.get())) {
 				event.setDamage(event.getDamage()*3);
 			}
 		});
@@ -122,8 +84,8 @@ public class TormentPassiveSkill extends PassiveSkill {
 			float elapsedTime = player.getElapsedTime();
 			Phase phase = anim.getPhaseByTime(elapsedTime);
 			
-			if (container.getDataManager().getDataValue(CHARGED_ATTACK) && phase == anim.phases[0]) {
-				container.getDataManager().setDataSync(CHARGED, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGED_ATTACK.get()) && phase == anim.phases[0]) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGED_ATTACK.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				((ServerLevel) event.getPlayerPatch().getOriginal().level()).sendParticles( ParticleTypes.SMOKE, 
 						event.getTarget().getX() - 0.15D, 
 						event.getTarget().getY() + 1.2D, 
@@ -137,13 +99,13 @@ public class TormentPassiveSkill extends PassiveSkill {
 						25, 0.0D, 0.0D, 0.0D,
 						1.0D);
 			} else {
-				container.getDataManager().setDataSync(CHARGED, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				container.getDataManager().setDataSync(CHARGED_ATTACK, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGED_ATTACK.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGED_ATTACK.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_POST, EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(SUPER_ARMOR) || container.getDataManager().getDataValue(CHARGING)) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.SUPER_ARMOR.get()) || container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGING.get())) {
 				event.setAmount(event.getAmount()*0.8f);
 				event.getDamageSource().setStunType(StunType.NONE);
 			}
@@ -152,7 +114,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			if (event.getAnimation().equals(WOMAnimations.SHADOWSTEP_BACKWARD) ||
 				event.getAnimation().equals(WOMAnimations.SHADOWSTEP_FORWARD)) {
-				container.getDataManager().setDataSync(MOVESPEED, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.MOVESPEED.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 			
 			if (!event.getAnimation().equals(WOMAnimations.TORMENT_AUTO_1) &&
@@ -160,15 +122,15 @@ public class TormentPassiveSkill extends PassiveSkill {
 				!event.getAnimation().equals(WOMAnimations.TORMENT_AUTO_3) &&
 				!event.getAnimation().equals( WOMAnimations.TORMENT_AUTO_4)) {
 			}
-			container.getDataManager().setDataSync(CHARGED_ATTACK, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-			if (container.getDataManager().getDataValue(CHARGED)) {
-				container.getDataManager().setDataSync(CHARGED_ATTACK, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGED_ATTACK.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGED_ATTACK.get())) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGED_ATTACK.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
-			container.getDataManager().setDataSync(CHARGING, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-			if (container.getDataManager().getDataValue(SAVED_CHARGE) < 20) {
-				container.getDataManager().setDataSync(SAVED_CHARGE, container.getDataManager().getDataValue(CHARGING_TIME) , ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGING.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.SAVED_CHARGE.get()) < 20) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.SAVED_CHARGE.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGING_TIME.get()) , ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
-			container.getDataManager().setDataSync(CHARGING_TIME, 0 , ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGING_TIME.get(), 0 , ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ATTACK_ANIMATION_END_EVENT, EVENT_UUID, (event) -> {
@@ -177,8 +139,8 @@ public class TormentPassiveSkill extends PassiveSkill {
 				!event.getAnimation().equals(WOMAnimations.TORMENT_AUTO_3) &&
 				!event.getAnimation().equals(WOMAnimations.TORMENT_AUTO_4)) {
 			}
-			container.getDataManager().setDataSync(CHARGED_ATTACK, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-			container.getDataManager().setDataSync(CHARGED, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGED_ATTACK.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGED_ATTACK.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 		});
 		
 	}
@@ -199,7 +161,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 	@Override
 	public boolean shouldDraw(SkillContainer container) {
 		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getSkill() instanceof TrueBerserkSkill) {
-			return (container.getDataManager().getDataValue(CHARGING) || container.getDataManager().getDataValue(CHARGED) || container.getDataManager().getDataValue(SAVED_CHARGE) > 0) && !container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(TrueBerserkSkill.ACTIVE);
+			return (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGING.get()) || container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGED_ATTACK.get()) || container.getDataManager().getDataValue(WOMSkillDataKeys.SAVED_CHARGE.get()) > 0) && !container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get());
 		}
 		return false;
 	}
@@ -214,13 +176,13 @@ public class TormentPassiveSkill extends PassiveSkill {
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		guiGraphics.blit(WOMSkills.TRUE_BERSERK.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		int charge = 0;
-		if (container.getDataManager().getDataValue(SAVED_CHARGE) > 0) {
-			charge = (container.getDataManager().getDataValue(SAVED_CHARGE)+10)/30;
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.SAVED_CHARGE.get()) > 0) {
+			charge = (container.getDataManager().getDataValue(WOMSkillDataKeys.SAVED_CHARGE.get())+10)/30;
 		} else {
-			charge = (container.getDataManager().getDataValue(CHARGING_TIME)+10)/30;
+			charge = (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGING_TIME.get())+10)/30;
 		}
 			
-		if (container.getDataManager().getDataValue(CHARGED)) {
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGED_ATTACK.get())) {
 			guiGraphics.drawString(gui.font, String.valueOf(charge), x+10, y+4, 16777215,true);
 			guiGraphics.drawString(gui.font, "x3", x+7, y+13, 16777215,true);
 		} else {
@@ -269,7 +231,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 //			}
 //		}
 //		
-//		if (container.getDataManager().getDataValue(CHARGED)) {
+//		if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGED_ATTACK.get())) {
 //			PlayerPatch<?> entitypatch = container.getExecuter();
 //			int numberOf = 2;
 //			float partialScale = 1.0F / (numberOf - 1);
@@ -302,13 +264,13 @@ public class TormentPassiveSkill extends PassiveSkill {
 			ServerPlayerPatch executer = (ServerPlayerPatch) container.getExecuter();
 			int sweeping_edge = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal());
 			
-			if (container.getDataManager().getDataValue(CHARGING) && !container.getExecuter().getOriginal().isUsingItem() && container.getExecuter().getEntityState().canBasicAttack()){
-				container.getDataManager().setDataSync(MOVESPEED, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				int animation_timer = container.getDataManager().getDataValue(CHARGING_TIME);
-				if (container.getDataManager().getDataValue(CHARGING_TIME) < 20 && container.getDataManager().getDataValue(SAVED_CHARGE) >= 20) {
-					animation_timer = container.getDataManager().getDataValue(SAVED_CHARGE);
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGING.get()) && !container.getExecuter().getOriginal().isUsingItem() && container.getExecuter().getEntityState().canBasicAttack()){
+				container.getDataManager().setDataSync(WOMSkillDataKeys.MOVESPEED.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				int animation_timer = container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGING_TIME.get());
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGING_TIME.get()) < 20 && container.getDataManager().getDataValue(WOMSkillDataKeys.SAVED_CHARGE.get()) >= 20) {
+					animation_timer = container.getDataManager().getDataValue(WOMSkillDataKeys.SAVED_CHARGE.get());
 				}
-				if (container.getDataManager().getDataValue(CHARGING_TIME) >= 110) {
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGING_TIME.get()) >= 110) {
 					container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,4, 2,true,false,false));
 					container.getExecuter().getOriginal().level().playSound(null,
 							container.getExecuter().getOriginal().getX(),
@@ -329,7 +291,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 					container.getExecuter().playAnimationSynchronized(WOMAnimations.TORMENT_CHARGED_ATTACK_1, 0);
 				} else {
 					
-					if (!container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(TrueBerserkSkill.ACTIVE)) {
+					if (!container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get())) {
 						container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,4, 1,true,false,false));
 						container.getExecuter().getOriginal().level().playSound(null,
 								container.getExecuter().getOriginal().getX(),
@@ -371,22 +333,22 @@ public class TormentPassiveSkill extends PassiveSkill {
 						}
 					}
 				}
-				container.getDataManager().setDataSync(CHARGING, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				container.getDataManager().setDataSync(CHARGING_TIME, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				container.getDataManager().setDataSync(SAVED_CHARGE, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGING.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGING_TIME.get(), 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.SAVED_CHARGE.get(), 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(charging_Movementspeed);
 			}
-			if (container.getDataManager().getDataValue(CHARGING)) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGING.get())) {
 				container.getExecuter().getOriginal().addEffect(new MobEffectInstance(EpicFightMobEffects.STUN_IMMUNITY.get(), 5, 0,true,false,false));
 				
-				if (container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).getModifier(EVENT_UUID) == null && container.getDataManager().getDataValue(MOVESPEED)) {
+				if (container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).getModifier(EVENT_UUID) == null && container.getDataManager().getDataValue(WOMSkillDataKeys.MOVESPEED.get())) {
 					container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).addPermanentModifier(charging_Movementspeed);
 				}
 
-				container.getDataManager().setDataSync(CHARGING_TIME, container.getDataManager().getDataValue(CHARGING_TIME) +1, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				if (container.getDataManager().getDataValue(CHARGING_TIME) <= 130) {
-					if (container.getDataManager().getDataValue(CHARGING_TIME) == 20) {
-						container.getDataManager().setDataSync(SAVED_CHARGE, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGING_TIME.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGING_TIME.get()) +1, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGING_TIME.get()) <= 130) {
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGING_TIME.get()) == 20) {
+						container.getDataManager().setDataSync(WOMSkillDataKeys.SAVED_CHARGE.get(), 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 						container.getExecuter().getOriginal().level().playSound(null,
 								container.getExecuter().getOriginal().getX(),
 								container.getExecuter().getOriginal().getY(),
@@ -395,7 +357,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 								1.0F, 0.6F);
 						this.consume_stamina(container);
 					}
-					if (container.getDataManager().getDataValue(CHARGING_TIME) == 50) {
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGING_TIME.get()) == 50) {
 						container.getExecuter().getOriginal().level().playSound(null,
 								container.getExecuter().getOriginal().getX(),
 								container.getExecuter().getOriginal().getY(),
@@ -404,7 +366,7 @@ public class TormentPassiveSkill extends PassiveSkill {
 								1.0F, 0.65F);
 						this.consume_stamina(container);
 					}
-					if (container.getDataManager().getDataValue(CHARGING_TIME) == 80) {
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGING_TIME.get()) == 80) {
 						container.getExecuter().getOriginal().level().playSound(null,
 								container.getExecuter().getOriginal().getX(),
 								container.getExecuter().getOriginal().getY(),
@@ -413,8 +375,8 @@ public class TormentPassiveSkill extends PassiveSkill {
 								1.0F, 0.7F);
 						this.consume_stamina(container);
 					}
-					if (container.getDataManager().getDataValue(CHARGING_TIME) == 110) {
-						container.getDataManager().setDataSync(CHARGED, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGING_TIME.get()) == 110) {
+						container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGED_ATTACK.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 						container.getExecuter().getOriginal().level().playSound(null,
 								container.getExecuter().getOriginal().getX(),
 								container.getExecuter().getOriginal().getY(),
@@ -429,8 +391,8 @@ public class TormentPassiveSkill extends PassiveSkill {
 								2.5F, 0.5F);
 						this.consume_stamina(container);
 					}
-					if (container.getDataManager().getDataValue(CHARGING_TIME) == 130) {
-						container.getDataManager().setDataSync(CHARGING_TIME, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGING_TIME.get()) == 130) {
+						container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGING_TIME.get(), 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 						container.getExecuter().getOriginal().getAttribute(Attributes.MOVEMENT_SPEED).removeModifier(charging_Movementspeed);
 					}
 				}

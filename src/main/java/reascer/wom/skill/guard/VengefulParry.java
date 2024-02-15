@@ -26,6 +26,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMColliders;
 import reascer.wom.gameasset.WOMSkills;
+import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import yesman.epicfight.api.animation.AnimationPlayer;
 import yesman.epicfight.api.animation.LivingMotions;
@@ -40,8 +41,6 @@ import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.particle.HitParticleType;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.guard.GuardSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
@@ -53,12 +52,6 @@ import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType
 
 public class VengefulParry extends GuardSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("802e2116-02fa-4746-937d-a89429a84113");
-	public static final SkillDataKey<Float> CONSUMPTION_VALUE = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
-	private static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Integer> COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Integer> VENGENCE_DURATION = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Integer> CHARGE = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Boolean> HOLDING_STANCE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	
 	public static GuardSkill.Builder createCounterAttackBuilder() {
 		return GuardSkill.createGuardBuilder();
@@ -75,12 +68,6 @@ public class VengefulParry extends GuardSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
-		container.getDataManager().registerData(TIMER);
-		container.getDataManager().registerData(COOLDOWN);
-		container.getDataManager().registerData(VENGENCE_DURATION);
-		container.getDataManager().registerData(CHARGE);
-		container.getDataManager().registerData(HOLDING_STANCE);
-		container.getDataManager().registerData(CONSUMPTION_VALUE);
 		
 		container.getExecuter().getEventListener().removeListener(EventType.CLIENT_ITEM_USE_EVENT, GuardSkill.EVENT_UUID);
 		container.getExecuter().getEventListener().removeListener(EventType.SERVER_ITEM_USE_EVENT, GuardSkill.EVENT_UUID);
@@ -90,7 +77,7 @@ public class VengefulParry extends GuardSkill {
 			
 			// Guard triggerd
 			boolean flag1 = !(event.getPlayerPatch().getOriginal().isFallFlying() || event.getPlayerPatch().currentLivingMotion == LivingMotions.FALL || !event.getPlayerPatch().getEntityState().canUseSkill() || !event.getPlayerPatch().getEntityState().canBasicAttack());
-			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && flag1 && event.getPlayerPatch().getStamina() > 0 && container.getDataManager().getDataValue(TIMER) == 0 && container.getDataManager().getDataValue(COOLDOWN) == 0) {
+			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && flag1 && event.getPlayerPatch().getStamina() > 0 && container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) == 0 && container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) == 0) {
 				StaticAnimation animation;
 				switch (new Random().nextInt() %3) {
 				case 0: {
@@ -155,12 +142,12 @@ public class VengefulParry extends GuardSkill {
 				event.getPlayerPatch().playAnimationSynchronized(animation, convert);
 				event.getPlayerPatch().currentLivingMotion = LivingMotions.BLOCK;
 				
-				container.getDataManager().setDataSync(TIMER, 40, event.getPlayerPatch().getOriginal());
-				container.getDataManager().setDataSync(CHARGE,0 , event.getPlayerPatch().getOriginal());
-				container.getDataManager().setDataSync(HOLDING_STANCE,true , event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), 40, event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGE.get(),0 , event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.HOLDING_STANCE.get(),true , event.getPlayerPatch().getOriginal());
 				
 			} else {
-				if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && event.getPlayerPatch().getEntityState().canBasicAttack() && container.getDataManager().getDataValue(TIMER) == 0) {
+				if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && event.getPlayerPatch().getEntityState().canBasicAttack() && container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) == 0) {
 					event.getPlayerPatch().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 							SoundEvents.LAVA_EXTINGUISH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 				}
@@ -169,13 +156,13 @@ public class VengefulParry extends GuardSkill {
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, VengefulParry.EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(CHARGE) > 0) {
-				event.setDamage(container.getDataManager().getDataValue(CHARGE));
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get()) > 0) {
+				event.setDamage(container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get()));
 			}
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_POST, VengefulParry.EVENT_UUID, (event) -> {
-			if (event.getDamageSource().getAnimation() instanceof AttackAnimation && container.getDataManager().getDataValue(CHARGE) > 0) {
+			if (event.getDamageSource().getAnimation() instanceof AttackAnimation && container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get()) > 0) {
 				ServerPlayerPatch entitypatch = event.getPlayerPatch();
 				AttackAnimation anim = ((AttackAnimation) event.getDamageSource().getAnimation());
 				AnimationPlayer player = entitypatch.getAnimator().getPlayerFor(event.getDamageSource().getAnimation());
@@ -189,7 +176,7 @@ public class VengefulParry extends GuardSkill {
 							event.getTarget().getZ(),
 			    			SoundEvents.CREEPER_DEATH, event.getTarget().getSoundSource(), 2.0F, 0.5f);
 					
-					for (int i = 0; i < (container.getDataManager().getDataValue(CHARGE)+1); i++) {
+					for (int i = 0; i < (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get())+1); i++) {
 						((ServerLevel) event.getPlayerPatch().getOriginal().level()).sendParticles(new DustParticleOptions(new Vector3f(0.0f,0.0f,0f),1.0f),
 								event.getTarget().getX() + (new Random().nextFloat()-0.5f)*3,
 								event.getTarget().getY() + event.getTarget().getBbHeight()/2,
@@ -201,9 +188,9 @@ public class VengefulParry extends GuardSkill {
 								0.0);
 					}
 					
-					container.getDataManager().setDataSync(VENGENCE_DURATION, 5, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.VENGENCE_DURATION.get(), 5, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				} else {
-					container.getDataManager().setDataSync(CHARGE, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGE.get(), 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				}
 			}
 		});
@@ -211,7 +198,7 @@ public class VengefulParry extends GuardSkill {
 		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_PRE, VengefulParry.EVENT_UUID, (event) -> {
 			CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(event.getPlayerPatch().getOriginal().getUsedItemHand());
 			
-			if (super.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && container.getDataManager().getDataValue(TIMER) > 0) {
+			if (super.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) > 0) {
 				float impact = 0.5F;
 				float knockback = 0.25F;
 				guard(container, itemCapability, event, knockback, impact, false);
@@ -219,14 +206,14 @@ public class VengefulParry extends GuardSkill {
 		},0);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, VengefulParry.EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(TIMER) > 0) {
-				container.getDataManager().setDataSync(COOLDOWN, 20, event.getPlayerPatch().getOriginal());
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) > 0) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.COOLDOWN.get(), 20, event.getPlayerPatch().getOriginal());
 			}
-			container.getDataManager().setDataSync(TIMER,0 , event.getPlayerPatch().getOriginal());
+			container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(),0 , event.getPlayerPatch().getOriginal());
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ATTACK_ANIMATION_END_EVENT, VengefulParry.EVENT_UUID, (event) -> {
-			container.getDataManager().setDataSync(CHARGE, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGE.get(), 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 		});
 	}
 	
@@ -252,7 +239,7 @@ public class VengefulParry extends GuardSkill {
 				ServerPlayer serveerPlayer = event.getPlayerPatch().getOriginal();
 				EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)serveerPlayer.level()), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, serveerPlayer, damageSource.getDirectEntity());
 				
-				container.getDataManager().setDataSync(CHARGE, container.getDataManager().getDataValue(CHARGE) + (int) event.getAmount(), serveerPlayer);
+				container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGE.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get()) + (int) event.getAmount(), serveerPlayer);
 				this.dealEvent(event.getPlayerPatch(), event,advanced);
 				return;
 			}
@@ -316,7 +303,7 @@ public class VengefulParry extends GuardSkill {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldDraw(SkillContainer container) {
-		return container.getDataManager().getDataValue(CHARGE) > 0 || container.getDataManager().getDataValue(COOLDOWN) > 0;
+		return container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get()) > 0 || container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) > 0;
 	}
 	
 	@OnlyIn(Dist.CLIENT)
@@ -327,7 +314,7 @@ public class VengefulParry extends GuardSkill {
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, this.getSkillTexture());
 		
-		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) > 0) {
 			RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.5F);
 		} else {
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -335,8 +322,8 @@ public class VengefulParry extends GuardSkill {
 		
 		guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		
-		String damage = String.valueOf(container.getDataManager().getDataValue(CHARGE));
-		if (container.getDataManager().getDataValue(CHARGE) == 0) {
+		String damage = String.valueOf(container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get()));
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get()) == 0) {
 			damage = "";
 		}
 		guiGraphics.drawString(gui.font, damage, x+5, y+6, 16777215,true);
@@ -356,41 +343,41 @@ public class VengefulParry extends GuardSkill {
 	public void updateContainer(SkillContainer container) {
 		super.updateContainer(container);
 		if(!container.getExecuter().isLogicalClient()) {
-			if (container.getDataManager().getDataValue(TIMER) > 0) {
-				container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER)-1, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				if (container.getDataManager().getDataValue(TIMER) > 1) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) > 0) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get())-1, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) > 1) {
 					container.getExecuter().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 				}
-				if (container.getDataManager().getDataValue(TIMER) > 5) {
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) > 5) {
 					container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 5 , 10, true,false,false));
 				}
-				if (container.getDataManager().getDataValue(TIMER) == 0 && container.getDataManager().getDataValue(HOLDING_STANCE)) {
-					container.getDataManager().setDataSync(COOLDOWN, 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-					container.getDataManager().setDataSync(HOLDING_STANCE, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) == 0 && container.getDataManager().getDataValue(WOMSkillDataKeys.HOLDING_STANCE.get())) {
+					container.getDataManager().setDataSync(WOMSkillDataKeys.COOLDOWN.get(), 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.HOLDING_STANCE.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 					container.getExecuter().getOriginal().stopUsingItem();
 				}
 			}
 		} else {
-			if (container.getDataManager().getDataValue(TIMER) > 1) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) > 1) {
 				container.getExecuter().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 			}
-			if (container.getDataManager().getDataValue(TIMER) == 0 && container.getDataManager().getDataValue(HOLDING_STANCE)) {
-				container.getDataManager().setData(HOLDING_STANCE, false);
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) == 0 && container.getDataManager().getDataValue(WOMSkillDataKeys.HOLDING_STANCE.get())) {
+				container.getDataManager().setData(WOMSkillDataKeys.HOLDING_STANCE.get(), false);
 				container.getExecuter().getOriginal().stopUsingItem();
 			}
 		}
 		
-		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
-			container.getDataManager().setData(COOLDOWN, container.getDataManager().getDataValue(COOLDOWN)-1);
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) > 0) {
+			container.getDataManager().setData(WOMSkillDataKeys.COOLDOWN.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get())-1);
 		}
 		
-		if (container.getDataManager().getDataValue(VENGENCE_DURATION) > 0) {
-			if (container.getDataManager().getDataValue(VENGENCE_DURATION) == 1) {
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.VENGENCE_DURATION.get()) > 0) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.VENGENCE_DURATION.get()) == 1) {
 				if(!container.getExecuter().isLogicalClient()) {
-					container.getDataManager().setDataSync(CHARGE, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGE.get(), 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				}
 			}
-			container.getDataManager().setData(VENGENCE_DURATION, container.getDataManager().getDataValue(VENGENCE_DURATION)-1);
+			container.getDataManager().setData(WOMSkillDataKeys.VENGENCE_DURATION.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.VENGENCE_DURATION.get())-1);
 		}
 	}
 }

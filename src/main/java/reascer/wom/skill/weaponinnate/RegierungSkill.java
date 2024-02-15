@@ -20,6 +20,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
+import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.skill.WomMultipleAnimationSkill;
 import reascer.wom.skill.guard.CounterAttack;
 import reascer.wom.world.item.HerscherItem;
@@ -34,8 +35,6 @@ import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.particle.HitParticleType;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
@@ -49,18 +48,11 @@ import yesman.epicfight.world.effect.EpicFightMobEffects;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class RegierungSkill extends WomMultipleAnimationSkill {
-	private static final SkillDataKey<Integer> COMBO = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Integer> COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	public static final SkillDataKey<Boolean> GUARD_POINT = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Integer> GUARD_POINT_RESULT = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	public static final SkillDataKey<Boolean> GESETZ_SPRENGKOPF = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Boolean> SUPER_ARMOR = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	
 	private static final UUID EVENT_UUID = UUID.fromString("63c38d4f-cc97-4339-bedf-d9bba36ba29f");
     
 	public RegierungSkill(Builder<? extends Skill> builder) {
 		super(builder, (executer) -> {
-			int combo = executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(COMBO);
+			int combo = executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.COMBO.get());
 			return combo;
 			
 		},  WOMAnimations.GESETZ_AUTO_1, 
@@ -72,25 +64,18 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 	
 	@Override
 	public void onInitiate(SkillContainer container) {
-		container.getDataManager().registerData(COMBO);
-		container.getDataManager().registerData(COOLDOWN);
-		container.getDataManager().registerData(GUARD_POINT);
-		container.getDataManager().registerData(GUARD_POINT_RESULT);
-		container.getDataManager().registerData(GESETZ_SPRENGKOPF);
-		container.getDataManager().registerData(SUPER_ARMOR);
-		
 		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_POST, EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(SUPER_ARMOR)) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.SUPER_ARMOR.get())) {
 				event.getDamageSource().setStunType(StunType.NONE);
 			}
 		});
 		if(!container.getExecuter().isLogicalClient()) {
-			container.getDataManager().setDataSync(COMBO, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(WOMSkillDataKeys.COMBO.get(), 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			this.maxDuration += (200 * EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, ((ServerPlayerPatch)container.getExecuter()).getOriginal()));
 		}
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(GESETZ_SPRENGKOPF) && container.getRemainDuration() > 0) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.GESETZ_SPRENGKOPF.get()) && container.getRemainDuration() > 0) {
 				float attackDamage = event.getDamage();
 				event.setDamage(attackDamage + (container.getRemainDuration()/20));
 				container.getExecuter().getOriginal().resetFallDistance();
@@ -98,16 +83,16 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.MOVEMENT_INPUT_EVENT, EVENT_UUID, (event) -> {
-			container.getDataManager().setData(GUARD_POINT, false);
+			container.getDataManager().setData(WOMSkillDataKeys.GUARD_POINT.get(), false);
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			if(!container.getExecuter().isLogicalClient()) {
-				container.getDataManager().setDataSync(GESETZ_SPRENGKOPF, false, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
-				container.getDataManager().setDataSync(COOLDOWN, 40, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.GESETZ_SPRENGKOPF.get(), false, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.COOLDOWN.get(), 40, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 				if (!event.getAnimation().equals(WOMAnimations.HERRSCHER_AUTO_2) &&
 						!event.getAnimation().equals(WOMAnimations.GESETZ_AUTO_1)) {
-					container.getDataManager().setDataSync(GUARD_POINT, false, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT.get(), false, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 				}
 				
 				if (event.getAnimation().equals(WOMAnimations.HERRSCHER_GUARD_HIT)) {
@@ -115,12 +100,12 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 				}
 				
 				if (event.getAnimation().equals(WOMAnimations.GESETZ_SPRENGKOPF)) {
-					container.getDataManager().setDataSync(SUPER_ARMOR, true, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.SUPER_ARMOR.get(), true, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 				}
 				
 				if (event.getAnimation().equals(WOMAnimations.HERRSCHER_TRANE)) {
 					this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +100);
-					container.getDataManager().setDataSync(COMBO, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.COMBO.get(), 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				}
 			}
 		});
@@ -128,7 +113,7 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_PRE, EVENT_UUID, (event) -> {
 		
 			
-			if (container.getDataManager().getDataValue(GUARD_POINT)) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.GUARD_POINT.get())) {
 				DamageSource damageSource = event.getDamageSource();
 				boolean isFront = false;
 				Vec3 sourceLocation = damageSource.getSourcePosition();
@@ -156,10 +141,10 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 					
 					StaticAnimation animation = Animations.BIPED_HIT_SHIELD;;
 					float convert = -0.05f;
-					switch (container.getDataManager().getDataValue(GUARD_POINT_RESULT)) {
+					switch (container.getDataManager().getDataValue(WOMSkillDataKeys.GUARD_POINT_RESULT.get())) {
 					case 1: {
 						animation = WOMAnimations.GESETZ_AUTO_1;
-						container.getDataManager().setDataSync(COMBO, 1, playerentity);
+						container.getDataManager().setDataSync(WOMSkillDataKeys.COMBO.get(), 1, playerentity);
 						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +20);
 						break;
 					}
@@ -181,7 +166,7 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 					}
 					case 5: {
 						animation = WOMAnimations.HERRSCHER_AUTO_2;
-						container.getDataManager().setDataSync(COMBO, 1, playerentity);
+						container.getDataManager().setDataSync(WOMSkillDataKeys.COMBO.get(), 1, playerentity);
 						this.setDurationSynchronize(event.getPlayerPatch(), container.getRemainDuration() +40);
 						break;
 					}
@@ -221,7 +206,7 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 		
 		if (container.getExecuter().getSkill(WOMSkills.COUNTER_ATTACK) != null) {
 			if(!container.getExecuter().isLogicalClient()) {
-				container.getExecuter().getSkill(WOMSkills.COUNTER_ATTACK).getDataManager().setDataSync(CounterAttack.CONSUMPTION_VALUE, 1f,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getExecuter().getSkill(WOMSkills.COUNTER_ATTACK).getDataManager().setDataSync(WOMSkillDataKeys.CONSUMPTION_VALUE.get(), 1f,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 		}
 		
@@ -242,20 +227,20 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 				} else {
 					executer.playAnimationSynchronized(this.attackAnimations[this.attackAnimations.length - 2], 0);
 				}
-				executer.getSkill(this).getDataManager().setDataSync(COMBO, 0, executer.getOriginal());
+				executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.COMBO.get(), 0, executer.getOriginal());
 			} else {
 				int animation = this.getAnimationInCondition(executer);
 				executer.playAnimationSynchronized(this.attackAnimations[animation], 0);
-				if (executer.getSkill(this).getDataManager().getDataValue(COMBO) < 2) {
-					executer.getSkill(this).getDataManager().setDataSync(COMBO, executer.getSkill(this).getDataManager().getDataValue(COMBO)+1, executer.getOriginal());
+				if (executer.getSkill(this).getDataManager().getDataValue(WOMSkillDataKeys.COMBO.get()) < 2) {
+					executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.COMBO.get(), executer.getSkill(this).getDataManager().getDataValue(WOMSkillDataKeys.COMBO.get())+1, executer.getOriginal());
 				}
 				else {
-					executer.getSkill(this).getDataManager().setDataSync(COMBO, 0, executer.getOriginal());
+					executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.COMBO.get(), 0, executer.getOriginal());
 				}
 				
 			}
 		}
-		executer.getSkill(this).getDataManager().setDataSync(COOLDOWN, 40, executer.getOriginal());
+		executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.COOLDOWN.get(), 40, executer.getOriginal());
 	}
 	
 	@Override
@@ -296,24 +281,24 @@ public class RegierungSkill extends WomMultipleAnimationSkill {
 	@Override
 	public void updateContainer(SkillContainer container) {
 		super.updateContainer(container);
-		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) > 0) {
 			if(!container.getExecuter().isLogicalClient()) {
-				container.getDataManager().setDataSync(COOLDOWN, container.getDataManager().getDataValue(COOLDOWN)-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.COOLDOWN.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get())-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 		} else {
 			if(!container.getExecuter().isLogicalClient()) {
-				container.getExecuter().getSkill(this).getDataManager().setDataSync(COMBO, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getExecuter().getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.COMBO.get(), 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 		}
 		if (container.getExecuter().getSkill(WOMSkills.COUNTER_ATTACK) != null) {
-			if (container.getExecuter().getSkill(WOMSkills.COUNTER_ATTACK).getDataManager().getDataValue(CounterAttack.CONSUMPTION_VALUE) != 0.2f) {
+			if (container.getExecuter().getSkill(WOMSkills.COUNTER_ATTACK).getDataManager().getDataValue(WOMSkillDataKeys.CONSUMPTION_VALUE.get()) != 0.2f) {
 				if(!container.getExecuter().isLogicalClient()) {
-					container.getExecuter().getSkill(WOMSkills.COUNTER_ATTACK).getDataManager().setDataSync(CounterAttack.CONSUMPTION_VALUE, 0.2f,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getExecuter().getSkill(WOMSkills.COUNTER_ATTACK).getDataManager().setDataSync(WOMSkillDataKeys.CONSUMPTION_VALUE.get(), 0.2f,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				}
 			}
 		}
 		
-		if (container.getDataManager().getDataValue(SUPER_ARMOR)) {
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.SUPER_ARMOR.get())) {
 			container.getExecuter().getOriginal().addEffect(new MobEffectInstance(EpicFightMobEffects.STUN_IMMUNITY.get(), 5, 0,true,false,false));
 		}
 		container.setResource(10.0f);
