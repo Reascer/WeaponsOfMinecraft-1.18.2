@@ -19,6 +19,7 @@ import reascer.wom.gameasset.WOMEnchantment;
 import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.gameasset.WOMSounds;
 import reascer.wom.particle.WOMParticles;
+import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.wold.gamerules.WOMGamerules;
 import reascer.wom.world.entity.projectile.WOMEntities;
 import reascer.wom.world.item.WOMCreativeTabs;
@@ -52,6 +53,7 @@ public class WeaponsOfMinecraft
     	WOMEntities.ENTITIES.register(bus);
     	WOMSounds.SOUNDS.register(bus);
     	WOMCreativeTabs.TABS.register(bus);
+    	WOMSkillDataKeys.DATA_KEYS.register(bus);
     	
     	MinecraftForge.EVENT_BUS.register(this);
     	

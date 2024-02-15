@@ -12,7 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -33,7 +32,7 @@ import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.gameasset.WOMSounds;
 import reascer.wom.particle.WOMParticles;
-import reascer.wom.skill.weaponpassive.DemonMarkPassiveSkill;
+import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.EntityState;
@@ -43,8 +42,6 @@ import yesman.epicfight.client.ClientEngine;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.gameasset.EpicFightSounds;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
@@ -61,39 +58,6 @@ import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType
 import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 
 public class DemonicAscensionSkill extends WeaponInnateSkill {
-	public static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	public static final SkillDataKey<Boolean> ACTIVE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Boolean> ASCENDING = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Boolean> WITHERCATHARSIS = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Integer> WITHERAFTEREFFECT = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	public static final SkillDataKey<Boolean> SUPERARMOR = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	
-	private static final SkillDataKey<Boolean> ZOOM = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	private static final SkillDataKey<Integer> ZOOM_COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Boolean> SHOOT = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Integer> SHOOT_COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	
-	public static final SkillDataKey<Integer> DARKNESS_TARGET = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	public static final SkillDataKey<Float> DARKNESS_TARGET_X = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
-	public static final SkillDataKey<Float> DARKNESS_TARGET_Y = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
-	public static final SkillDataKey<Float> DARKNESS_TARGET_Z = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
-	public static final SkillDataKey<Boolean> DARKNESS_TARGET_HITED = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Boolean> DARKNESS_TARGET_REAPED = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	
-	public static final SkillDataKey<Boolean> DARKNESS_ACTIVATE_PORTAL = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Float> DARKNESS_PORTAL_X = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
-	public static final SkillDataKey<Float> DARKNESS_PORTAL_Y = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
-	public static final SkillDataKey<Float> DARKNESS_PORTAL_Z = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
-	public static final SkillDataKey<Float> DARKNESS_PORTAL_ANGLE = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
-	public static final SkillDataKey<Integer> DARKNESS_PORTAL_TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	
-	private static final SkillDataKey<Boolean> BLACKHOLE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Float> BLACKHOLE_X = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
-	public static final SkillDataKey<Float> BLACKHOLE_Y = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
-	public static final SkillDataKey<Float> BLACKHOLE_Z = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
-	private static final SkillDataKey<Boolean> BLACKHOLE_ACTIVE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Integer> BLACKHOLE_TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	
 	private static final UUID EVENT_UUID = UUID.fromString("61ec318a-10f6-11ed-861d-0242ac120002");
 	
 	public DemonicAscensionSkill(Builder builder) {
@@ -102,56 +66,22 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 	
 	@Override
 	public void onInitiate(SkillContainer container) {
-		container.getDataManager().registerData(TIMER);
-		container.getDataManager().registerData(ACTIVE);
-		container.getDataManager().registerData(ASCENDING);
-		container.getDataManager().registerData(WITHERCATHARSIS);
-		container.getDataManager().registerData(WITHERAFTEREFFECT);
-		container.getDataManager().setData(WITHERAFTEREFFECT,0);
-		container.getDataManager().registerData(SUPERARMOR);
-		
-		container.getDataManager().registerData(SHOOT);
-		container.getDataManager().registerData(SHOOT_COOLDOWN);
-		container.getDataManager().registerData(ZOOM_COOLDOWN);
-		container.getDataManager().registerData(ZOOM);
-		
-		container.getDataManager().registerData(DARKNESS_TARGET);
-		container.getDataManager().registerData(DARKNESS_TARGET_X);
-		container.getDataManager().registerData(DARKNESS_TARGET_Y);
-		container.getDataManager().registerData(DARKNESS_TARGET_Z);
-		container.getDataManager().registerData(DARKNESS_TARGET_HITED);
-		container.getDataManager().registerData(DARKNESS_TARGET_REAPED);
-		
-		container.getDataManager().registerData(DARKNESS_ACTIVATE_PORTAL);
-		container.getDataManager().registerData(DARKNESS_PORTAL_X);
-		container.getDataManager().registerData(DARKNESS_PORTAL_Y);
-		container.getDataManager().registerData(DARKNESS_PORTAL_Z);
-		container.getDataManager().registerData(DARKNESS_PORTAL_ANGLE);
-		container.getDataManager().registerData(DARKNESS_PORTAL_TIMER);
-		
-		container.getDataManager().registerData(BLACKHOLE);
-		container.getDataManager().registerData(BLACKHOLE_X);
-		container.getDataManager().registerData(BLACKHOLE_Y);
-		container.getDataManager().registerData(BLACKHOLE_Z);
-		container.getDataManager().registerData(BLACKHOLE_ACTIVE);
-		container.getDataManager().registerData(BLACKHOLE_TIMER);
-		
 		container.getExecuter().getEventListener().addEventListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
-			if (event.getPlayerPatch().getOriginal().getItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.ANTITHEUS.get() && (container.getExecuter().getEntityState().canBasicAttack() || container.getDataManager().getDataValue(DARKNESS_TARGET_HITED) || (container.getDataManager().getDataValue(ACTIVE) && container.getDataManager().getDataValue(TIMER) >= (40*20) || container.getExecuter().getOriginal().isCreative()))) {
+			if (event.getPlayerPatch().getOriginal().getItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.ANTITHEUS.get() && (container.getExecuter().getEntityState().canBasicAttack() || container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_TARGET_HITED.get()) || (container.getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get()) && container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) >= (40*20) || container.getExecuter().getOriginal().isCreative()))) {
 				event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 			}
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.SERVER_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
-			if (event.getPlayerPatch().getOriginal().getItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.ANTITHEUS.get() && (container.getExecuter().getEntityState().canBasicAttack() || container.getDataManager().getDataValue(DARKNESS_TARGET_HITED) || (container.getDataManager().getDataValue(ACTIVE) && container.getDataManager().getDataValue(TIMER) >= (40*20) || container.getExecuter().getOriginal().isCreative()))) {
+			if (event.getPlayerPatch().getOriginal().getItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.ANTITHEUS.get() && (container.getExecuter().getEntityState().canBasicAttack() || container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_TARGET_HITED.get()) || (container.getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get()) && container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) >= (40*20) || container.getExecuter().getOriginal().isCreative()))) {
 				event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 				if(!container.getExecuter().isLogicalClient()) {
-					container.getDataManager().setDataSync(SHOOT, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.SHOOT.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				}
 			}
 			if(!container.getExecuter().isLogicalClient() && event.getPlayerPatch().getOriginal().getItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.ANTITHEUS.get()) {
-				container.getDataManager().setDataSync(ZOOM_COOLDOWN, 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				container.getDataManager().setDataSync(ZOOM, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.ZOOM_COOLDOWN.get(), 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.ZOOM.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 		});
 		
@@ -159,7 +89,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 			PlayerPatch<?> playerpatch = container.getExecuter();
 			
 			if (!event.getDamageSource().getAnimation().equals(WOMAnimations.ANTITHEUS_PULL)) {
-				if (container.getDataManager().getDataValue(ASCENDING)) {
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.ASCENDING.get())) {
 					if (event.getTarget().hasEffect(MobEffects.WITHER)) {
 						((ServerLevel) event.getPlayerPatch().getOriginal().level()).sendParticles( ParticleTypes.SOUL, 
 								event.getTarget().getX(), 
@@ -185,13 +115,13 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 						EpicFightDamageSource damage = event.getPlayerPatch().getDamageSource(WOMAnimations.ANTITHEUS_PULL, InteractionHand.MAIN_HAND);
 						event.getTarget().hurt(damage, WitherCatharsis*0.5f);
 						event.getPlayerPatch().getOriginal().heal(WitherCatharsis*0.5f);
-						container.getDataManager().setDataSync(WITHERAFTEREFFECT,2,event.getPlayerPatch().getOriginal());
-						container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER) + (wither_lvl*20*2), event.getPlayerPatch().getOriginal());
+						container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERAFTEREFFECT.get(),2,event.getPlayerPatch().getOriginal());
+						container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) + (wither_lvl*20*2), event.getPlayerPatch().getOriginal());
 						event.getTarget().removeEffect(MobEffects.WITHER); 
 					}
 				}
-				//System.out.println("Datavalue.Active : " + container.getDataManager().getDataValue(ACTIVE) + " | Datavalue.Ascending : " + container.getDataManager().getDataValue(ASCENDING) + " | Datavalue.WitherCatharsis : " + container.getDataManager().getDataValue(WITHERCATHARSIS)) ;
-				if (container.getDataManager().getDataValue(ACTIVE) && !container.getDataManager().getDataValue(ASCENDING) && container.getDataManager().getDataValue(WITHERCATHARSIS)) {
+				//System.out.println("Datavalue.Active : " + container.getDataManager().getDataValue(ACTIVE) + " | Datavalue.Ascending : " + container.getDataManager().getDataValue(WOMSkillDataKeys.ASCENDING.get()) + " | Datavalue.WitherCatharsis : " + container.getDataManager().getDataValue(WOMSkillDataKeys.WITHERCATHARSIS.get())) ;
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get()) && !container.getDataManager().getDataValue(WOMSkillDataKeys.ASCENDING.get()) && container.getDataManager().getDataValue(WOMSkillDataKeys.WITHERCATHARSIS.get())) {
 					if (event.getTarget().hasEffect(MobEffects.WITHER)) {
 							((ServerLevel) event.getPlayerPatch().getOriginal().level()).sendParticles( ParticleTypes.SOUL, 
 									event.getTarget().getX(), 
@@ -218,12 +148,12 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 							DamageSource damage = event.getPlayerPatch().getDamageSource(WOMAnimations.ANTITHEUS_PULL, InteractionHand.MAIN_HAND);
 							event.getTarget().hurt(damage, WitherCatharsis*0.8f);
 							event.getPlayerPatch().getOriginal().heal(WitherCatharsis*0.2f);
-							container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER) + (wither_lvl*20*2), event.getPlayerPatch().getOriginal());
-							if (container.getDataManager().getDataValue(TIMER) > 666*20) {
+							container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) + (wither_lvl*20*2), event.getPlayerPatch().getOriginal());
+							if (container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) > 666*20) {
 								EpicFightDamageSource selfdamage = event.getPlayerPatch().getDamageSource(WOMAnimations.ANTITHEUS_PULL, InteractionHand.MAIN_HAND);
 								selfdamage.setStunType(StunType.NONE);
 								event.getPlayerPatch().getOriginal().hurt(selfdamage, event.getPlayerPatch().getOriginal().getHealth()*10);
-								container.getDataManager().setDataSync(TIMER, 667*20, event.getPlayerPatch().getOriginal());
+								container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), 667*20, event.getPlayerPatch().getOriginal());
 							}
 							event.getTarget().removeEffect(MobEffects.WITHER);
 					}
@@ -233,27 +163,27 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ATTACK_ANIMATION_END_EVENT, EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(ASCENDING)) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.ASCENDING.get())) {
 				if (!event.getPlayerPatch().getSkill(SkillSlots.WEAPON_PASSIVE).isEmpty()) {
-					event.getPlayerPatch().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, true, event.getPlayerPatch().getOriginal());					
+					event.getPlayerPatch().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.PARTICLE.get(), true, event.getPlayerPatch().getOriginal());					
 				}
-				event.getPlayerPatch().getSkill(this).getDataManager().setDataSync(DemonicAscensionSkill.ASCENDING, false, event.getPlayerPatch().getOriginal());
-				event.getPlayerPatch().getSkill(this).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, false, event.getPlayerPatch().getOriginal());
+				event.getPlayerPatch().getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.ASCENDING.get(), false, event.getPlayerPatch().getOriginal());
+				event.getPlayerPatch().getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.SUPERARMOR.get(), false, event.getPlayerPatch().getOriginal());
 			}
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			if (!event.getAnimation().equals(WOMAnimations.ANTITHEUS_SHOOT) && !event.getAnimation().equals(WOMAnimations.ANTITHEUS_PULL)) {
-				container.getDataManager().setDataSync(ZOOM, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				container.getDataManager().setDataSync(SHOOT, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.ZOOM.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.SHOOT.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 			
-			if (!container.getDataManager().getDataValue(WITHERCATHARSIS)) {
-				container.getDataManager().setDataSync(WITHERCATHARSIS,true,event.getPlayerPatch().getOriginal());
+			if (!container.getDataManager().getDataValue(WOMSkillDataKeys.WITHERCATHARSIS.get())) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERCATHARSIS.get(),true,event.getPlayerPatch().getOriginal());
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_DEATHFALL)) {
-				container.getDataManager().setDataSync(WITHERCATHARSIS,true,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERCATHARSIS.get(),true,event.getPlayerPatch().getOriginal());
 				if (!container.getExecuter().getOriginal().isCreative()) {
 					/*
 					event.getPlayerPatch().getOriginal().level().playSound(null, event.getPlayerPatch().getOriginal().xo, event.getPlayerPatch().getOriginal().yo, event.getPlayerPatch().getOriginal().zo,
@@ -264,55 +194,55 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 					event.getPlayerPatch().getOriginal().hurt(damage, event.getPlayerPatch().getOriginal().getHealth() * 0.1F);
 					//event.getPlayerPatch().getOriginal().setHealth(event.getPlayerPatch().getOriginal().getHealth() * 0.9F);
 				}
-				container.getDataManager().setDataSync(WITHERAFTEREFFECT,2,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERAFTEREFFECT.get(),2,event.getPlayerPatch().getOriginal());
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_BLACKHOLE)) {
-				container.getDataManager().setDataSync(WITHERCATHARSIS,true,event.getPlayerPatch().getOriginal());
-				container.getDataManager().setDataSync(WITHERAFTEREFFECT,0,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERCATHARSIS.get(),true,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERAFTEREFFECT.get(),0,event.getPlayerPatch().getOriginal());
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_AUTO_1)) {
-				container.getDataManager().setDataSync(WITHERCATHARSIS,true,event.getPlayerPatch().getOriginal());
-				container.getDataManager().setDataSync(WITHERAFTEREFFECT,0,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERCATHARSIS.get(),true,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERAFTEREFFECT.get(),0,event.getPlayerPatch().getOriginal());
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_AUTO_2)) {
-				container.getDataManager().setDataSync(WITHERCATHARSIS,true,event.getPlayerPatch().getOriginal());
-				container.getDataManager().setDataSync(WITHERAFTEREFFECT,0,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERCATHARSIS.get(),true,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERAFTEREFFECT.get(),0,event.getPlayerPatch().getOriginal());
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_AUTO_3)) {
-				container.getDataManager().setDataSync(WITHERCATHARSIS,true,event.getPlayerPatch().getOriginal());
-				container.getDataManager().setDataSync(WITHERAFTEREFFECT,0,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERCATHARSIS.get(),true,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERAFTEREFFECT.get(),0,event.getPlayerPatch().getOriginal());
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_BLINK)) {
-				container.getDataManager().setDataSync(WITHERCATHARSIS,false,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERCATHARSIS.get(),false,event.getPlayerPatch().getOriginal());
 				if (!container.getExecuter().getOriginal().isCreative()) {
 					/*
 					event.getPlayerPatch().getOriginal().level().playSound(null, event.getPlayerPatch().getOriginal().xo, event.getPlayerPatch().getOriginal().yo, event.getPlayerPatch().getOriginal().zo,
 			    			SoundEvents.PLAYER_HURT, event.getPlayerPatch().getOriginal().getSoundSource(), 1.0F, 1.0F);
-					event.getPlayerPatch().getOriginal().setHealth(event.getPlayerPatch().getOriginal().getHealth()-container.getDataManager().getDataValue(WITHERAFTEREFFECT));
+					event.getPlayerPatch().getOriginal().setHealth(event.getPlayerPatch().getOriginal().getHealth()-container.getDataManager().getDataValue(WOMSkillDataKeys.WITHERAFTEREFFECT.get()));
 					*/
 					EpicFightDamageSource damage = event.getPlayerPatch().getDamageSource(WOMAnimations.ANTITHEUS_PULL, InteractionHand.MAIN_HAND);
 					damage.setStunType(StunType.NONE);
-					event.getPlayerPatch().getOriginal().hurt(damage, container.getDataManager().getDataValue(WITHERAFTEREFFECT));
+					event.getPlayerPatch().getOriginal().hurt(damage, container.getDataManager().getDataValue(WOMSkillDataKeys.WITHERAFTEREFFECT.get()));
 				}
-				container.getDataManager().setDataSync(WITHERAFTEREFFECT,container.getDataManager().getDataValue(WITHERAFTEREFFECT)+2,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERAFTEREFFECT.get(),container.getDataManager().getDataValue(WOMSkillDataKeys.WITHERAFTEREFFECT.get())+2,event.getPlayerPatch().getOriginal());
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENSION)) {
-				container.getDataManager().setDataSync(WITHERCATHARSIS,false,event.getPlayerPatch().getOriginal());
-				container.getDataManager().setDataSync(WITHERAFTEREFFECT,0,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERCATHARSIS.get(),false,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERAFTEREFFECT.get(),0,event.getPlayerPatch().getOriginal());
 			}
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_POST, EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) > 100) {
-				container.getDataManager().setDataSync(BLACKHOLE_ACTIVE, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.BLACKHOLE_TIMER.get()) > 100) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.BLACKHOLE_ACTIVE.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
-			if (container.getDataManager().getDataValue(SUPERARMOR)) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.SUPERARMOR.get())) {
 				event.getDamageSource().setStunType(StunType.NONE);
 			}
 		});
@@ -337,12 +267,12 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 			executer.modifyLivingMotionByCurrentItem();
 		} else {
 			executer.playAnimationSynchronized(WOMAnimations.ANTITHEUS_ASCENSION, 0);
-			executer.getSkill(this).getDataManager().setData(TIMER, (int)((20*20) * (1 + (EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())/2f))));
-			executer.getSkill(this).getDataManager().setDataSync(SUPERARMOR, true, executer.getOriginal());
-			executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false, executer.getOriginal());
-			executer.getSkill(this).getDataManager().setDataSync(ASCENDING, false, executer.getOriginal());
+			executer.getSkill(this).getDataManager().setData(WOMSkillDataKeys.TIMER.get(), (int)((20*20) * (1 + (EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal())/2f))));
+			executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.SUPERARMOR.get(), true, executer.getOriginal());
+			executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.ACTIVE.get(), false, executer.getOriginal());
+			executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.ASCENDING.get(), false, executer.getOriginal());
 			this.setMaxDurationSynchronize(executer, 666*20);
-			this.setDurationSynchronize(executer, executer.getSkill(this).getDataManager().getDataValue(TIMER));
+			this.setDurationSynchronize(executer, executer.getSkill(this).getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()));
 			executer.getSkill(this).activate();
 			executer.modifyLivingMotionByCurrentItem();
 			SkillConsumeEvent event = new SkillConsumeEvent(executer, this, this.resource, true);
@@ -358,13 +288,13 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 	
 	@Override
 	public void cancelOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
-		executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false,executer.getOriginal());
-		executer.getSkill(this).getDataManager().setDataSync(ASCENDING, false,executer.getOriginal());
-		executer.getSkill(this).getDataManager().setDataSync(SUPERARMOR, true, executer.getOriginal());
+		executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.ACTIVE.get(), false,executer.getOriginal());
+		executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.ASCENDING.get(), false,executer.getOriginal());
+		executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.SUPERARMOR.get(), true, executer.getOriginal());
 		if (executer.getSkill(SkillSlots.WEAPON_PASSIVE) != null) {
 			if (executer.getSkill(SkillSlots.WEAPON_PASSIVE).getSkill() == WOMSkills.DEMON_MARK_PASSIVE) {
-				executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, false, executer.getOriginal());
-				executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.LAPSE, true, executer.getOriginal());
+				executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.PARTICLE.get(), false, executer.getOriginal());
+				executer.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.LAPSE.get(), true, executer.getOriginal());
 			}
 		}
 		this.setStackSynchronize(executer, executer.getSkill(this).getStack() - 1);
@@ -463,31 +393,30 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 		if(!container.getExecuter().isLogicalClient()) {
 			for (String tag : container.getExecuter().getOriginal().getTags()) {
 				if (tag.contains("antitheus_pull:")) {
-					container.getDataManager().setDataSync(DARKNESS_TARGET, Integer.valueOf(tag.substring(15)), ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-					container.getDataManager().setDataSync(DARKNESS_TARGET_HITED, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-					container.getDataManager().setDataSync(DARKNESS_ACTIVATE_PORTAL, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-					container.getDataManager().setDataSync(DARKNESS_PORTAL_TIMER, 320, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.DARKNESS_TARGET.get(), Integer.valueOf(tag.substring(15)), ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.DARKNESS_TARGET_HITED.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.DARKNESS_ACTIVATE_PORTAL.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.DARKNESS_PORTAL_TIMER.get(), 320, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 					container.getExecuter().getOriginal().getTags().remove(tag);
 					break;
 				}
 			}
-			if (container.getDataManager().getDataValue(DARKNESS_TARGET_HITED)) {
-				LivingEntity target = (LivingEntity) container.getExecuter().getOriginal().level().getEntity(container.getDataManager().getDataValue(DARKNESS_TARGET));
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_TARGET_HITED.get())) {
+				LivingEntity target = (LivingEntity) container.getExecuter().getOriginal().level().getEntity(container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_TARGET.get()));
 				if (target != null) {
-					container.getDataManager().setDataSync(DARKNESS_TARGET_X,(float) target.getX(), ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-					container.getDataManager().setDataSync(DARKNESS_TARGET_Y,(float) target.getY(), ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-					container.getDataManager().setDataSync(DARKNESS_TARGET_Z,(float) target.getZ(), ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.DARKNESS_TARGET_VEC.get(), new Vec3f((float) target.getX(), (float) target.getY(), (float) target.getZ()), ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				}
 			}
 		}
-		if (container.getDataManager().getDataValue(DARKNESS_TARGET_REAPED)) {
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_TARGET_REAPED.get())) {
 			if(!container.getExecuter().isLogicalClient()) {
-				container.getDataManager().setDataSync(DARKNESS_TARGET_REAPED, false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				LivingEntity target = (LivingEntity) container.getExecuter().getOriginal().level().getEntity(container.getDataManager().getDataValue(DARKNESS_TARGET));
+				container.getDataManager().setDataSync(WOMSkillDataKeys.DARKNESS_TARGET_REAPED.get(), false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				LivingEntity target = (LivingEntity) container.getExecuter().getOriginal().level().getEntity(container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_TARGET.get()));
 				if (target != null) {
-					float dpx = container.getDataManager().getDataValue(DARKNESS_PORTAL_X);
-					float dpy = container.getDataManager().getDataValue(DARKNESS_PORTAL_Y);
-					float dpz = container.getDataManager().getDataValue(DARKNESS_PORTAL_Z);
+					Vec3f vec3 = container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_TARGET_VEC.get());
+					float dpx = vec3.x;
+					float dpy = vec3.y;
+					float dpz = vec3.z;
 					target.teleportTo(dpx, dpy+1, dpz);
 					((ServerLevel) container.getExecuter().getOriginal().level()).sendParticles( WOMParticles.ANTITHEUS_PUNCH.get(), 
 							target.getX(), 
@@ -497,9 +426,10 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 				}
 			}
 			if(container.getExecuter().isLogicalClient()) {
-				float target_x = container.getDataManager().getDataValue(DARKNESS_TARGET_X);
-				float target_y = container.getDataManager().getDataValue(DARKNESS_TARGET_Y);
-				float target_z = container.getDataManager().getDataValue(DARKNESS_TARGET_Z);
+				Vec3f vec3 = container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_TARGET_VEC.get());
+				float target_x = vec3.x;
+				float target_y = vec3.y;
+				float target_z = vec3.z;
 				
 				int n = 40; // set the number of particles to emit
 				double r = 0.4; // set the radius of the disk to 1
@@ -542,29 +472,30 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 				}
 			}
 		}
-		if (container.getDataManager().getDataValue(SHOOT_COOLDOWN) > 0) {
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.SHOOT_COOLDOWN.get()) > 0) {
 			if(!container.getExecuter().isLogicalClient()) {
-				container.getDataManager().setDataSync(SHOOT_COOLDOWN, container.getDataManager().getDataValue(SHOOT_COOLDOWN)-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.SHOOT_COOLDOWN.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.SHOOT_COOLDOWN.get())-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 		}
-		if (container.getDataManager().getDataValue(DARKNESS_PORTAL_TIMER) > 0) {
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_PORTAL_TIMER.get()) > 0) {
 			if(!container.getExecuter().isLogicalClient()) {
-				container.getDataManager().setDataSync(DARKNESS_PORTAL_TIMER, container.getDataManager().getDataValue(DARKNESS_PORTAL_TIMER)-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				LivingEntity target = (LivingEntity) container.getExecuter().getOriginal().level().getEntity(container.getDataManager().getDataValue(DARKNESS_TARGET));
+				container.getDataManager().setDataSync(WOMSkillDataKeys.DARKNESS_PORTAL_TIMER.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_PORTAL_TIMER.get())-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				LivingEntity target = (LivingEntity) container.getExecuter().getOriginal().level().getEntity(container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_TARGET.get()));
 				if (target != null) {
 					if (target.isDeadOrDying()) {
-						container.getDataManager().setDataSync(DARKNESS_PORTAL_TIMER, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+						container.getDataManager().setDataSync(WOMSkillDataKeys.DARKNESS_PORTAL_TIMER.get(), 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 					}
-					if (container.getDataManager().getDataValue(DARKNESS_PORTAL_TIMER) == 0) {
-						container.getDataManager().setDataSync(DARKNESS_ACTIVATE_PORTAL, false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
-						container.getDataManager().setDataSync(DARKNESS_TARGET_HITED, false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_PORTAL_TIMER.get()) == 0) {
+						container.getDataManager().setDataSync(WOMSkillDataKeys.DARKNESS_ACTIVATE_PORTAL.get(), false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+						container.getDataManager().setDataSync(WOMSkillDataKeys.DARKNESS_TARGET_HITED.get(), false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 					}
 				}
 			}
 			if(container.getExecuter().isLogicalClient()) {
-				float dpx = container.getDataManager().getDataValue(DARKNESS_PORTAL_X);
-				float dpy = container.getDataManager().getDataValue(DARKNESS_PORTAL_Y);
-				float dpz = container.getDataManager().getDataValue(DARKNESS_PORTAL_Z);
+				Vec3f vec3 = container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_PORTAL_VEC.get());
+				float dpx = vec3.x;
+				float dpy = vec3.y;
+				float dpz = vec3.z;
 				
 				// EFFET AU SOL
 				
@@ -617,7 +548,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 				    Vec3f direction = new Vec3f((float)x * (new Random().nextFloat() * 2.0f), (float)y * (new Random().nextFloat() * 4.0f), (float)z * new Random().nextFloat()*2.0f );
 
 				    // rotate the direction vector to align with the forward vector
-				    OpenMatrix4f rotation = new OpenMatrix4f().rotate(container.getDataManager().getDataValue(DARKNESS_PORTAL_ANGLE), new Vec3f(0, 1, 0));
+				    OpenMatrix4f rotation = new OpenMatrix4f().rotate(container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_PORTAL_ANGLE.get()), new Vec3f(0, 1, 0));
 				    OpenMatrix4f.transform3v(rotation, direction, direction);
 				    
 				    // emit the particle in the calculated direction, with some random velocity added
@@ -632,15 +563,15 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 			}
 		}
 		
-		if (container.getDataManager().getDataValue(ZOOM_COOLDOWN) > 0) {
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.ZOOM_COOLDOWN.get()) > 0) {
 			if(container.getExecuter().isLogicalClient()) {
-				if (!container.getDataManager().getDataValue(ACTIVE)) {
-					if (container.getDataManager().getDataValue(ZOOM)) {
+				if (!container.getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get())) {
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.ZOOM.get())) {
 						ClientEngine.getInstance().renderEngine.zoomIn();
 					}
 				}
 			} else {
-				container.getDataManager().setDataSync(ZOOM_COOLDOWN, container.getDataManager().getDataValue(ZOOM_COOLDOWN)-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.ZOOM_COOLDOWN.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.ZOOM_COOLDOWN.get())-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 		} else {
 			if(container.getExecuter().isLogicalClient()) {
@@ -652,29 +583,29 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 			ServerPlayerPatch executer = (ServerPlayerPatch) container.getExecuter();
 			int sweeping_edge = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal());
 			
-			if (container.getDataManager().getDataValue(SHOOT) && !container.getExecuter().getOriginal().isUsingItem() && (container.getExecuter().getEntityState().canBasicAttack() || container.getDataManager().getDataValue(DARKNESS_TARGET_HITED) || (container.getDataManager().getDataValue(ACTIVE) && container.getDataManager().getDataValue(TIMER) >= 40*20 || container.getExecuter().getOriginal().isCreative()))) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.SHOOT.get()) && !container.getExecuter().getOriginal().isUsingItem() && (container.getExecuter().getEntityState().canBasicAttack() || container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_TARGET_HITED.get()) || (container.getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get()) && container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) >= 40*20 || container.getExecuter().getOriginal().isCreative()))) {
 				container.getExecuter().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
-				container.getDataManager().setDataSync(SHOOT, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				if (container.getDataManager().getDataValue(ACTIVE)) {
-					if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) == 0 && (container.getDataManager().getDataValue(TIMER) >= 80*20 || container.getExecuter().getOriginal().isCreative())) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.SHOOT.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get())) {
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.BLACKHOLE_TIMER.get()) == 0 && (container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) >= 80*20 || container.getExecuter().getOriginal().isCreative())) {
 						if (!container.getExecuter().getOriginal().isCreative()) {
-							container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER) - 80*20, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+							container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) - 80*20, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 						}
 						container.getExecuter().playAnimationSynchronized(WOMAnimations.ANTITHEUS_ASCENDED_BLACKHOLE, 0);
-						container.getDataManager().setDataSync(BLACKHOLE_TIMER, 140, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-						container.getDataManager().setDataSync(BLACKHOLE_ACTIVE, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+						container.getDataManager().setDataSync(WOMSkillDataKeys.BLACKHOLE_TIMER.get(), 140, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+						container.getDataManager().setDataSync(WOMSkillDataKeys.BLACKHOLE_ACTIVE.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 						
 					}
 				} else {
 					
 					// PULL
 					
-					LivingEntity target = (LivingEntity) container.getExecuter().getOriginal().level().getEntity(container.getDataManager().getDataValue(DARKNESS_TARGET));
+					LivingEntity target = (LivingEntity) container.getExecuter().getOriginal().level().getEntity(container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_TARGET.get()));
 					if (target == null) {
-						container.getDataManager().setDataSync(DARKNESS_TARGET_HITED, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+						container.getDataManager().setDataSync(WOMSkillDataKeys.DARKNESS_TARGET_HITED.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 					}
-					if (container.getDataManager().getDataValue(DARKNESS_TARGET_HITED)) {
-						container.getDataManager().setDataSync(DARKNESS_TARGET_HITED, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_TARGET_HITED.get())) {
+						container.getDataManager().setDataSync(WOMSkillDataKeys.DARKNESS_TARGET_HITED.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 						
 						if (container.getExecuter().getEntityState().canBasicAttack()) {
 							container.getExecuter().playAnimationSynchronized(WOMAnimations.ANTITHEUS_PULL, 0);
@@ -720,12 +651,15 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 							container.getExecuter().getOriginal().heal(WitherCatharsis*0.2f);
 							target.removeEffect(MobEffects.WITHER);
 						}
-						float dpx = container.getDataManager().getDataValue(DARKNESS_PORTAL_X);
-						float dpy = container.getDataManager().getDataValue(DARKNESS_PORTAL_Y);
-						float dpz = container.getDataManager().getDataValue(DARKNESS_PORTAL_Z);
-						container.getDataManager().setDataSync(DARKNESS_TARGET_REAPED, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-						container.getDataManager().setDataSync(DARKNESS_ACTIVATE_PORTAL, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-						container.getDataManager().setDataSync(DARKNESS_PORTAL_TIMER, 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+						
+						
+						Vec3f vec3 = container.getDataManager().getDataValue(WOMSkillDataKeys.DARKNESS_PORTAL_VEC.get());
+						float dpx = vec3.x;
+						float dpy = vec3.y;
+						float dpz = vec3.z;
+						container.getDataManager().setDataSync(WOMSkillDataKeys.DARKNESS_TARGET_REAPED.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+						container.getDataManager().setDataSync(WOMSkillDataKeys.DARKNESS_ACTIVATE_PORTAL.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+						container.getDataManager().setDataSync(WOMSkillDataKeys.DARKNESS_PORTAL_TIMER.get(), 0, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 						if (target.hurt(damage,1 + ((target.getMaxHealth() - target.getHealth()) * 0.1F) + (WitherCatharsis * 0.8f))) {
 							container.getExecuter().getEventListener().triggerEvents(EventType.DEALT_DAMAGE_EVENT_POST, new DealtDamageEvent((ServerPlayerPatch)container.getExecuter(), target, damage, 1 +((target.getMaxHealth() - target.getHealth()) * 0.1F) + (WitherCatharsis * 0.8f)));
 							if (target.isAlive()) {
@@ -779,7 +713,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 							canShoot = true;
 						}
 						
-						if ((canShoot && container.getDataManager().getDataValue(SHOOT_COOLDOWN) == 0) || container.getExecuter().getOriginal().isCreative()) {
+						if ((canShoot && container.getDataManager().getDataValue(WOMSkillDataKeys.SHOOT_COOLDOWN.get()) == 0) || container.getExecuter().getOriginal().isCreative()) {
 							if (canShoot || container.getStack() == 1 || container.getExecuter().getOriginal().isCreative()) {
 								if (!container.getExecuter().getOriginal().isCreative()) {
 									Player player = executer.getOriginal();
@@ -804,39 +738,36 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 								while (!container.getExecuter().getOriginal().level().isEmptyBlock(new BlockPos.MutableBlockPos(dpx,dpy,dpz))) {
 									dpy++;
 								}
-								container.getDataManager().setDataSync(DARKNESS_PORTAL_X, dpx, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-								container.getDataManager().setDataSync(DARKNESS_PORTAL_Y, dpy, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-								container.getDataManager().setDataSync(DARKNESS_PORTAL_Z, dpz, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-								container.getDataManager().setDataSync(DARKNESS_PORTAL_ANGLE, -(float) Math.toRadians(container.getExecuter().getOriginal().getViewYRot(1) + 180F), ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-								container.getDataManager().setDataSync(SHOOT_COOLDOWN, 6*20, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+								
+								Vec3f vec = new Vec3f(dpx, dpy, dpz);
+								
+								container.getDataManager().setDataSync(WOMSkillDataKeys.DARKNESS_PORTAL_VEC.get(), vec, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+								container.getDataManager().setDataSync(WOMSkillDataKeys.DARKNESS_PORTAL_ANGLE.get(), -(float) Math.toRadians(container.getExecuter().getOriginal().getViewYRot(1) + 180F), ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+								container.getDataManager().setDataSync(WOMSkillDataKeys.SHOOT_COOLDOWN.get(), 6*20, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 								container.getExecuter().playAnimationSynchronized(WOMAnimations.ANTITHEUS_SHOOT, 0);
 							}
 						}
 					}
-					container.getDataManager().setDataSync(ZOOM_COOLDOWN, 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-					container.getDataManager().setDataSync(ZOOM, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.ZOOM_COOLDOWN.get(), 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.ZOOM.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				}
 			} else {
 				if (container.getExecuter().getOriginal().isUsingItem()) {
 					container.getExecuter().getOriginal().setSprinting(false);
-					container.getDataManager().setDataSync(ZOOM_COOLDOWN, 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.ZOOM_COOLDOWN.get(), 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				}
 			}
 		}
 		if(!container.getExecuter().isLogicalClient()) {
-			if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) > 0) {
-				container.getDataManager().setDataSync(BLACKHOLE_TIMER, container.getDataManager().getDataValue(BLACKHOLE_TIMER)-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				if (container.getDataManager().getDataValue(BLACKHOLE_ACTIVE)) {
-					if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) == 100) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.BLACKHOLE_TIMER.get()) > 0) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.BLACKHOLE_TIMER.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.BLACKHOLE_TIMER.get())-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.BLACKHOLE_ACTIVE.get())) {
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.BLACKHOLE_TIMER.get()) == 100) {
 						container.getExecuter().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 								WOMSounds.ANTITHEUS_BLACKKHOLE.get(), container.getExecuter().getOriginal().getSoundSource(), 0.8F, 0.9F);
 					}
-					if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) < 100 && container.getDataManager().getDataValue(BLACKHOLE_TIMER) > 0) {
-						Vec3 blackhole_pos = new Vec3(
-								container.getDataManager().getDataValue(BLACKHOLE_X),
-								container.getDataManager().getDataValue(BLACKHOLE_Y),
-								container.getDataManager().getDataValue(BLACKHOLE_Z));
-						
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.BLACKHOLE_TIMER.get()) < 100 && container.getDataManager().getDataValue(WOMSkillDataKeys.BLACKHOLE_TIMER.get()) > 0) {
+						Vec3 blackhole_pos = container.getDataManager().getDataValue(WOMSkillDataKeys.BLACKHOLE_VEC.get()).toDoubleVector();
 						AABB box = AABB.ofSize(blackhole_pos,50, 50, 50);
 						
 						List<Entity> list = container.getExecuter().getOriginal().level().getEntities(container.getExecuter().getOriginal(),box);
@@ -849,11 +780,11 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 								double d2 = blackhole_pos.y()-1 - entity.getY();
 								double d0;
 								
-								if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) % 2 != 0) {
+								if (container.getDataManager().getDataValue(WOMSkillDataKeys.BLACKHOLE_TIMER.get()) % 2 != 0) {
 									power = 0;
 								}
 								
-								if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) == 1) {
+								if (container.getDataManager().getDataValue(WOMSkillDataKeys.BLACKHOLE_TIMER.get()) == 1) {
 									power = 1.0;
 									d2 = blackhole_pos.y()-1.1 - entity.getY();
 									if (entity instanceof ItemEntity || entity instanceof ExperienceOrb) {
@@ -872,7 +803,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 								Vec3 vec3 = entity.getDeltaMovement();
 								Vec3 vec31 = (new Vec3(d1, d2, d0)).normalize().scale(power);
 								
-								if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) % 10 == 0 && entity instanceof LivingEntity && distance_to_target <= 10) {
+								if (container.getDataManager().getDataValue(WOMSkillDataKeys.BLACKHOLE_TIMER.get()) % 10 == 0 && entity instanceof LivingEntity && distance_to_target <= 10) {
 									LivingEntity target = (LivingEntity) entity;
 									EpicFightDamageSource damage = container.getExecuter().getDamageSource(WOMAnimations.ANTITHEUS_PULL, InteractionHand.MAIN_HAND);
 									int chance = Math.abs(new Random().nextInt()) % 100;
@@ -888,7 +819,7 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 									target.hurt(damage,1);
 								}
 								
-								if (container.getDataManager().getDataValue(BLACKHOLE_TIMER) == 1 && entity instanceof LivingEntity) {
+								if (container.getDataManager().getDataValue(WOMSkillDataKeys.BLACKHOLE_TIMER.get()) == 1 && entity instanceof LivingEntity) {
 									LivingEntity target = (LivingEntity) entity;
 									EpicFightDamageSource damage = container.getExecuter().getDamageSource(WOMAnimations.ANTITHEUS_PULL, InteractionHand.MAIN_HAND);
 									damage.setStunType(StunType.HOLD);
@@ -923,21 +854,21 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 				}
 			}
 		}
-		if (container.getDataManager().getDataValue(ACTIVE)) {
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get())) {
 			if(!container.getExecuter().isLogicalClient()) {
-				if (container.getDataManager().getDataValue(TIMER) > 0) {
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) > 0) {
 					if (!container.getExecuter().getOriginal().isCreative()) {
-						container.getDataManager().setData(TIMER, container.getDataManager().getDataValue(TIMER)-1);
+						container.getDataManager().setData(WOMSkillDataKeys.TIMER.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get())-1);
 					}
 					container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.SLOW_FALLING,5, 0,true,false,false));
 					container.getExecuter().getOriginal().addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED,5, 1,true,false,false));
 					if (!container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).isEmpty()) {
-						if (!container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(DemonMarkPassiveSkill.PARTICLE)) {
-							container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, true, (ServerPlayer) container.getExecuter().getOriginal());					
+						if (!container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(WOMSkillDataKeys.PARTICLE.get())) {
+							container.getExecuter().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.PARTICLE.get(), true, (ServerPlayer) container.getExecuter().getOriginal());					
 						}
 					}
-					this.setDurationSynchronize((ServerPlayerPatch) container.getExecuter(),(int)(container.getDataManager().getDataValue(TIMER)));
-					if (container.getDataManager().getDataValue(TIMER) == 0) {
+					this.setDurationSynchronize((ServerPlayerPatch) container.getExecuter(),(int)(container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get())));
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) == 0) {
 						container.getExecuter().playAnimationSynchronized(WOMAnimations.ANTITHEUS_LAPSE, 0);
 						cancelOnServer((ServerPlayerPatch)container.getExecuter(), null);
 						container.deactivate();
@@ -947,11 +878,11 @@ public class DemonicAscensionSkill extends WeaponInnateSkill {
 			}
 		} else {
 			if(!container.getExecuter().isLogicalClient()) {
-				container.getDataManager().setDataSync(WITHERCATHARSIS, false ,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERCATHARSIS.get(), false ,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 		}
 		
-		if (container.getDataManager().getDataValue(SUPERARMOR)) {
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.SUPERARMOR.get())) {
 			container.getExecuter().getOriginal().addEffect(new MobEffectInstance(EpicFightMobEffects.STUN_IMMUNITY.get(), 5, 0,true,false,false));
 		}
 	}

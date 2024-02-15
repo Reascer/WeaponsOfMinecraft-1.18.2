@@ -7,6 +7,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMSkills;
+import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.skill.weaponinnate.SoulSnatchSkill;
 import yesman.epicfight.client.gui.BattleModeGui;
 import yesman.epicfight.skill.Skill;
@@ -23,7 +24,7 @@ public class RuinePassive extends PassiveSkill {
 	@Override
 	public boolean shouldDraw(SkillContainer container) {
 		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getSkill() instanceof SoulSnatchSkill) {
-			return container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(SoulSnatchSkill.TIMER) > 0;
+			return container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) > 0;
 		}
 		return false;
 	}
@@ -37,8 +38,8 @@ public class RuinePassive extends PassiveSkill {
 		RenderSystem.setShaderTexture(0, WOMSkills.SOUL_SNATCH.getSkillTexture());
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		guiGraphics.blit(WOMSkills.SOUL_SNATCH.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
-		guiGraphics.drawString(gui.font, String.valueOf((container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(SoulSnatchSkill.TIMER)/20)+1), x+4, y+13, 16777215,true);
-		float strenght = (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(SoulSnatchSkill.STRENGHT)/40.0f)*100f;
+		guiGraphics.drawString(gui.font, String.valueOf((container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get())/20)+1), x+4, y+13, 16777215,true);
+		float strenght = (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.STRENGHT.get())/40.0f)*100f;
 		guiGraphics.drawString(gui.font, String.valueOf(String.format("%.0f", strenght) + "%"), x+4, y+4, 16777215,true);
 		poseStack.popPose();
 	}

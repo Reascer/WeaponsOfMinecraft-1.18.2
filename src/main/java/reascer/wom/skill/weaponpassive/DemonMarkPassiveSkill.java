@@ -21,6 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
+import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.skill.weaponinnate.DemonicAscensionSkill;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
@@ -31,8 +32,6 @@ import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.passive.PassiveSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -40,13 +39,6 @@ import yesman.epicfight.world.entity.DeathHarvestOrb;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class DemonMarkPassiveSkill extends PassiveSkill {
-	public static final SkillDataKey<Boolean> CATHARSIS = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Boolean> PARTICLE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Boolean> LAPSE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Boolean> WITHERCURSE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Boolean> BLINK = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Boolean> BASIC_ATTACK = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Boolean> IDLE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	private static final UUID EVENT_UUID = UUID.fromString("bc38699e-0de8-11ed-861d-0242ac120002");
 	
 	public DemonMarkPassiveSkill(Builder<? extends Skill> builder) {
@@ -56,22 +48,13 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
-		container.getDataManager().registerData(CATHARSIS);
-		container.getDataManager().registerData(LAPSE);
-		container.getDataManager().registerData(PARTICLE);
-		container.getDataManager().registerData(WITHERCURSE);
-		container.getDataManager().registerData(BLINK);
-		container.getDataManager().setData(WITHERCURSE,true);
-		container.getDataManager().registerData(BASIC_ATTACK);
-		container.getDataManager().registerData(IDLE);
-		container.getDataManager().setData(IDLE,false);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID, (event) -> {
 			if (!event.getDamageSource().getAnimation().equals(WOMAnimations.ANTITHEUS_PULL)) {
-				if (container.getDataManager().getDataValue(WITHERCURSE)) {
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.WITHERCURSE.get())) {
 					int chance = Math.abs(new Random().nextInt()) % 100;
 					int sweping = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal());
-					if (chance < ( (20f + (sweping*10f) ) * (container.getDataManager().getDataValue(BLINK) ? 2F : 1F) ) ) {
+					if (chance < ( (20f + (sweping*10f) ) * (container.getDataManager().getDataValue(WOMSkillDataKeys.BLINK.get()) ? 2F : 1F) ) ) {
 						if (event.getTarget().hasEffect(MobEffects.WITHER)) {
 							int power = Math.min(event.getTarget().getEffect(MobEffects.WITHER).getAmplifier(), 9);
 							event.getTarget().removeEffect(MobEffects.WITHER);
@@ -96,42 +79,42 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
-			container.getDataManager().setDataSync(BASIC_ATTACK,false,event.getPlayerPatch().getOriginal());
+			container.getDataManager().setDataSync(WOMSkillDataKeys.BASIC_ATTACK.get(),false,event.getPlayerPatch().getOriginal());
 			
-			if (!container.getDataManager().getDataValue(WITHERCURSE)) {
-				container.getDataManager().setDataSync(WITHERCURSE,true,event.getPlayerPatch().getOriginal());
+			if (!container.getDataManager().getDataValue(WOMSkillDataKeys.WITHERCURSE.get())) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERCURSE.get(),true,event.getPlayerPatch().getOriginal());
 			}
 			
-			if (container.getDataManager().getDataValue(BLINK)) {
-				container.getDataManager().setDataSync(BLINK,false,event.getPlayerPatch().getOriginal());
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.BLINK.get())) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.BLINK.get(),false,event.getPlayerPatch().getOriginal());
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_BLINK)) {
-				container.getDataManager().setDataSync(BLINK,true,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.BLINK.get(),true,event.getPlayerPatch().getOriginal());
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_DEATHFALL)) {
-				container.getDataManager().setDataSync(WITHERCURSE,false,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERCURSE.get(),false,event.getPlayerPatch().getOriginal());
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_AUTO_1)) {
-				container.getDataManager().setDataSync(WITHERCURSE,false,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERCURSE.get(),false,event.getPlayerPatch().getOriginal());
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_AUTO_2)) {
-				container.getDataManager().setDataSync(WITHERCURSE,false,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERCURSE.get(),false,event.getPlayerPatch().getOriginal());
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_AUTO_3)) {
-				container.getDataManager().setDataSync(WITHERCURSE,false,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERCURSE.get(),false,event.getPlayerPatch().getOriginal());
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_SHOOT)) {
-				container.getDataManager().setDataSync(WITHERCURSE,false,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERCURSE.get(),false,event.getPlayerPatch().getOriginal());
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.ANTITHEUS_ASCENDED_BLACKHOLE)) {
-				container.getDataManager().setDataSync(WITHERCURSE,false,event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.WITHERCURSE.get(),false,event.getPlayerPatch().getOriginal());
 			}
 		});
 	}
@@ -151,7 +134,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 	@Override
 	public boolean shouldDraw(SkillContainer container) {
 		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getSkill() instanceof DemonicAscensionSkill) {
-			return container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(DemonicAscensionSkill.SHOOT_COOLDOWN) > 0;
+			return container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.SHOOT_COOLDOWN.get()) > 0;
 		}
 		return false;
 	}
@@ -164,7 +147,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, WOMSkills.DEMONIC_ASCENSION.getSkillTexture());
 		guiGraphics.blit(WOMSkills.DEMONIC_ASCENSION.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
-		guiGraphics.drawString(gui.font, String.valueOf((container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(DemonicAscensionSkill.SHOOT_COOLDOWN)/20)+1), x+7, y+13, 16777215,true);
+		guiGraphics.drawString(gui.font, String.valueOf((container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.SHOOT_COOLDOWN.get())/20)+1), x+7, y+13, 16777215,true);
 		poseStack.popPose();
 	}
 	
@@ -173,7 +156,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 		super.updateContainer(container);
 		if (container.getExecuter().getValidItemInHand(InteractionHand.MAIN_HAND) != null) {
 			if (container.getExecuter().getValidItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.ANTITHEUS.get()) {
-				if (container.getDataManager().getDataValue(PARTICLE)) {
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.PARTICLE.get())) {
 					PlayerPatch<?> entitypatch = container.getExecuter();
 					int numberOf = 3;
 					float partialScale = 1.0F / (numberOf - 1);
@@ -228,8 +211,8 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 							0);
 						interpolation += partialScale;
 					}
-					// BLINK
-					if (container.getDataManager().getDataValue(BASIC_ATTACK)) {
+					// WOMSkillDataKeys.BLINK.get()
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.BASIC_ATTACK.get())) {
 						int n = 30; // set the number of particles to emit
 						double r = 4.8; // set the radius of the disk to 1
 						double t = 0.01; // set the thickness of the disk to 0.1
@@ -411,7 +394,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 						interpolation += partialScale;
 					}
 					
-				} else if (container.getDataManager().getDataValue(LAPSE)) {
+				} else if (container.getDataManager().getDataValue(WOMSkillDataKeys.LAPSE.get())) {
 					PlayerPatch<?> entitypatch = container.getExecuter();
 					int numberOf = 5;
 					float partialScale = 1.0F / (numberOf - 1);
@@ -469,7 +452,7 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 						}
 						interpolation += partialScale;
 					}
-					if (container.getDataManager().getDataValue(BASIC_ATTACK)) {
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.BASIC_ATTACK.get())) {
 						int numberOf2 = 36;
 						float partialScale2 = 1.0F / (numberOf2 - 1);
 						float interpolation2 = 0.0F;
@@ -491,9 +474,9 @@ public class DemonMarkPassiveSkill extends PassiveSkill {
 					}
 					
 					if (entitypatch.currentLivingMotion != LivingMotions.IDLE) {
-						container.getDataManager().setData(IDLE, false);
+						container.getDataManager().setData(WOMSkillDataKeys.IDLE.get(), false);
 					}
-					if (container.getDataManager().getDataValue(IDLE)) {
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.IDLE.get())) {
 						int numberOf2 = 4;
 						float partialScale2 = 1.0F / (numberOf2 - 1);
 						float interpolation2 = 0.0F;

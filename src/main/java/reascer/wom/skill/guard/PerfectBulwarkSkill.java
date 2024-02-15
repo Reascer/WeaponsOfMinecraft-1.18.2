@@ -30,6 +30,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMColliders;
+import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.client.gui.BattleModeGui;
@@ -40,12 +41,9 @@ import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.particle.HitParticleType;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
+import yesman.epicfight.skill.SkillDataKeys;
 import yesman.epicfight.skill.guard.GuardSkill;
-import yesman.epicfight.skill.guard.GuardSkill.BlockType;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
-import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategories;
@@ -57,9 +55,6 @@ import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType
 
 public class PerfectBulwarkSkill extends GuardSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("8665b153-4bc3-4480-adb4-96bdd66e35e6");
-	private static final SkillDataKey<Boolean> PARRYING = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	private static final SkillDataKey<Integer> CHARGE = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Integer> COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	
 	public static GuardSkill.Builder createCounterAttackBuilder() {
 		return GuardSkill.createGuardBuilder()
@@ -94,9 +89,6 @@ public class PerfectBulwarkSkill extends GuardSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
-		container.getDataManager().registerData(PARRYING);
-		container.getDataManager().registerData(CHARGE);
-		container.getDataManager().registerData(COOLDOWN);
 		
 		container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_PRE, GuardSkill.EVENT_UUID,1);
 		container.getExecuter().getEventListener().removeListener(EventType.CLIENT_ITEM_USE_EVENT, GuardSkill.EVENT_UUID);
@@ -105,7 +97,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		container.getExecuter().getEventListener().addEventListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
 			CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND);
 			
-			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && container.getDataManager().getDataValue(COOLDOWN) == 0) {
+			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) == 0) {
 				event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 			}
 		});
@@ -113,11 +105,11 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		container.getExecuter().getEventListener().addEventListener(EventType.SERVER_ITEM_USE_EVENT, PerfectBulwarkSkill.EVENT_UUID, (event) -> {
 			CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND);
 			
-			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && container.getDataManager().getDataValue(COOLDOWN) == 0) {
+			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) == 0) {
 				event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
-				container.getDataManager().setDataSync(PARRYING, true, event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.PARRYING.get(), true, event.getPlayerPatch().getOriginal());
 			} else {
-				if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && event.getPlayerPatch().getEntityState().canBasicAttack() && container.getDataManager().getDataValue(COOLDOWN) > 0) {
+				if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && event.getPlayerPatch().getEntityState().canBasicAttack() && container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) > 0) {
 					event.getPlayerPatch().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
 							SoundEvents.LAVA_EXTINGUISH, container.getExecuter().getOriginal().getSoundSource(), 1.0F, 2.0F);
 				}
@@ -125,9 +117,9 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.SERVER_ITEM_STOP_EVENT, PerfectBulwarkSkill.EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(PARRYING) && container.getDataManager().getDataValue(CHARGE) >= 5) {
-				container.getDataManager().setDataSync(PARRYING, false, event.getPlayerPatch().getOriginal());
-				container.getDataManager().setDataSync(COOLDOWN, 100, event.getPlayerPatch().getOriginal());
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.PARRYING.get()) && container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get()) >= 5) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.PARRYING.get(), false, event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.COOLDOWN.get(), 100, event.getPlayerPatch().getOriginal());
 				CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND);
 				StaticAnimation animation;
 				
@@ -212,11 +204,11 @@ public class PerfectBulwarkSkill extends GuardSkill {
 						damage.setStunType(StunType.LONG);
 						damage.setImpact(3.0f);
 						LivingEntity target = (LivingEntity) entity;
-						target.hurt(damage,container.getDataManager().getDataValue(CHARGE)*2);
+						target.hurt(damage,container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get())*2);
 						entity.setDeltaMovement(vec3.x / 2.0D - vec31.x, vec3.y / 2.0D - vec31.y, vec3.z / 2.0D - vec31.z);
 					}
 				}
-				container.getDataManager().setDataSync(CHARGE, 0, event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGE.get(), 0, event.getPlayerPatch().getOriginal());
 			}
 		});
 		
@@ -224,9 +216,9 @@ public class PerfectBulwarkSkill extends GuardSkill {
 			CapabilityItem itemCapability = event.getPlayerPatch().getHoldingItemCapability(event.getPlayerPatch().getOriginal().getUsedItemHand());
 			
 			if (this.isHoldingWeaponAvailable(event.getPlayerPatch(), itemCapability, BlockType.GUARD) && event.getPlayerPatch().getOriginal().isUsingItem()) {
-				container.getDataManager().setDataSync(CHARGE,1 + container.getDataManager().getDataValue(CHARGE) , event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.CHARGE.get(),1 + container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get()) , event.getPlayerPatch().getOriginal());
 				
-				if (container.getDataManager().getDataValue(CHARGE) >= 5){
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get()) >= 5){
 					((ServerLevel) container.getExecuter().getOriginal().level()).sendParticles(new DustParticleOptions(new Vector3f(0.8f,0.75f,0.65f), 1.0F), 
 							container.getExecuter().getOriginal().getX() - 0.2D, 
 							container.getExecuter().getOriginal().getY() + 1.3D, 
@@ -265,7 +257,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		
 		if (this.isBlockableSource(damageSource, advanced)) {
 			event.getPlayerPatch().getOriginal().level().playSound(null, container.getExecuter().getOriginal().getX(), container.getExecuter().getOriginal().getY(), container.getExecuter().getOriginal().getZ(),
-					EpicFightSounds.CLASH.get(), container.getExecuter().getOriginal().getSoundSource(), 1.0F, 0.9F + (0.15f * container.getDataManager().getDataValue(CHARGE)));
+					EpicFightSounds.CLASH.get(), container.getExecuter().getOriginal().getSoundSource(), 1.0F, 0.9F + (0.15f * container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get())));
 			
 			ServerPlayer serveerPlayer = event.getPlayerPatch().getOriginal();
 			EpicFightParticles.HIT_BLUNT.get().spawnParticleWithArgument(((ServerLevel)serveerPlayer.level()), HitParticleType.FRONT_OF_EYES, HitParticleType.ZERO, serveerPlayer, damageSource.getDirectEntity());
@@ -274,10 +266,10 @@ public class PerfectBulwarkSkill extends GuardSkill {
 				knockback += EnchantmentHelper.getKnockbackBonus((LivingEntity)damageSource.getDirectEntity()) * 0.1F;
 			}
 			
-			float penalty = container.getDataManager().getDataValue(PENALTY) + this.getPenalizer(itemCapability);
+			float penalty = container.getDataManager().getDataValue(SkillDataKeys.PENALTY.get()) + this.getPenalizer(itemCapability);
 			event.getPlayerPatch().knockBackEntity(damageSource.getDirectEntity().position(), knockback);
 			boolean enoughStamina = event.getPlayerPatch().consumeStamina(penalty * impact);
-			container.getDataManager().setDataSync(PENALTY, penalty, event.getPlayerPatch().getOriginal());
+			container.getDataManager().setDataSync(SkillDataKeys.PENALTY.get(), penalty, event.getPlayerPatch().getOriginal());
 			BlockType blockType = enoughStamina ? BlockType.GUARD : BlockType.GUARD_BREAK;
 			StaticAnimation animation = this.getGuardMotion(event.getPlayerPatch(), itemCapability, blockType);
 			
@@ -339,7 +331,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldDraw(SkillContainer container) {
-		return container.getDataManager().getDataValue(CHARGE) > 0 || container.getDataManager().getDataValue(COOLDOWN) > 0;
+		return container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get()) > 0 || container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) > 0;
 	}
 	
 	@OnlyIn(Dist.CLIENT)
@@ -350,7 +342,7 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
 		RenderSystem.setShaderTexture(0, this.getSkillTexture());
 		
-		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) > 0) {
 			RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.5F);
 		} else {
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -360,11 +352,11 @@ public class PerfectBulwarkSkill extends GuardSkill {
 		
 		String string = "";
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
-			string = String.valueOf((container.getDataManager().getDataValue(COOLDOWN)/20)+1);
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) > 0) {
+			string = String.valueOf((container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get())/20)+1);
 		} else {
-			string = String.valueOf(container.getDataManager().getDataValue(CHARGE));
-			if (container.getDataManager().getDataValue(CHARGE) == 0) {
+			string = String.valueOf(container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get()));
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get()) == 0) {
 				string = "";
 			}
 		}
@@ -395,8 +387,8 @@ public class PerfectBulwarkSkill extends GuardSkill {
 	public void updateContainer(SkillContainer container) {
 		super.updateContainer(container);
 		
-		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
-			container.getDataManager().setData(COOLDOWN, container.getDataManager().getDataValue(COOLDOWN)-1);
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) > 0) {
+			container.getDataManager().setData(WOMSkillDataKeys.COOLDOWN.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get())-1);
 		}
 	}
 }

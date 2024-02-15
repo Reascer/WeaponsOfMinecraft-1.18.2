@@ -37,6 +37,7 @@ import reascer.wom.animation.attacks.SpecialAttackAnimation;
 import reascer.wom.animation.dodges.CancelableDodgeAnimation;
 import reascer.wom.main.WeaponsOfMinecraft;
 import reascer.wom.particle.WOMParticles;
+import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.skill.dodges.BullChargeSkill;
 import reascer.wom.skill.dodges.EnderObscurisSkill;
 import reascer.wom.skill.weaponinnate.AgonyPlungeSkill;
@@ -444,7 +445,7 @@ public class WOMAnimations {
 						if (entitypatch instanceof ServerPlayerPatch) {
 							ServerPlayerPatch serverPlayerPatch = (ServerPlayerPatch) entitypatch;
 							if (serverPlayerPatch.getSkill(SkillSlots.DODGE) != null) {
-								serverPlayerPatch.getSkill(SkillSlots.DODGE).getDataManager().setDataSync(BullChargeSkill.SUPER_ARMOR, true,(ServerPlayer)entitypatch.getOriginal());
+								serverPlayerPatch.getSkill(SkillSlots.DODGE).getDataManager().setDataSync(WOMSkillDataKeys.SUPER_ARMOR.get(), true,(ServerPlayer)entitypatch.getOriginal());
 							}
 						}
 					}, Side.SERVER),
@@ -452,7 +453,7 @@ public class WOMAnimations {
 						if (entitypatch instanceof ServerPlayerPatch) {
 							ServerPlayerPatch serverPlayerPatch = (ServerPlayerPatch) entitypatch;
 							if (serverPlayerPatch.getSkill(SkillSlots.DODGE) != null) {
-								serverPlayerPatch.getSkill(SkillSlots.DODGE).getDataManager().setDataSync(BullChargeSkill.SUPER_ARMOR, false,(ServerPlayer)entitypatch.getOriginal());
+								serverPlayerPatch.getSkill(SkillSlots.DODGE).getDataManager().setDataSync(WOMSkillDataKeys.SUPER_ARMOR.get(), false,(ServerPlayer)entitypatch.getOriginal());
 							}
 						}
 					}, Side.SERVER));
@@ -614,8 +615,8 @@ public class WOMAnimations {
 						TimeStampedEvent.create(1.3F, ReuseableEvents.AGONY_PLUNGE_GROUNDTHRUST, Side.CLIENT),
 						TimeStampedEvent.create(1.45F, (entitypatch, self, params) -> {
 							if (entitypatch instanceof PlayerPatch) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.PLUNGING, true,(ServerPlayer)entitypatch.getOriginal());
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.STACK, 0,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.PLUNGING.get(), true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.STACK.get(), 0,(ServerPlayer)entitypatch.getOriginal());
 							}
 						}, Side.SERVER),
 						TimeStampedEvent.create(1.55F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT));
@@ -650,8 +651,8 @@ public class WOMAnimations {
 						TimeStampedEvent.create(1.3F, ReuseableEvents.AGONY_PLUNGE_GROUNDTHRUST, Side.CLIENT),
 						TimeStampedEvent.create(1.45F, (entitypatch, self, params) -> {
 							if (entitypatch instanceof PlayerPatch) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.PLUNGING, true,(ServerPlayer)entitypatch.getOriginal());
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(AgonyPlungeSkill.STACK, 0,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.PLUNGING.get(), true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.STACK.get(), 0,(ServerPlayer)entitypatch.getOriginal());
 							}
 						}, Side.SERVER),
 						TimeStampedEvent.create(1.55F, ReuseableEvents.AGONY_ENCHANTED_JUMP, Side.CLIENT));
@@ -1359,7 +1360,7 @@ public class WOMAnimations {
 				}, Side.CLIENT),TimeStampedEvent.create(0.90F, (entitypatch, self, params) -> {
 					if (entitypatch instanceof PlayerPatch) {
 						if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.SHEATH.get(), true,(ServerPlayer)entitypatch.getOriginal());
 							entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
 						}
 						entitypatch.updateMotion(true);
@@ -1387,7 +1388,7 @@ public class WOMAnimations {
 						entitypatch.getOriginal().level().addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 					}, Side.CLIENT),TimeStampedEvent.create(1.1F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.SHEATH.get(), true,(ServerPlayer)entitypatch.getOriginal());
 							if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
 								entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
 							}
@@ -1412,7 +1413,7 @@ public class WOMAnimations {
 					entitypatch.getOriginal().level().addParticle(EpicFightParticles.ENTITY_AFTER_IMAGE.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				}, Side.CLIENT),TimeStampedEvent.create(1.0F, (entitypatch, self, params) -> {
 					if (entitypatch instanceof PlayerPatch) {
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.SHEATH.get(), true,(ServerPlayer)entitypatch.getOriginal());
 						if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
 							entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
 						}
@@ -1443,7 +1444,7 @@ public class WOMAnimations {
 				}, Side.CLIENT),TimeStampedEvent.create(0.8F, (entitypatch, self, params) -> {
 					if (entitypatch instanceof PlayerPatch) {
 						if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.SHEATH.get(), true,(ServerPlayer)entitypatch.getOriginal());
 							entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
 							entitypatch.updateMotion(true);
 						}
@@ -1472,7 +1473,7 @@ public class WOMAnimations {
 					entitypatch.getOriginal().level().addParticle(WOMParticles.ENTITY_AFTER_IMAGE_WEAPON.get(), entity.getX(), entity.getY(), entity.getZ(), Double.longBitsToDouble(entity.getId()), 0, 0);
 				}, Side.CLIENT),TimeStampedEvent.create(0.8F, (entitypatch, self, params) -> {
 					if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.SHEATH.get(), true,(ServerPlayer)entitypatch.getOriginal());
 						entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
 						entitypatch.updateMotion(true);
 					}
@@ -1494,7 +1495,7 @@ public class WOMAnimations {
 				}, Side.CLIENT),TimeStampedEvent.create(0.55F, (entitypatch, self, params) -> {
 					if (entitypatch instanceof PlayerPatch) {
 						if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.SHEATH.get(), true,(ServerPlayer)entitypatch.getOriginal());
 							entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 5);
 							entitypatch.updateMotion(true);
 						}
@@ -1564,7 +1565,7 @@ public class WOMAnimations {
 						TimeStampedEvent.create(0.5F, (entitypatch, self, params) -> {
 							if (entitypatch instanceof PlayerPatch) {
 								if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
-									((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+									((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.SHEATH.get(), true,(ServerPlayer)entitypatch.getOriginal());
 									entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 3);
 								}
 								entitypatch.updateMotion(true);
@@ -1587,7 +1588,7 @@ public class WOMAnimations {
 						TimeStampedEvent.create(0.5F, (entitypatch, self, params) -> {
 							if (entitypatch instanceof PlayerPatch) {
 								if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
-									((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+									((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.SHEATH.get(), true,(ServerPlayer)entitypatch.getOriginal());
 									entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 3);
 								}
 								entitypatch.updateMotion(true);
@@ -1613,7 +1614,7 @@ public class WOMAnimations {
 				}, Side.CLIENT),TimeStampedEvent.create(0.8F, (entitypatch, self, params) -> {
 					if (entitypatch instanceof PlayerPatch) {
 						if (entitypatch.getHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill() != null) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(SatsujinPassive.SHEATH, true,(ServerPlayer)entitypatch.getOriginal());
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.SHEATH.get(), true,(ServerPlayer)entitypatch.getOriginal());
 							entitypatch.getAdvancedHoldingItemCapability(InteractionHand.MAIN_HAND).getPassiveSkill().setConsumption(((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE), 3);
 						}
 						entitypatch.updateMotion(true);
@@ -3160,12 +3161,12 @@ public class WOMAnimations {
 		
 		ANTITHEUS_IDLE = new StaticAnimation(0.2f, true, "biped/living/antitheus_idle", biped)
 				.addEvents(TimeStampedEvent.create(6.00F, (entitypatch, self, params) -> {
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(DemonMarkPassiveSkill.IDLE, true);
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(WOMSkillDataKeys.IDLE.get(), true);
 						entitypatch.getOriginal().level().playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 0.2F, 0.5F);
 				}, Side.CLIENT),
 					TimeStampedEvent.create(8.60F, (entitypatch, self, params) -> {
 						entitypatch.getOriginal().level().playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 0.7F, 0.5F);
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(DemonMarkPassiveSkill.IDLE, false);
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(WOMSkillDataKeys.IDLE.get(), false);
 						OpenMatrix4f transformMatrix;
 						transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(0), Armatures.BIPED.toolL);
 						transformMatrix.translate(new Vec3f(0,0.0F,0));
@@ -3242,10 +3243,10 @@ public class WOMAnimations {
 					}
 				}, Side.CLIENT),TimeStampedEvent.create(1.75F, (entitypatch, self, params) -> {
 					if (entitypatch instanceof PlayerPatch) {
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, true, (ServerPlayer)entitypatch.getOriginal());
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.ACTIVE, true, (ServerPlayer)entitypatch.getOriginal());
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.ASCENDING, true, (ServerPlayer)entitypatch.getOriginal());
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, false, (ServerPlayer)entitypatch.getOriginal());
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.PARTICLE.get(), true, (ServerPlayer)entitypatch.getOriginal());
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.ACTIVE.get(), true, (ServerPlayer)entitypatch.getOriginal());
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.ASCENDING.get(), true, (ServerPlayer)entitypatch.getOriginal());
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.SUPERARMOR.get(), false, (ServerPlayer)entitypatch.getOriginal());
 					}
 					entitypatch.getOriginal().level().playSound(null, entitypatch.getOriginal(), SoundEvents.WITHER_BREAK_BLOCK, SoundSource.PLAYERS, 1.0F, 0.5F);
 					entitypatch.getOriginal().level().playSound(null, entitypatch.getOriginal(), SoundEvents.WITHER_AMBIENT, SoundSource.PLAYERS, 1.0F, 0.5F);
@@ -3360,15 +3361,15 @@ public class WOMAnimations {
 					}
 				}, Side.CLIENT),TimeStampedEvent.create(1.75F, (entitypatch, self, params) -> {
 					if (entitypatch instanceof PlayerPatch) {
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.LAPSE, false, (ServerPlayer)entitypatch.getOriginal());
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.PARTICLE, false, (ServerPlayer)entitypatch.getOriginal());
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.ACTIVE, false, (ServerPlayer)entitypatch.getOriginal());
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.LAPSE.get(), false, (ServerPlayer)entitypatch.getOriginal());
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.PARTICLE.get(), false, (ServerPlayer)entitypatch.getOriginal());
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.ACTIVE.get(), false, (ServerPlayer)entitypatch.getOriginal());
 					}
 					entitypatch.getOriginal().level().playSound(null, entitypatch.getOriginal(), SoundEvents.WITHER_BREAK_BLOCK, SoundSource.PLAYERS, 1.0F, 0.5F);
 					entitypatch.getOriginal().level().playSound(null, entitypatch.getOriginal(), SoundEvents.WITHER_DEATH, SoundSource.PLAYERS, 1.0F, 2.0F);
 				}, Side.SERVER),TimeStampedEvent.create(2.25F, (entitypatch, self, params) -> {
 					if (entitypatch instanceof PlayerPatch) {
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, false, (ServerPlayer)entitypatch.getOriginal());
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.SUPERARMOR.get(), false, (ServerPlayer)entitypatch.getOriginal());
 					}
 				}, Side.SERVER),TimeStampedEvent.create(1.75F, (entitypatch, self, params) -> {
 					
@@ -3563,7 +3564,7 @@ public class WOMAnimations {
 				}, Side.CLIENT),
 				TimeStampedEvent.create(0.35F, (entitypatch, self, params) -> {
 					if (entitypatch instanceof PlayerPatch) {
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, true, (ServerPlayer)entitypatch.getOriginal());
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.SUPERARMOR.get(), true, (ServerPlayer)entitypatch.getOriginal());
 					}
 					entitypatch.getOriginal().resetFallDistance();						
 				
@@ -3643,7 +3644,7 @@ public class WOMAnimations {
 				}, Side.CLIENT),
 				TimeStampedEvent.create(0.55F, (entitypatch, self, params) -> {
 					if (entitypatch instanceof PlayerPatch) {
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, false, (ServerPlayer)entitypatch.getOriginal());
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.SUPERARMOR.get(), false, (ServerPlayer)entitypatch.getOriginal());
 					}
 					entitypatch.getOriginal().resetFallDistance();
 				}, Side.SERVER));
@@ -3685,7 +3686,7 @@ public class WOMAnimations {
 				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 							entitypatch.getOriginal().level().playSound(null, entitypatch.getOriginal(), WOMSounds.ANTITHEUS_BLACKKHOLE_CHARGEUP.get(), SoundSource.PLAYERS, 2.0F, 1.0F);
 							if (entitypatch instanceof ServerPlayerPatch) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, true, (ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.SUPERARMOR.get(), true, (ServerPlayer)entitypatch.getOriginal());
 							}
 							
 						}, Side.SERVER),
@@ -3730,13 +3731,11 @@ public class WOMAnimations {
 							CORRECTION.translate(new Vec3f(0.0f, 0.0F, -1.5F));
 							OpenMatrix4f.mul(CORRECTION,transformMatrix,transformMatrix);
 							if (entitypatch instanceof ServerPlayerPatch) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(DemonicAscensionSkill.SUPERARMOR, false, (ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.SUPERARMOR.get(), false, (ServerPlayer)entitypatch.getOriginal());
 
 								SkillContainer skill = ((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE);
-								skill.getDataManager().setDataSync(DemonicAscensionSkill.BLACKHOLE_X,(float) (transformMatrix.m30 + entitypatch.getOriginal().getX()), (ServerPlayer)entitypatch.getOriginal());
-								skill.getDataManager().setDataSync(DemonicAscensionSkill.BLACKHOLE_Y,(float) (transformMatrix.m31 + entitypatch.getOriginal().getY()), (ServerPlayer)entitypatch.getOriginal());
-								skill.getDataManager().setDataSync(DemonicAscensionSkill.BLACKHOLE_Z,(float) (transformMatrix.m32 + entitypatch.getOriginal().getZ()), (ServerPlayer)entitypatch.getOriginal());
-								
+								Vec3f vec = new Vec3f((float) (transformMatrix.m30 + entitypatch.getOriginal().getX()), (float) (transformMatrix.m31 + entitypatch.getOriginal().getY()), (float) (transformMatrix.m32 + entitypatch.getOriginal().getZ()));
+								skill.getDataManager().setDataSync(WOMSkillDataKeys.BLACKHOLE_VEC.get(), vec, (ServerPlayer)entitypatch.getOriginal());
 							}
 						
 							((ServerLevel) entitypatch.getOriginal().level()).sendParticles( WOMParticles.ANTITHEUS_BLACKHOLE_START.get(),
@@ -3793,16 +3792,16 @@ public class WOMAnimations {
 				.addEvents(TimeStampedEvent.create(0.65F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
 							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 6,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT.get(), true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT_RESULT.get(), 6,(ServerPlayer)entitypatch.getOriginal());
 							}
 						}
 					}, Side.SERVER),
 					TimeStampedEvent.create(1.35F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
 							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT.get(), false,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT_RESULT.get(), 0,(ServerPlayer)entitypatch.getOriginal());
 							}
 						}
 					}, Side.SERVER));
@@ -3821,16 +3820,16 @@ public class WOMAnimations {
 				.addEvents(TimeStampedEvent.create(0.40F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
 							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 1,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT.get(), true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT_RESULT.get(), 1,(ServerPlayer)entitypatch.getOriginal());
 							}
 						}
 					}, Side.SERVER),
 					TimeStampedEvent.create(0.60F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
 							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT.get(), false,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT_RESULT.get(), 0,(ServerPlayer)entitypatch.getOriginal());
 							}
 						}
 					}, Side.SERVER));
@@ -3894,16 +3893,16 @@ public class WOMAnimations {
 				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
 							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 2,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT.get(), true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT_RESULT.get(), 2,(ServerPlayer)entitypatch.getOriginal());
 							}
 						}
 					}, Side.SERVER),
 					TimeStampedEvent.create(0.20F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
 							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT.get(), false,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT_RESULT.get(), 0,(ServerPlayer)entitypatch.getOriginal());
 							}
 						}
 					}, Side.SERVER));
@@ -3917,16 +3916,16 @@ public class WOMAnimations {
 				.addEvents(TimeStampedEvent.create(0.10F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
 							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 3,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT.get(), true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT_RESULT.get(), 3,(ServerPlayer)entitypatch.getOriginal());
 							}
 						}
 					}, Side.SERVER),
 					TimeStampedEvent.create(0.30F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
 							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT.get(), false,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT_RESULT.get(), 0,(ServerPlayer)entitypatch.getOriginal());
 							}
 						}
 					}, Side.SERVER));
@@ -3940,16 +3939,16 @@ public class WOMAnimations {
 				.addEvents(TimeStampedEvent.create(0.10F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
 							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 4,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT.get(), true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT_RESULT.get(), 4,(ServerPlayer)entitypatch.getOriginal());
 							}
 						}
 					}, Side.SERVER),
 					TimeStampedEvent.create(0.30F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
 							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT.get(), false,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT_RESULT.get(), 0,(ServerPlayer)entitypatch.getOriginal());
 							}
 						}
 					}, Side.SERVER));
@@ -4004,16 +4003,16 @@ public class WOMAnimations {
 				.addEvents(TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
 							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, true,(ServerPlayer)entitypatch.getOriginal());
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 5,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT.get(), true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT_RESULT.get(), 5,(ServerPlayer)entitypatch.getOriginal());
 							}
 						}
 					}, Side.SERVER),
 					TimeStampedEvent.create(0.20F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
 							if (((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE) != null) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT, false,(ServerPlayer)entitypatch.getOriginal());
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GUARD_POINT_RESULT, 0,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT.get(), false,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GUARD_POINT_RESULT.get(), 0,(ServerPlayer)entitypatch.getOriginal());
 							}
 						}
 					}, Side.SERVER));
@@ -4089,13 +4088,13 @@ public class WOMAnimations {
 				.addEvents(TimeStampedEvent.create(0.65F, ReuseableEvents.BODY_BIG_GROUNDSLAM, Side.CLIENT),
 						TimeStampedEvent.create(0.65F, (entitypatch, self, params) -> {
 							if (entitypatch instanceof PlayerPatch<?>) {
-								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GESETZ_SPRENGKOPF, true,(ServerPlayer)entitypatch.getOriginal());
+								((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GESETZ_SPRENGKOPF.get(), true,(ServerPlayer)entitypatch.getOriginal());
 							}
 						}, Side.SERVER),
 						TimeStampedEvent.create(0.75F, (entitypatch, self, params) -> {
 							if (entitypatch instanceof ServerPlayerPatch) {
-								((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.GESETZ_SPRENGKOPF, false,(ServerPlayer)entitypatch.getOriginal());
-								((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(RegierungSkill.SUPER_ARMOR, false,(ServerPlayer)entitypatch.getOriginal());
+								((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.GESETZ_SPRENGKOPF.get(), false,(ServerPlayer)entitypatch.getOriginal());
+								((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.SUPER_ARMOR.get(), false,(ServerPlayer)entitypatch.getOriginal());
 								((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getSkill().setDurationSynchronize((ServerPlayerPatch) entitypatch, 0);
 							}
 						}, Side.SERVER),
@@ -4142,7 +4141,7 @@ public class WOMAnimations {
 				},Side.CLIENT),
 						TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 							if (entitypatch instanceof ServerPlayerPatch) {
-								((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(LunarEchoPassiveSkill.VERSO, true,(ServerPlayer)entitypatch.getOriginal());
+								((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.VERSO.get(), true,(ServerPlayer)entitypatch.getOriginal());
 								((ServerPlayerPatch) entitypatch).modifyLivingMotionByCurrentItem();
 							}
 						},Side.SERVER));
@@ -4162,7 +4161,7 @@ public class WOMAnimations {
 					},Side.CLIENT),
 					TimeStampedEvent.create(0.00F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof ServerPlayerPatch) {
-							((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(LunarEchoPassiveSkill.VERSO, false,(ServerPlayer)entitypatch.getOriginal());
+							((ServerPlayerPatch) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.VERSO.get(), false,(ServerPlayer)entitypatch.getOriginal());
 							((ServerPlayerPatch) entitypatch).modifyLivingMotionByCurrentItem();
 						}
 					},Side.SERVER));
@@ -4262,25 +4261,25 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
 				.addEvents(TimeStampedEvent.create(0.10F, (entitypatch, self, params) -> {
 					if (entitypatch instanceof PlayerPatch<?>) {
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(LunarEchoPassiveSkill.IDLE, true);
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(WOMSkillDataKeys.IDLE.get(), true);
 					}
 					
 					entitypatch.getOriginal().level().playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 0.2F, 0.5F);
 				}, Side.CLIENT),
 					TimeStampedEvent.create(0.55F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setData(LunarEclipseSkill.ECHO, true);
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setData(WOMSkillDataKeys.ECHO.get(), true);
 						}
 				}, Side.SERVER),
 					TimeStampedEvent.create(0.75F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setData(LunarEclipseSkill.ECHO, false);
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setData(WOMSkillDataKeys.ECHO.get(), false);
 						}
 				}, Side.SERVER),
 					TimeStampedEvent.create(0.75F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
 							entitypatch.getOriginal().playSound(SoundEvents.FIREWORK_ROCKET_BLAST, 0.7F, 0.5F);
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(LunarEchoPassiveSkill.IDLE, false);
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(WOMSkillDataKeys.IDLE.get(), false);
 						}
 						OpenMatrix4f transformMatrix;
 						transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(0), Armatures.BIPED.toolL);
@@ -4346,25 +4345,25 @@ public class WOMAnimations {
 				.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.6F)
 				.addEvents(TimeStampedEvent.create(0.10F, (entitypatch, self, params) -> {
 					if (entitypatch instanceof PlayerPatch<?>) {
-						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(LunarEchoPassiveSkill.IDLE, true);
+						((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(WOMSkillDataKeys.IDLE.get(), true);
 					}
 					
 					entitypatch.getOriginal().level().playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.WITHER_SHOOT, SoundSource.PLAYERS, 0.2F, 0.5F);
 				}, Side.CLIENT),
 					TimeStampedEvent.create(0.60F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setData(LunarEclipseSkill.ECHO, true);
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setData(WOMSkillDataKeys.ECHO.get(), true);
 						}
 				}, Side.SERVER),
 					TimeStampedEvent.create(0.70F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setData(LunarEclipseSkill.ECHO, false);
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setData(WOMSkillDataKeys.ECHO.get(), false);
 						}
 				}, Side.SERVER),
 					TimeStampedEvent.create(0.75F, (entitypatch, self, params) -> {
 						if (entitypatch instanceof PlayerPatch<?>) {
 							entitypatch.getOriginal().playSound(SoundEvents.FIREWORK_ROCKET_BLAST, 0.7F, 0.5F);
-							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(LunarEchoPassiveSkill.IDLE, false);
+							((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setData(WOMSkillDataKeys.IDLE.get(), false);
 						}
 						OpenMatrix4f transformMatrix;
 						transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(0), Armatures.BIPED.toolL);
@@ -5404,7 +5403,7 @@ public class WOMAnimations {
 				ServerPlayer entity = (ServerPlayer) entitypatch.getOriginal();
 				ServerPlayerPatch playerPatch = (ServerPlayerPatch) entitypatch;
 				if (playerPatch.getSkill(WOMSkills.ENDEROBSCURIS) != null) {
-					LivingEntity target = (LivingEntity) entity.level().getEntity(playerPatch.getSkill(WOMSkills.ENDEROBSCURIS).getDataManager().getDataValue(EnderObscurisSkill.TARGET_ID));
+					LivingEntity target = (LivingEntity) entity.level().getEntity(playerPatch.getSkill(WOMSkills.ENDEROBSCURIS).getDataManager().getDataValue(WOMSkillDataKeys.TARGET_ID.get()));
 					if (target != null) {
 						double offset = 2.0; // Adjust this value as needed
 
@@ -5490,14 +5489,14 @@ public class WOMAnimations {
 		
 		private static final AnimationEvent.AnimationEventConsumer ANTITHEUS_WEAPON_TRAIL_ON = (entitypatch, self, params) -> {
 			if (entitypatch instanceof PlayerPatch) {
-				((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.BASIC_ATTACK, true, (ServerPlayer)entitypatch.getOriginal());
+				((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.BASIC_ATTACK.get(), true, (ServerPlayer)entitypatch.getOriginal());
 			}
 			
 		};
 		
 		private static final AnimationEvent.AnimationEventConsumer ANTITHEUS_WEAPON_TRAIL_OFF = (entitypatch, self, params) -> {
 			if (entitypatch instanceof PlayerPatch) {
-				((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(DemonMarkPassiveSkill.BASIC_ATTACK, false, (ServerPlayer)entitypatch.getOriginal());
+				((PlayerPatch<?>) entitypatch).getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().setDataSync(WOMSkillDataKeys.BASIC_ATTACK.get(), false, (ServerPlayer)entitypatch.getOriginal());
 			}
 		};
 		

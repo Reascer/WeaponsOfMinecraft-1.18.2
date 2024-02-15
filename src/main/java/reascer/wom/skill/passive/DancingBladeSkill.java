@@ -13,22 +13,18 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import reascer.wom.skill.WOMSkillDataKeys;
 import yesman.epicfight.api.animation.AnimationPlayer;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
 import yesman.epicfight.client.gui.BattleModeGui;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.passive.PassiveSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class DancingBladeSkill extends PassiveSkill {
-	private static final SkillDataKey<Integer> STEP = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Integer> MELODY_INDEX = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Float> SAVED_ELAPSED_TIME = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
 	private static final UUID EVENT_UUID = UUID.fromString("52b08e80-bb9b-44bf-a23c-92ddd0958586");
 	
 	float[] melody = {
@@ -57,18 +53,18 @@ public class DancingBladeSkill extends PassiveSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
-		container.getDataManager().registerData(STEP);
-		container.getDataManager().registerData(MELODY_INDEX);
-		container.getDataManager().registerData(SAVED_ELAPSED_TIME);
+		container.getDataManager().registerData(WOMSkillDataKeys.STEP.get());
+		container.getDataManager().registerData(WOMSkillDataKeys.MELODY_INDEX.get());
+		container.getDataManager().registerData(WOMSkillDataKeys.SAVED_ELAPSED_TIME.get());
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(STEP) == 3) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.STEP.get()) == 3) {
 				event.setDamage(event.getDamage()*1.8f);
 			}
         });
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
-			container.getDataManager().setDataSync(SAVED_ELAPSED_TIME, 10.0f, event.getPlayerPatch().getOriginal());
+			container.getDataManager().setDataSync(WOMSkillDataKeys.SAVED_ELAPSED_TIME.get(), 10.0f, event.getPlayerPatch().getOriginal());
         });
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID, (event) -> {
@@ -80,30 +76,30 @@ public class DancingBladeSkill extends PassiveSkill {
 				AnimationPlayer player = entitypatch.getAnimator().getPlayerFor(event.getDamageSource().getAnimation());
 				elapsedTime = player.getElapsedTime();
 				Phase phase = anim.getPhaseByTime(elapsedTime);
-				Phase previusPhase = anim.getPhaseByTime(container.getDataManager().getDataValue(SAVED_ELAPSED_TIME));
+				Phase previusPhase = anim.getPhaseByTime(container.getDataManager().getDataValue(WOMSkillDataKeys.SAVED_ELAPSED_TIME.get()));
 				tag = phase != previusPhase;
 				if (anim.phases.length == 1) {
-					tag = elapsedTime < container.getDataManager().getDataValue(SAVED_ELAPSED_TIME);
+					tag = elapsedTime < container.getDataManager().getDataValue(WOMSkillDataKeys.SAVED_ELAPSED_TIME.get());
 				}
-				if (container.getDataManager().getDataValue(SAVED_ELAPSED_TIME) == 10.0 ) {
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.SAVED_ELAPSED_TIME.get()) == 10.0 ) {
 					tag = true;
 				}
 				
 			}
 			
 			if (tag) {
-				container.getDataManager().setDataSync(SAVED_ELAPSED_TIME,elapsedTime, event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.SAVED_ELAPSED_TIME.get(),elapsedTime, event.getPlayerPatch().getOriginal());
 				((ServerLevel) event.getPlayerPatch().getOriginal().level()).sendParticles(ParticleTypes.NOTE,
 						event.getPlayerPatch().getOriginal().getX(),
 						event.getPlayerPatch().getOriginal().getY() + event.getTarget().getBbHeight()/2,
 						event.getPlayerPatch().getOriginal().getZ(),
-						1 * container.getDataManager().getDataValue(STEP)+1,
+						1 * container.getDataManager().getDataValue(WOMSkillDataKeys.STEP.get())+1,
 						(new Random().nextFloat()-0.5f)*2,
 						(new Random().nextFloat()-0.5f)*2,
 						(new Random().nextFloat()-0.5f)*2,
 						2.0);
-				if (container.getDataManager().getDataValue(STEP) < 3) {
-					container.getDataManager().setDataSync(STEP,container.getDataManager().getDataValue(STEP)+1, event.getPlayerPatch().getOriginal());
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.STEP.get()) < 3) {
+					container.getDataManager().setDataSync(WOMSkillDataKeys.STEP.get(),container.getDataManager().getDataValue(WOMSkillDataKeys.STEP.get())+1, event.getPlayerPatch().getOriginal());
 				} else {
 					((ServerLevel) container.getExecuter().getOriginal().level()).playSound(null,
 							event.getPlayerPatch().getOriginal().getX(),
@@ -114,24 +110,24 @@ public class DancingBladeSkill extends PassiveSkill {
 							event.getPlayerPatch().getOriginal().getX(),
 							event.getPlayerPatch().getOriginal().getY(),
 							event.getPlayerPatch().getOriginal().getZ(),
-			    			SoundEvents.NOTE_BLOCK_BELL.get(), event.getTarget().getSoundSource(), 2.0F, melody[container.getDataManager().getDataValue(MELODY_INDEX)]);
-					container.getDataManager().setDataSync(STEP,0, event.getPlayerPatch().getOriginal());
+			    			SoundEvents.NOTE_BLOCK_BELL.get(), event.getTarget().getSoundSource(), 2.0F, melody[container.getDataManager().getDataValue(WOMSkillDataKeys.MELODY_INDEX.get())]);
+					container.getDataManager().setDataSync(WOMSkillDataKeys.STEP.get(),0, event.getPlayerPatch().getOriginal());
 				}
 				
-				if (container.getDataManager().getDataValue(MELODY_INDEX) < melody.length-1) {
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.MELODY_INDEX.get()) < melody.length-1) {
 					((ServerLevel) container.getExecuter().getOriginal().level()).playSound(null,
 							event.getPlayerPatch().getOriginal().getX(),
 							event.getPlayerPatch().getOriginal().getY(),
 							event.getPlayerPatch().getOriginal().getZ(),
-			    			SoundEvents.NOTE_BLOCK_SNARE.get(), event.getTarget().getSoundSource(), 2.0F, 0.5f * (container.getDataManager().getDataValue(STEP)+1));
+			    			SoundEvents.NOTE_BLOCK_SNARE.get(), event.getTarget().getSoundSource(), 2.0F, 0.5f * (container.getDataManager().getDataValue(WOMSkillDataKeys.STEP.get())+1));
 					((ServerLevel) container.getExecuter().getOriginal().level()).playSound(null,
 							event.getPlayerPatch().getOriginal().getX(),
 							event.getPlayerPatch().getOriginal().getY(),
 							event.getPlayerPatch().getOriginal().getZ(),
-			    			SoundEvents.NOTE_BLOCK_BIT.get(), SoundSource.MUSIC, 1.5F, melody[container.getDataManager().getDataValue(MELODY_INDEX)]);
-					container.getDataManager().setDataSync(MELODY_INDEX,container.getDataManager().getDataValue(MELODY_INDEX)+1, event.getPlayerPatch().getOriginal());
+			    			SoundEvents.NOTE_BLOCK_BIT.get(), SoundSource.MUSIC, 1.5F, melody[container.getDataManager().getDataValue(WOMSkillDataKeys.MELODY_INDEX.get())]);
+					container.getDataManager().setDataSync(WOMSkillDataKeys.MELODY_INDEX.get(),container.getDataManager().getDataValue(WOMSkillDataKeys.MELODY_INDEX.get())+1, event.getPlayerPatch().getOriginal());
 				} else {
-					container.getDataManager().setDataSync(MELODY_INDEX,0, event.getPlayerPatch().getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.MELODY_INDEX.get(),0, event.getPlayerPatch().getOriginal());
 				}
 			}
         });
@@ -147,7 +143,7 @@ public class DancingBladeSkill extends PassiveSkill {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldDraw(SkillContainer container) {
-		return container.getDataManager().getDataValue(STEP) == 3;
+		return container.getDataManager().getDataValue(WOMSkillDataKeys.STEP.get()) == 3;
 	}
 	
 	@OnlyIn(Dist.CLIENT)

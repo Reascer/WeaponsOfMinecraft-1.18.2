@@ -5,15 +5,13 @@ import java.util.UUID;
 import net.minecraft.server.level.ServerPlayer;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
-import reascer.wom.skill.passive.MeditationSkill;
+import reascer.wom.skill.WOMSkillDataKeys;
 import yesman.epicfight.api.animation.types.StaticAnimation;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.network.EpicFightNetworkManager;
 import yesman.epicfight.network.server.SPPlayAnimation;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.passive.PassiveSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
@@ -21,8 +19,6 @@ import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType
 
 public class SatsujinPassive extends PassiveSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("010e5bfa-e6a2-11ec-8fea-0242ac120002");
-	public static final SkillDataKey<Boolean> SHEATH = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	
 	
 	public SatsujinPassive(Builder<? extends Skill> builder) {
 		super(builder);
@@ -31,7 +27,7 @@ public class SatsujinPassive extends PassiveSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
-		container.getDataManager().registerData(SHEATH);
+		container.getDataManager().registerData(WOMSkillDataKeys.SHEATH.get());
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			StaticAnimation[] resetAnimations = {
@@ -74,9 +70,9 @@ public class SatsujinPassive extends PassiveSkill {
 		PlayerPatch<?> executer = container.getExecuter();
 		
 		if (!executer.isLogicalClient()) {
-			if (container.getDataManager().getDataValue(SHEATH)) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.SHEATH.get())) {
 				ServerPlayerPatch playerpatch = (ServerPlayerPatch)executer;
-				container.getDataManager().setDataSync(SHEATH, false, playerpatch.getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.SHEATH.get(), false, playerpatch.getOriginal());
 				playerpatch.modifyLivingMotionByCurrentItem();
 				container.getSkill().setConsumptionSynchronize(playerpatch, 0);
 			}
@@ -90,13 +86,13 @@ public class SatsujinPassive extends PassiveSkill {
 		if (!executer.isLogicalClient()) {
 			if (this.consumption < value) {
 				ServerPlayer serverPlayer = (ServerPlayer) executer.getOriginal();
-				if (!container.getDataManager().getDataValue(SHEATH)) {
-					container.getDataManager().setDataSync(SHEATH, true, serverPlayer);
+				if (!container.getDataManager().getDataValue(WOMSkillDataKeys.SHEATH.get())) {
+					container.getDataManager().setDataSync(WOMSkillDataKeys.SHEATH.get(), true, serverPlayer);
 					boolean flag = false;
 					if (container.getExecuter().getSkill(WOMSkills.MEDITATION) == null) {
 						flag = true;
 					} else {
-						if (container.getExecuter().getSkill(WOMSkills.MEDITATION).getDataManager().getDataValue(MeditationSkill.TIMER) == 0) {
+						if (container.getExecuter().getSkill(WOMSkills.MEDITATION).getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) == 0) {
 							flag = true;
 						}
 					}
@@ -108,7 +104,7 @@ public class SatsujinPassive extends PassiveSkill {
 				}else {
 					((ServerPlayerPatch) executer).modifyLivingMotionByCurrentItem();
 				}
-				container.getDataManager().setDataSync(SHEATH, true, serverPlayer);
+				container.getDataManager().setDataSync(WOMSkillDataKeys.SHEATH.get(), true, serverPlayer);
 			}
 		}
 		

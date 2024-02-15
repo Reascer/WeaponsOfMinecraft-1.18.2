@@ -21,8 +21,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.gameasset.WOMSounds;
+import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.skill.WomMultipleAnimationSkill;
-import reascer.wom.skill.passive.MeditationSkill;
 import reascer.wom.world.capabilities.item.WOMWeaponCategories;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
@@ -36,8 +36,6 @@ import yesman.epicfight.network.client.CPExecuteSkill;
 import yesman.epicfight.network.server.SPSkillExecutionFeedback;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -47,21 +45,14 @@ import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType
 import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 
 public class EnderBlastSkill extends WomMultipleAnimationSkill {
-	private static final SkillDataKey<Integer> COMBO = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Integer> COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Integer> RELOAD_COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	private static final SkillDataKey<Boolean> ZOOM = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	private static final SkillDataKey<Boolean> SHOOT = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	private static final SkillDataKey<Boolean> NOFALLDAMAGE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	
 	private static final UUID EVENT_UUID = UUID.fromString("b9023f5e-ee42-11ec-8ea0-0242ac120002");
 	
 	public EnderBlastSkill(Builder<? extends Skill> builder) {
 		super(builder, (executer) -> {
-			int combo = executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(COMBO);
+			int combo = executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.COMBO.get());
 			return combo;
 			
-		},  WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_1, 
+		},  WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_1,
 			WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2, 
 			WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_3, 
 			WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_2_FORWARD, 
@@ -74,15 +65,10 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
-		container.getDataManager().registerData(COMBO);
-		container.getDataManager().registerData(SHOOT);
-		container.getDataManager().registerData(COOLDOWN);
-		container.getDataManager().registerData(ZOOM);
-		container.getDataManager().registerData(RELOAD_COOLDOWN);
-		container.getDataManager().registerData(NOFALLDAMAGE);
+		
 		if(!container.getExecuter().isLogicalClient()) {
-			container.getDataManager().setDataSync(COMBO, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
-			container.getDataManager().setDataSync(RELOAD_COOLDOWN, 80,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(WOMSkillDataKeys.COMBO.get(), 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(WOMSkillDataKeys.RELOAD_COOLDOWN.get(), 80,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 		}
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.CLIENT_ITEM_USE_EVENT, EVENT_UUID, (event) -> {
@@ -99,20 +85,20 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 				
 				event.getPlayerPatch().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
 				if(!container.getExecuter().isLogicalClient()) {
-					container.getDataManager().setDataSync(SHOOT, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.SHOOT.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				}
 			}
 			if(!container.getExecuter().isLogicalClient() && event.getPlayerPatch().getHoldingItemCapability(InteractionHand.MAIN_HAND).getWeaponCategory() == WOMWeaponCategories.ENDERBLASTER && container.getExecuter().getEntityState().canBasicAttack() ) {
-				container.getDataManager().setDataSync(COOLDOWN, 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				container.getDataManager().setDataSync(ZOOM, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.COOLDOWN.get(), 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.ZOOM.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 		});
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
-			container.getDataManager().setDataSync(RELOAD_COOLDOWN, 80, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(WOMSkillDataKeys.RELOAD_COOLDOWN.get(), 80, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			if (!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT) &&
 				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_LAYED)) {
-				container.getDataManager().setDataSync(SHOOT, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.SHOOT.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 			
 			if (!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_SHOOT_1) &&
@@ -126,20 +112,20 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 				!event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_AIRSHOOT)
 					) {
 				if(!container.getExecuter().isLogicalClient()) {
-					container.getDataManager().setDataSync(COOLDOWN, 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-					container.getDataManager().setDataSync(ZOOM, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.COOLDOWN.get(), 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.ZOOM.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				}
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_AIRSHOOT)) {
-				container.getDataManager().setDataSync(NOFALLDAMAGE, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.NOFALLDAMAGE.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				
 			}
 			
 			if (event.getAnimation().equals(WOMAnimations.ENDERBLASTER_ONEHAND_JUMPKICK)) {
-				container.getDataManager().setDataSync(NOFALLDAMAGE, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				container.getDataManager().setDataSync(COOLDOWN, 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				container.getDataManager().setDataSync(ZOOM, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.NOFALLDAMAGE.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.COOLDOWN.get(), 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.ZOOM.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 		});
 		
@@ -234,9 +220,9 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 			if(executer.getOriginal().isSprinting()) {
 				executer.playAnimationSynchronized(this.attackAnimations[this.attackAnimations.length - 2], 0);
 			} else {
-				if (i != -3 && executer.getSkill(this).getDataManager().getDataValue(COMBO) >= 1) {
+				if (i != -3 && executer.getSkill(this).getDataManager().getDataValue(WOMSkillDataKeys.COMBO.get()) >= 1) {
 					executer.playAnimationSynchronized(this.attackAnimations[i+3], 0);
-					executer.getSkill(this).getDataManager().setDataSync(COMBO, 1, executer.getOriginal());
+					executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.COMBO.get(), 1, executer.getOriginal());
 				} else {
 					int animation = this.getAnimationInCondition(executer);
 					executer.playAnimationSynchronized(this.attackAnimations[animation], 0);
@@ -244,17 +230,17 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 						double_cost = true;
 					}
 				}
-				if (executer.getSkill(this).getDataManager().getDataValue(COMBO) < 2) {
-					executer.getSkill(this).getDataManager().setDataSync(COMBO, executer.getSkill(this).getDataManager().getDataValue(COMBO)+1, executer.getOriginal());	
+				if (executer.getSkill(this).getDataManager().getDataValue(WOMSkillDataKeys.COMBO.get()) < 2) {
+					executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.COMBO.get(), executer.getSkill(this).getDataManager().getDataValue(WOMSkillDataKeys.COMBO.get())+1, executer.getOriginal());	
 				}
 				else {
-					executer.getSkill(this).getDataManager().setDataSync(COMBO, 0, executer.getOriginal());
+					executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.COMBO.get(), 0, executer.getOriginal());
 				}
 				
 			}
 		}
-		executer.getSkill(this).getDataManager().setDataSync(COOLDOWN, 40, executer.getOriginal());
-		executer.getSkill(this).getDataManager().setDataSync(ZOOM, true, executer.getOriginal());
+		executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.COOLDOWN.get(), 40, executer.getOriginal());
+		executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.ZOOM.get(), true, executer.getOriginal());
 		executer.getSkill(this).activate();
 		if (!executer.getOriginal().isCreative()) {
 			int stack = executer.getSkill(this).getStack();
@@ -311,18 +297,18 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 	public void updateContainer(SkillContainer container) {
 		super.updateContainer(container);
 		if(!container.getExecuter().isLogicalClient()) {
-			if (container.getDataManager().getDataValue(RELOAD_COOLDOWN) == null) {
-				container.getDataManager().setDataSync(RELOAD_COOLDOWN, 80,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.RELOAD_COOLDOWN.get()) == null) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.RELOAD_COOLDOWN.get(), 80,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
-			if (container.getDataManager().getDataValue(RELOAD_COOLDOWN) > 0) {
-				container.getDataManager().setDataSync(RELOAD_COOLDOWN, container.getDataManager().getDataValue(RELOAD_COOLDOWN)-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.RELOAD_COOLDOWN.get()) > 0) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.RELOAD_COOLDOWN.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.RELOAD_COOLDOWN.get())-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			} else {
-				container.getDataManager().setDataSync(RELOAD_COOLDOWN, 80,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.RELOAD_COOLDOWN.get(), 80,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				if (container.getExecuter().getSkill(this).getStack() < this.getMaxStack() && container.getExecuter().getOriginal().getItemInHand(InteractionHand.MAIN_HAND).getItem() == WOMItems.ENDER_BLASTER.get()) {
 					if (container.getExecuter().getSkill(WOMSkills.MEDITATION) == null) {
 						container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_ONEHAND_RELOAD, 0);
 					} else {
-						if (container.getExecuter().getSkill(WOMSkills.MEDITATION).getDataManager().getDataValue(MeditationSkill.TIMER) == 0 || container.getExecuter().getSkill(WOMSkills.MEDITATION).getDataManager().getDataValue(MeditationSkill.TIMER) == null) {
+						if (container.getExecuter().getSkill(WOMSkills.MEDITATION).getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) == 0 || container.getExecuter().getSkill(WOMSkills.MEDITATION).getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) == null) {
 							container.getExecuter().playAnimationSynchronized(WOMAnimations.ENDERBLASTER_ONEHAND_RELOAD, 0);
 						}
 					}
@@ -330,27 +316,27 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 				
 			}
 		}
-		if (container.getDataManager().getDataValue(COOLDOWN) > 0) {
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) > 0) {
 			if(container.getExecuter().isLogicalClient()) {
-				if (container.getDataManager().getDataValue(ZOOM)) {
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.ZOOM.get())) {
 					ClientEngine.getInstance().renderEngine.zoomIn();
 				}
 			}
 			if(!container.getExecuter().isLogicalClient()) {
 				ServerPlayerPatch executer = (ServerPlayerPatch) container.getExecuter();
-				container.getDataManager().setDataSync(COOLDOWN, container.getDataManager().getDataValue(COOLDOWN)-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
-				if (container.getDataManager().getDataValue(NOFALLDAMAGE)) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.COOLDOWN.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get())-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.NOFALLDAMAGE.get())) {
 					//System.out.println(container.getDataManager().getDataValue(COOLDOWN));
-					if (container.getDataManager().getDataValue(COOLDOWN) > 10) {
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) > 10) {
 						container.getExecuter().getOriginal().resetFallDistance();
 					} else {
-						container.getExecuter().getSkill(this).getDataManager().setDataSync(NOFALLDAMAGE, false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+						container.getExecuter().getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.NOFALLDAMAGE.get(), false,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 					}
 				}
 				int sweeping_edge = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal());
-				if (container.getDataManager().getDataValue(SHOOT) && !container.getExecuter().getOriginal().isUsingItem() && container.getExecuter().getEntityState().canBasicAttack()) {
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.SHOOT.get()) && !container.getExecuter().getOriginal().isUsingItem() && container.getExecuter().getEntityState().canBasicAttack()) {
 					container.getExecuter().getOriginal().startUsingItem(InteractionHand.MAIN_HAND);
-					container.getDataManager().setDataSync(SHOOT, false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.SHOOT.get(), false, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 					if (executer.getSkill(EpicFightSkills.HYPERVITALITY) != null || container.getStack() > 0 || container.getExecuter().getOriginal().isCreative() ) {
 						boolean flag = true;
 						if (!container.getExecuter().getOriginal().isCreative()) {
@@ -383,18 +369,18 @@ public class EnderBlastSkill extends WomMultipleAnimationSkill {
 						}
 						
 					}
-					container.getDataManager().setDataSync(COOLDOWN, 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
-					container.getDataManager().setDataSync(ZOOM, true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.COOLDOWN.get(), 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.ZOOM.get(), true, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				} else {
 					if (container.getExecuter().getOriginal().isUsingItem()) {
 						container.getExecuter().getOriginal().setSprinting(false);
-						container.getDataManager().setDataSync(COOLDOWN, 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
+						container.getDataManager().setDataSync(WOMSkillDataKeys.COOLDOWN.get(), 40, ((ServerPlayerPatch)container.getExecuter()).getOriginal());
 					}
 				}
 			}
 		} else {
 			if(!container.getExecuter().isLogicalClient()) {
-				container.getExecuter().getSkill(this).getDataManager().setDataSync(COMBO, 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getExecuter().getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.COMBO.get(), 0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 			if(container.getExecuter().isLogicalClient()) {
 				ClientEngine.getInstance().renderEngine.zoomOut(0);

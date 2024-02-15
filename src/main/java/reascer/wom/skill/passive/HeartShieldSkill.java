@@ -11,20 +11,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import reascer.wom.skill.WOMSkillDataKeys;
 import yesman.epicfight.client.gui.BattleModeGui;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.passive.PassiveSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
 
 public class HeartShieldSkill extends PassiveSkill {
-	public static final SkillDataKey<Integer> MAX_SHIELD = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	public static final SkillDataKey<Integer> RECOVERY_COOLDOWN = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	public static final SkillDataKey<Integer> RECOVERY_RATE = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	
 	private static final UUID EVENT_UUID = UUID.fromString("42580b91-53a6-4d7f-92b4-487aa585cd0b");
 	
 	private float recovery_delay;
@@ -37,15 +32,11 @@ public class HeartShieldSkill extends PassiveSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
-		container.getDataManager().registerData(MAX_SHIELD);
-		container.getDataManager().registerData(RECOVERY_COOLDOWN);
-		container.getDataManager().registerData(RECOVERY_RATE);
-
 		recovery_delay = 5f;
 		recovery_rate = 2f;
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
-			container.getDataManager().setDataSync(RECOVERY_COOLDOWN, 100, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(WOMSkillDataKeys.COOLDOWN.get(), 100, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 		});
 	}
 	
@@ -59,7 +50,7 @@ public class HeartShieldSkill extends PassiveSkill {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldDraw(SkillContainer container) {
-		return container.getDataManager().getDataValue(RECOVERY_COOLDOWN) > 0 || container.getExecuter().getOriginal().getAbsorptionAmount() < container.getDataManager().getDataValue(MAX_SHIELD);
+		return container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) > 0 || container.getExecuter().getOriginal().getAbsorptionAmount() < container.getDataManager().getDataValue(WOMSkillDataKeys.MAX_SHIELD.get());
 	}
 	
 	@OnlyIn(Dist.CLIENT)
@@ -68,15 +59,15 @@ public class HeartShieldSkill extends PassiveSkill {
 		PoseStack poseStack = guiGraphics.pose();
 		poseStack.pushPose();
 		poseStack.translate(0, (float)gui.getSlidingProgression(), 0);
-		if (container.getDataManager().getDataValue(RECOVERY_COOLDOWN) > 0) {
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) > 0) {
 			RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.5F);
 		} else {
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		}
 		guiGraphics.blit(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
-		if (container.getDataManager().getDataValue(RECOVERY_COOLDOWN) > 0) {
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) > 0) {
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-			guiGraphics.drawString(gui.font, String.valueOf((container.getDataManager().getDataValue(RECOVERY_COOLDOWN)/20)+1), x+9, y+10, 16777215,true);
+			guiGraphics.drawString(gui.font, String.valueOf((container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get())/20)+1), x+9, y+10, 16777215,true);
 		}
 		poseStack.popPose();
 	}
@@ -98,18 +89,18 @@ public class HeartShieldSkill extends PassiveSkill {
 		}
 		recovery_rate = (40 / (1 + (protection/4)))/20f;
 		if (!container.getExecuter().isLogicalClient()) {
-			container.getDataManager().setDataSync(MAX_SHIELD, 20, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
-			if (container.getDataManager().getDataValue(RECOVERY_COOLDOWN) > 0) {
-				container.getDataManager().setDataSync(RECOVERY_COOLDOWN, container.getDataManager().getDataValue(RECOVERY_COOLDOWN) -1, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
+			container.getDataManager().setDataSync(WOMSkillDataKeys.MAX_SHIELD.get(), 20, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) > 0) {
+				container.getDataManager().setDataSync(WOMSkillDataKeys.COOLDOWN.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.COOLDOWN.get()) -1, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 			} else {
-				if (container.getExecuter().getOriginal().getAbsorptionAmount() < container.getDataManager().getDataValue(MAX_SHIELD)) {
-					if (container.getDataManager().getDataValue(RECOVERY_RATE) > 0) {
-						container.getDataManager().setDataSync(RECOVERY_RATE, container.getDataManager().getDataValue(RECOVERY_RATE) -1, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
+				if (container.getExecuter().getOriginal().getAbsorptionAmount() < container.getDataManager().getDataValue(WOMSkillDataKeys.MAX_SHIELD.get())) {
+					if (container.getDataManager().getDataValue(WOMSkillDataKeys.RECOVERY_RATE.get()) > 0) {
+						container.getDataManager().setDataSync(WOMSkillDataKeys.RECOVERY_RATE.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.RECOVERY_RATE.get()) -1, ((ServerPlayerPatch) container.getExecuter()).getOriginal());
 					} else {
 						
-						container.getDataManager().setDataSync(RECOVERY_RATE, 40 / (1 + (protection/4)) , ((ServerPlayerPatch) container.getExecuter()).getOriginal());
-						if (container.getExecuter().getOriginal().getAbsorptionAmount()+1 >= container.getDataManager().getDataValue(MAX_SHIELD)) {
-							container.getExecuter().getOriginal().setAbsorptionAmount(container.getDataManager().getDataValue(MAX_SHIELD));
+						container.getDataManager().setDataSync(WOMSkillDataKeys.RECOVERY_RATE.get(), 40 / (1 + (protection/4)) , ((ServerPlayerPatch) container.getExecuter()).getOriginal());
+						if (container.getExecuter().getOriginal().getAbsorptionAmount()+1 >= container.getDataManager().getDataValue(WOMSkillDataKeys.MAX_SHIELD.get())) {
+							container.getExecuter().getOriginal().setAbsorptionAmount(container.getDataManager().getDataValue(WOMSkillDataKeys.MAX_SHIELD.get()));
 						} else {
 							container.getExecuter().getOriginal().setAbsorptionAmount(container.getExecuter().getOriginal().getAbsorptionAmount()+1);
 						}

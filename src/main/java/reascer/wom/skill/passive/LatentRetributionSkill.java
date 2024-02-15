@@ -2,6 +2,7 @@ package reascer.wom.skill.passive;
 
 import java.util.UUID;
 
+import reascer.wom.skill.WOMSkillDataKeys;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
@@ -21,7 +22,7 @@ public class LatentRetributionSkill extends PainAnticipationSkill {
 		super.onInitiate(container);
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID, (event) -> {
-			if (container.getDataManager().getDataValue(ACTIVE)) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get())) {
 				float attackDamage = event.getDamage();
 				event.setDamage(attackDamage * 1.4f);
 			}

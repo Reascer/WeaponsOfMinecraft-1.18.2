@@ -15,16 +15,13 @@ import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMColliders;
 import reascer.wom.gameasset.WOMSkills;
 import reascer.wom.main.WeaponsOfMinecraft;
-import reascer.wom.skill.weaponinnate.SoulSnatchSkill;
-import reascer.wom.skill.weaponpassive.LunarEchoPassiveSkill;
-import reascer.wom.skill.weaponpassive.SatsujinPassive;
+import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.world.item.WOMItems;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.forgeevent.WeaponCapabilityPresetRegistryEvent;
 import yesman.epicfight.gameasset.Animations;
 import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.gameasset.EpicFightSounds;
-import yesman.epicfight.main.EpicFightMod;
 import yesman.epicfight.particle.EpicFightParticles;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
@@ -32,7 +29,6 @@ import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.item.CapabilityItem;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.Styles;
 import yesman.epicfight.world.capabilities.item.CapabilityItem.WeaponCategories;
-import yesman.epicfight.world.capabilities.item.ShieldCapability;
 import yesman.epicfight.world.capabilities.item.WeaponCapability;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 
@@ -126,8 +122,8 @@ public class WOMWeaponCapabilityPresets {
 			.category(WeaponCategories.LONGSWORD)
 			.styleProvider((entitypatch) -> {
 				if (entitypatch instanceof PlayerPatch<?>) {
-					if (((PlayerPatch<?>)entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(SoulSnatchSkill.BUFFED) != null) {
-						if (((PlayerPatch<?>)entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(SoulSnatchSkill.BUFFED)) {
+					if (((PlayerPatch<?>)entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.BUFFED.get()) != null) {
+						if (((PlayerPatch<?>)entitypatch).getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.BUFFED.get())) {
 							return Styles.OCHS;
 						}
 					}
@@ -173,8 +169,8 @@ public class WOMWeaponCapabilityPresets {
 			.styleProvider((entitypatch) -> {
 				if (entitypatch instanceof PlayerPatch) {
 					PlayerPatch<?> playerpatch = (PlayerPatch<?>)entitypatch;
-					if (playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().hasData(SatsujinPassive.SHEATH) && 
-							playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(SatsujinPassive.SHEATH)) {
+					if (playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().hasData(WOMSkillDataKeys.SHEATH.get()) && 
+							playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(WOMSkillDataKeys.SHEATH.get())) {
 						return Styles.SHEATH;
 					}
 				}
@@ -330,8 +326,8 @@ public class WOMWeaponCapabilityPresets {
 		CapabilityItem.Builder builder = WeaponCapability.builder()
 				.category(WeaponCategories.TACHI)
 				.styleProvider((entitypatch) -> {
-					if (entitypatch instanceof PlayerPatch<?> playerpatch && (playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().hasData(LunarEchoPassiveSkill.VERSO) &&
-								playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(LunarEchoPassiveSkill.VERSO))) {
+					if (entitypatch instanceof PlayerPatch<?> playerpatch && (playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().hasData(WOMSkillDataKeys.VERSO.get()) &&
+								playerpatch.getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(WOMSkillDataKeys.VERSO.get()))) {
 							return Styles.OCHS;
 					}
 					return Styles.TWO_HAND;

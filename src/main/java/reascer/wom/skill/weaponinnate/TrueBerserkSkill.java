@@ -20,7 +20,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -29,11 +28,9 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.main.WeaponsOfMinecraft;
-import yesman.epicfight.api.animation.types.StaticAnimation;
+import reascer.wom.skill.WOMSkillDataKeys;
 import yesman.epicfight.client.world.capabilites.entitypatch.player.LocalPlayerPatch;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.EpicFightCapabilities;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -46,11 +43,6 @@ import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType
 import yesman.epicfight.world.entity.eventlistener.SkillConsumeEvent;
 
 public class TrueBerserkSkill extends WeaponInnateSkill {
-	private static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	public static final SkillDataKey<Boolean> ACTIVE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	private static final SkillDataKey<Boolean> SUPER_ARMOR = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	
-
 	private static final UUID EVENT_UUID = UUID.fromString("16c6748a-1c74-4681-9edb-e9ea4d69e54f");
 	
 	public TrueBerserkSkill(Builder<?> builder) {
@@ -59,10 +51,6 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 	
 	@Override
 	public void onInitiate(SkillContainer container) {
-		container.getDataManager().registerData(TIMER);
-		container.getDataManager().registerData(ACTIVE);
-		container.getDataManager().registerData(SUPER_ARMOR);
-		
 		if (!container.getExecuter().isLogicalClient()) {
 			this.setMaxDurationSynchronize((ServerPlayerPatch)container.getExecuter(), this.maxDuration + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, container.getExecuter().getOriginal()));
 		}
@@ -81,7 +69,7 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		if (executer.getSkill(this).isActivated()) { 
 			super.cancelOnServer(executer, args);
-			executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false,executer.getOriginal());
+			executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.ACTIVE.get(), false,executer.getOriginal());
 			this.setDurationSynchronize(executer, 0);
 			this.setStackSynchronize(executer, executer.getSkill(this).getStack() - 1);
 			executer.getSkill(this).deactivate();
@@ -95,8 +83,8 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 					executer.getOriginal().getY() + 1.2D, 
 					executer.getOriginal().getZ() - 0.15D, 
 					150, 0.3D, 0.6D, 0.3D, 0.1D);
-			executer.getSkill(this).getDataManager().setData(TIMER, 2);
-			executer.getSkill(this).getDataManager().setDataSync(ACTIVE, true,executer.getOriginal());
+			executer.getSkill(this).getDataManager().setData(WOMSkillDataKeys.TIMER.get(), 2);
+			executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.ACTIVE.get(), true,executer.getOriginal());
 			this.setDurationSynchronize(executer, this.maxDuration + EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, executer.getOriginal()));
 			executer.getSkill(this).activate();
 			executer.modifyLivingMotionByCurrentItem();
@@ -112,7 +100,7 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 	@Override
 	public void cancelOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		super.cancelOnServer(executer, args);
-		executer.getSkill(this).getDataManager().setDataSync(ACTIVE, false,executer.getOriginal());
+		executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.ACTIVE.get(), false,executer.getOriginal());
 		this.setStackSynchronize(executer, executer.getSkill(this).getStack() - 1);
 		this.setDurationSynchronize(executer, 0);
 		executer.modifyLivingMotionByCurrentItem();
@@ -146,7 +134,7 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void onScreen(LocalPlayerPatch playerpatch, float resolutionX, float resolutionY) {
-		if (playerpatch.getSkill(this).getDataManager().getDataValue(ACTIVE)) {
+		if (playerpatch.getSkill(this).getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get())) {
 			RenderSystem.setShader(GameRenderer::getPositionTexShader);
 			RenderSystem.setShaderTexture(0, new ResourceLocation(WeaponsOfMinecraft.MODID, "textures/gui/overlay/true_berserk.png"));
 			GlStateManager._enableBlend();
@@ -166,12 +154,12 @@ public class TrueBerserkSkill extends WeaponInnateSkill {
 	@Override
 	public void updateContainer(SkillContainer container) {
 		if (container.isActivated()) {
-			if (container.getDataManager().getDataValue(ACTIVE)) {
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get())) {
 				container.getExecuter().getOriginal().addEffect(new MobEffectInstance(EpicFightMobEffects.STUN_IMMUNITY.get(),2, 0,true,false,false));
-				if (container.getDataManager().getDataValue(TIMER) > 0) {
-					container.getDataManager().setData(TIMER, container.getDataManager().getDataValue(TIMER)-1);
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) > 0) {
+					container.getDataManager().setData(WOMSkillDataKeys.TIMER.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get())-1);
 				} else {
-					container.getDataManager().setData(TIMER,3);
+					container.getDataManager().setData(WOMSkillDataKeys.TIMER.get(),3);
 					if (container.getRemainDuration() > 1) {
 						if(!container.getExecuter().isLogicalClient()) {
 							this.setDurationSynchronize((ServerPlayerPatch) container.getExecuter(), container.getRemainDuration()-1);

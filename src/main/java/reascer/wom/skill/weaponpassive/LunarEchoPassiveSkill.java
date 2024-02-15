@@ -11,6 +11,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import reascer.wom.gameasset.WOMSkills;
+import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.skill.weaponinnate.LunarEclipseSkill;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.utils.math.OpenMatrix4f;
@@ -19,15 +20,11 @@ import yesman.epicfight.client.gui.BattleModeGui;
 import yesman.epicfight.gameasset.Armatures;
 import yesman.epicfight.skill.Skill;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.passive.PassiveSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 
 public class LunarEchoPassiveSkill extends PassiveSkill {
-	public static final SkillDataKey<Boolean> IDLE = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Boolean> VERSO = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
 	private static final UUID EVENT_UUID = UUID.fromString("bc38699e-0de8-11ed-861d-0242ac120002");
 	
 	public LunarEchoPassiveSkill(Builder<? extends Skill> builder) {
@@ -37,8 +34,8 @@ public class LunarEchoPassiveSkill extends PassiveSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
-		container.getDataManager().registerData(IDLE);
-		container.getDataManager().registerData(VERSO);
+		container.getDataManager().registerData(WOMSkillDataKeys.IDLE.get());
+		container.getDataManager().registerData(WOMSkillDataKeys.VERSO.get());
 	}
 	
 	@Override
@@ -55,7 +52,7 @@ public class LunarEchoPassiveSkill extends PassiveSkill {
 	@Override
 	public boolean shouldDraw(SkillContainer container) {
 		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getSkill() instanceof LunarEclipseSkill) {
-			return container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK) > 0;
+			return container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.LUNAR_ECLIPSE_STACK.get()) > 0;
 		}
 		return false;
 	}
@@ -69,8 +66,8 @@ public class LunarEchoPassiveSkill extends PassiveSkill {
 		RenderSystem.setShaderTexture(0, WOMSkills.lUNAR_ECLIPSE.getSkillTexture());
 		guiGraphics.blit(WOMSkills.lUNAR_ECLIPSE.getSkillTexture(), (int)x, (int)y, 24, 24, 0, 0, 1, 1, 1, 1);
 		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getSkill() == WOMSkills.lUNAR_ECLIPSE) {
-			if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK) > 0) {
-				float lunar_eclipse_stack = container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK);
+			if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.LUNAR_ECLIPSE_STACK.get()) > 0) {
+				float lunar_eclipse_stack = container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.LUNAR_ECLIPSE_STACK.get());
 				int lunar_eclipse_damage = (int) (4f * lunar_eclipse_stack*(1f/Math.sqrt((lunar_eclipse_stack/8f)+1f)));
 				int nombre_de_chiffre = (int) Math.log(lunar_eclipse_damage);
 				
@@ -89,9 +86,9 @@ public class LunarEchoPassiveSkill extends PassiveSkill {
 		float interpolation = 0.0F;
 		OpenMatrix4f transformMatrix;
 		if (entitypatch.currentLivingMotion == LivingMotions.IDLE) {
-			container.getDataManager().setData(IDLE, false);
+			container.getDataManager().setData(WOMSkillDataKeys.IDLE.get(), false);
 		}
-		if (container.getDataManager().getDataValue(IDLE)) {
+		if (container.getDataManager().getDataValue(WOMSkillDataKeys.IDLE.get())) {
 			int numberOf2 = 2;
 			float partialScale2 = 1.0F / (numberOf2 - 1);
 			float interpolation2 = 0.0F;
@@ -121,8 +118,8 @@ public class LunarEchoPassiveSkill extends PassiveSkill {
 			}
 		}
 		if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getSkill() == WOMSkills.lUNAR_ECLIPSE) {
-			if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK) > 0) {
-				float lunar_eclipse_stack = container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(LunarEclipseSkill.LUNAR_ECLIPSE_STACK);
+			if (container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.LUNAR_ECLIPSE_STACK.get()) > 0) {
+				float lunar_eclipse_stack = container.getExecuter().getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.LUNAR_ECLIPSE_STACK.get());
 				int lunar_eclipse_damage = (int) (4f * lunar_eclipse_stack*(1f/Math.sqrt((lunar_eclipse_stack/8f)+1f)));
 				int numberOf2 = lunar_eclipse_damage/30;
 				float partialScale2 = 1.0F / (numberOf2 - 1);

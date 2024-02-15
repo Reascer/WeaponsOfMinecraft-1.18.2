@@ -26,15 +26,13 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import reascer.wom.gameasset.WOMAnimations;
 import reascer.wom.gameasset.WOMSkills;
-import reascer.wom.skill.weaponpassive.LunarEchoPassiveSkill;
+import reascer.wom.skill.WOMSkillDataKeys;
 import yesman.epicfight.api.animation.AnimationPlayer;
 import yesman.epicfight.api.animation.LivingMotions;
 import yesman.epicfight.api.animation.types.AttackAnimation;
 import yesman.epicfight.api.animation.types.AttackAnimation.Phase;
 import yesman.epicfight.api.animation.types.EntityState;
 import yesman.epicfight.skill.SkillContainer;
-import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.SkillSlots;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
@@ -49,11 +47,6 @@ import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType
 
 public class LunarEclipseSkill extends WeaponInnateSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("c7a0ee46-56b3-4008-9fba-d2594b1e2676");
-	public static final SkillDataKey<Boolean> ECHO = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Boolean> CRESCENT = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Float> LUNAR_ECLIPSE_STACK = SkillDataKey.createDataKey(SkillDataManager.ValueType.FLOAT);
-	public static final SkillDataKey<Integer> TIMER = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
-	
 	
 	public LunarEclipseSkill(Builder builder) {
 		super(builder);
@@ -61,16 +54,11 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 	
 	@Override
 	public void onInitiate(SkillContainer container) {
-		container.getDataManager().registerData(ECHO);
-		container.getDataManager().registerData(CRESCENT);
-		container.getDataManager().registerData(LUNAR_ECLIPSE_STACK);
-		container.getDataManager().registerData(TIMER);
-		
 		container.getExecuter().getEventListener().addEventListener(EventType.DEALT_DAMAGE_EVENT_POST, EVENT_UUID, (event) -> {
 			int sweeping_edge = EnchantmentHelper.getEnchantmentLevel(Enchantments.SWEEPING_EDGE, event.getPlayerPatch().getOriginal());
 			
 			if (!event.getDamageSource().getAnimation().equals(WOMAnimations.MOONLESS_LUNAR_ECLIPSE)) {
-				if (container.getDataManager().getDataValue(ECHO)) {
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.ECHO.get())) {
 					if (event.getTarget().hasEffect(MobEffects.GLOWING)) {
 						int glowing_amp = event.getTarget().getEffect(MobEffects.GLOWING).getAmplifier();
 						event.getTarget().removeEffect(MobEffects.GLOWING);
@@ -97,7 +85,7 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 				} else {
 					if (event.getPlayerPatch().getSkill(SkillSlots.WEAPON_PASSIVE) != null ) {
 						if (event.getPlayerPatch().getSkill(SkillSlots.WEAPON_PASSIVE).getSkill() == WOMSkills.LUNAR_ECHO_PASSIVE) {
-							if (!event.getPlayerPatch().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(LunarEchoPassiveSkill.VERSO)) {
+							if (!event.getPlayerPatch().getSkill(SkillSlots.WEAPON_PASSIVE).getDataManager().getDataValue(WOMSkillDataKeys.VERSO.get())) {
 								// RECTO
 								if (event.getTarget().hasEffect(MobEffects.GLOWING)) {
 									if (event.getPlayerPatch().getOriginal().hasEffect(MobEffects.INVISIBILITY)) {
@@ -105,8 +93,8 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 									}
 									event.getPlayerPatch().getOriginal().addEffect(new MobEffectInstance(MobEffects.INVISIBILITY,20*7,0,true,false,false));
 									
-									container.getDataManager().setDataSync(TIMER, 20*7,event.getPlayerPatch().getOriginal());
-									container.getDataManager().setDataSync(LUNAR_ECLIPSE_STACK, container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK) + (event.getAttackDamage() * 2),event.getPlayerPatch().getOriginal());
+									container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), 20*7,event.getPlayerPatch().getOriginal());
+									container.getDataManager().setDataSync(WOMSkillDataKeys.LUNAR_ECLIPSE_STACK.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.LUNAR_ECLIPSE_STACK.get()) + (event.getAttackDamage() * 2),event.getPlayerPatch().getOriginal());
 									((ServerLevel) event.getTarget().level()).playSound(null,
 											event.getTarget().getX(),
 											event.getTarget().getY()+0.75f,
@@ -141,8 +129,8 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 										event.getPlayerPatch().getOriginal().removeEffect(MobEffects.INVISIBILITY);
 									}
 									event.getPlayerPatch().getOriginal().addEffect(new MobEffectInstance(MobEffects.INVISIBILITY,20*7,0,true,false,false));
-									container.getDataManager().setDataSync(TIMER, 20*7,event.getPlayerPatch().getOriginal());
-									container.getDataManager().setDataSync(LUNAR_ECLIPSE_STACK, container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK) + event.getAttackDamage(),event.getPlayerPatch().getOriginal());
+									container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), 20*7,event.getPlayerPatch().getOriginal());
+									container.getDataManager().setDataSync(WOMSkillDataKeys.LUNAR_ECLIPSE_STACK.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.LUNAR_ECLIPSE_STACK.get()) + event.getAttackDamage(),event.getPlayerPatch().getOriginal());
 									((ServerLevel) event.getTarget().level()).playSound(null,
 											event.getTarget().getX(),
 											event.getTarget().getY()+0.75f,
@@ -166,7 +154,7 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 						}
 					}
 				}
-				if (container.getDataManager().getDataValue(CRESCENT) && event.getDamageSource().getAnimation().equals(WOMAnimations.MOONLESS_CRESCENT) && container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK) > 0	) {
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.CRESCENT.get()) && event.getDamageSource().getAnimation().equals(WOMAnimations.MOONLESS_CRESCENT) && container.getDataManager().getDataValue(WOMSkillDataKeys.LUNAR_ECLIPSE_STACK.get()) > 0	) {
 					Entity player = event.getPlayerPatch().getOriginal();
 					if (event.getPlayerPatch().getOriginal().hasEffect(MobEffects.INVISIBILITY)) {
 						event.getPlayerPatch().getOriginal().removeEffect(MobEffects.INVISIBILITY);
@@ -186,7 +174,7 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 					epicFightDamageSource.setStunType(StunType.HOLD);
 					epicFightDamageSource.addRuntimeTag(EpicFightDamageType.WEAPON_INNATE);
 					DamageSource damage = epicFightDamageSource;
-					float lunar_eclipse_stack = container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK);
+					float lunar_eclipse_stack = container.getDataManager().getDataValue(WOMSkillDataKeys.LUNAR_ECLIPSE_STACK.get());
 					float lunar_eclipse_damage = (float) (4f * lunar_eclipse_stack*(1f/Math.sqrt((lunar_eclipse_stack/8f)+1f)));
 					float lunar_power = lunar_eclipse_damage + (lunar_eclipse_damage * ((blindness_amp)/100F));
 					
@@ -310,10 +298,10 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 						
 						livingEntityLowestHP.addEffect(new MobEffectInstance(MobEffects.BLINDNESS,3,lowestHP_blindness_amp,true,false,false));
 					}
-					container.getDataManager().setDataSync(LUNAR_ECLIPSE_STACK, 0f,event.getPlayerPatch().getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.LUNAR_ECLIPSE_STACK.get(), 0f,event.getPlayerPatch().getOriginal());
 				}
 				
-				if (event.getDamageSource().getAnimation().equals(WOMAnimations.MOONLESS_FULLMOON) && container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK) > 0	) {
+				if (event.getDamageSource().getAnimation().equals(WOMAnimations.MOONLESS_FULLMOON) && container.getDataManager().getDataValue(WOMSkillDataKeys.LUNAR_ECLIPSE_STACK.get()) > 0	) {
 					ServerPlayerPatch entitypatch = event.getPlayerPatch();
 					AttackAnimation anim = ((AttackAnimation) event.getDamageSource().getAnimation());
 					AnimationPlayer animplayer = entitypatch.getAnimator().getPlayerFor(event.getDamageSource().getAnimation());
@@ -336,7 +324,7 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 						epicFightDamageSource.setStunType(StunType.LONG);
 						epicFightDamageSource.addRuntimeTag(EpicFightDamageType.WEAPON_INNATE);
 						DamageSource damage = epicFightDamageSource;
-						float lunar_eclipse_stack = container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK);
+						float lunar_eclipse_stack = container.getDataManager().getDataValue(WOMSkillDataKeys.LUNAR_ECLIPSE_STACK.get());
 						float lunar_eclipse_damage = (float) (4f * lunar_eclipse_stack*(1f/Math.sqrt((lunar_eclipse_stack/8f)+1f)));
 						float lunar_power = lunar_eclipse_damage + (lunar_eclipse_damage * ((blindness_amp)/100F));
 						lunar_power = lunar_power * 0.7f;
@@ -437,7 +425,7 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 								entity.setDeltaMovement(vec3.x / 2.0D - vec31.x, vec3.y / 2.0D - vec31.y, vec3.z / 2.0D - vec31.z);
 							}
 						}
-						container.getDataManager().setDataSync(LUNAR_ECLIPSE_STACK, 0f,event.getPlayerPatch().getOriginal());
+						container.getDataManager().setDataSync(WOMSkillDataKeys.LUNAR_ECLIPSE_STACK.get(), 0f,event.getPlayerPatch().getOriginal());
 					}
 				}
 			}
@@ -445,12 +433,12 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			if (!event.getAnimation().equals(WOMAnimations.MOONLESS_LUNAR_ECHO)) {
-				container.getDataManager().setDataSync(ECHO, false, event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.ECHO.get(), false, event.getPlayerPatch().getOriginal());
 			}
 			if (!event.getAnimation().equals(WOMAnimations.MOONLESS_CRESCENT)) {
-				container.getDataManager().setDataSync(CRESCENT, false, event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.CRESCENT.get(), false, event.getPlayerPatch().getOriginal());
 			} else {
-				container.getDataManager().setDataSync(CRESCENT, true, event.getPlayerPatch().getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.CRESCENT.get(), true, event.getPlayerPatch().getOriginal());
 			}
 		});
 		
@@ -467,7 +455,7 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 	public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args) {
 		super.executeOnServer(executer, args);
 		executer.playAnimationSynchronized(WOMAnimations.MOONLESS_LUNAR_ECHO, 0);
-		executer.getSkill(this).getDataManager().setDataSync(ECHO, true, executer.getOriginal());
+		executer.getSkill(this).getDataManager().setDataSync(WOMSkillDataKeys.ECHO.get(), true, executer.getOriginal());
 		this.setDurationSynchronize(executer, 0);
 	}
 	
@@ -494,14 +482,14 @@ public class LunarEclipseSkill extends WeaponInnateSkill {
 	public void updateContainer(SkillContainer container) {
 		super.updateContainer(container);
 		if(!container.getExecuter().isLogicalClient()) {
-			if (container.getDataManager().getDataValue(LUNAR_ECLIPSE_STACK) > 0) {
-				if (container.getDataManager().getDataValue(TIMER) > 0) {
-					container.getDataManager().setDataSync(TIMER, container.getDataManager().getDataValue(TIMER)-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+			if (container.getDataManager().getDataValue(WOMSkillDataKeys.LUNAR_ECLIPSE_STACK.get()) > 0) {
+				if (container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get()) > 0) {
+					container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(), container.getDataManager().getDataValue(WOMSkillDataKeys.TIMER.get())-1,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				} else {
-					container.getDataManager().setDataSync(LUNAR_ECLIPSE_STACK,0f,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+					container.getDataManager().setDataSync(WOMSkillDataKeys.LUNAR_ECLIPSE_STACK.get(),0f,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 				}
 			} else {
-				container.getDataManager().setDataSync(TIMER,0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
+				container.getDataManager().setDataSync(WOMSkillDataKeys.TIMER.get(),0,((ServerPlayerPatch)container.getExecuter()).getOriginal());
 			}
 		}
 	}

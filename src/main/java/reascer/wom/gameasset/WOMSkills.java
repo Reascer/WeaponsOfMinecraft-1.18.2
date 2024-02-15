@@ -7,6 +7,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import reascer.wom.main.WeaponsOfMinecraft;
+import reascer.wom.skill.WOMSkillDataKeys;
 import reascer.wom.skill.dodges.BullChargeSkill;
 import reascer.wom.skill.dodges.DodgeMasterSkill;
 import reascer.wom.skill.dodges.EnderObscurisSkill;
@@ -183,18 +184,18 @@ public class WOMSkills {
 		
 		SkillManager.register(SakuraStateSkill::new, ConditionalWeaponInnateSkill.createConditionalWeaponInnateBuilder().setSelector((executer) -> {
 			if (executer.getOriginal().isSprinting()) {
-				executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(SakuraStateSkill.SECOND_DRAW, false, executer.getOriginal());
+				executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.SECOND_DRAW.get(), false, executer.getOriginal());
 				return 2;
-			} else if (executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(SakuraStateSkill.ACTIVE)) {
-				if (executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(SakuraStateSkill.SECOND_DRAW)) {
-					executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(SakuraStateSkill.SECOND_DRAW, false, executer.getOriginal());
+			} else if (executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get())) {
+				if (executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().getDataValue(WOMSkillDataKeys.SECOND_DRAW.get())) {
+					executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.SECOND_DRAW.get(), false, executer.getOriginal());
 					return 1;
 				} else {
-					executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(SakuraStateSkill.SECOND_DRAW, true, executer.getOriginal());
+					executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.SECOND_DRAW.get(), true, executer.getOriginal());
 					return 0;
 				}
 			} else {
-				executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(SakuraStateSkill.SECOND_DRAW, true, executer.getOriginal());
+				executer.getSkill(SkillSlots.WEAPON_INNATE).getDataManager().setDataSync(WOMSkillDataKeys.SECOND_DRAW.get(), true, executer.getOriginal());
 				return 0;
 			}
 		}).setAnimations(
