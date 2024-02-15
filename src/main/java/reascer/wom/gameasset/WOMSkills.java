@@ -33,12 +33,14 @@ import reascer.wom.skill.weaponinnate.EnderFusionSkill;
 import reascer.wom.skill.weaponinnate.LunarEclipseSkill;
 import reascer.wom.skill.weaponinnate.RegierungSkill;
 import reascer.wom.skill.weaponinnate.SakuraStateSkill;
+import reascer.wom.skill.weaponinnate.SolarArcanaSkill;
 import reascer.wom.skill.weaponinnate.SoulSnatchSkill;
 import reascer.wom.skill.weaponinnate.TrueBerserkSkill;
 import reascer.wom.skill.weaponpassive.DemonMarkPassiveSkill;
 import reascer.wom.skill.weaponpassive.LunarEchoPassiveSkill;
 import reascer.wom.skill.weaponpassive.RuinePassive;
 import reascer.wom.skill.weaponpassive.SatsujinPassive;
+import reascer.wom.skill.weaponpassive.SolarPassiveSkill;
 import reascer.wom.skill.weaponpassive.TormentPassiveSkill;
 import reascer.wom.world.damagesources.WOMExtraDamageInstance;
 import reascer.wom.world.item.WOMCreativeTabs;
@@ -85,6 +87,7 @@ public class WOMSkills {
 	public static Skill ENDER_BLAST;
 	public static Skill ENDER_FUSION;
 	public static Skill lUNAR_ECLIPSE;
+	public static Skill SOLAR_ARCANO;
 	
 	// Weapon Passive --------------------------------------------------------
 	public static Skill SATSUJIN_PASSIVE;
@@ -92,6 +95,7 @@ public class WOMSkills {
 	public static Skill RUINE_PASSIVE;
 	public static Skill TORMENT_PASSIVE;
 	public static Skill LUNAR_ECHO_PASSIVE;
+	public static Skill SOLAR_PASSIVE;
 
 	// Passive --------------------------------------------------------
 	public static Skill ARROW_TENACITY;
@@ -165,6 +169,9 @@ public class WOMSkills {
 		SkillManager.register(SatsujinPassive::new, Skill.createBuilder().setCategory(SkillCategories.WEAPON_PASSIVE).setActivateType(ActivateType.ONE_SHOT).setResource(Resource.COOLDOWN),
 				WeaponsOfMinecraft.MODID,"satsujin_passive");
 		
+		SkillManager.register(SolarPassiveSkill::new, Skill.createBuilder().setCategory(SkillCategories.WEAPON_PASSIVE),
+				WeaponsOfMinecraft.MODID,"solar_passive");
+		
 		
 		// WEAPON SKILL --------------------------------------------------------
 		
@@ -218,6 +225,9 @@ public class WOMSkills {
 		
 		SkillManager.register(LunarEclipseSkill::new, WeaponInnateSkill.createWeaponInnateBuilder(),
 				WeaponsOfMinecraft.MODID,"lunar_eclipse");
+		
+		SkillManager.register(SolarArcanaSkill::new, WeaponInnateSkill.createWeaponInnateBuilder().setActivateType(ActivateType.DURATION_INFINITE),
+				WeaponsOfMinecraft.MODID,"solar_arcana");
 		
 		//  GUARD --------------------------------------------------------
 		
@@ -373,6 +383,9 @@ public class WOMSkills {
 		
 		DEMONIC_ASCENSION = onBuild.build(WeaponsOfMinecraft.MODID, "demonic_ascension");
 		DEMON_MARK_PASSIVE = onBuild.build(WeaponsOfMinecraft.MODID, "demon_mark_passive");
+		
+		SOLAR_ARCANO = onBuild.build(WeaponsOfMinecraft.MODID, "solar_arcano");
+		SOLAR_PASSIVE = onBuild.build(WeaponsOfMinecraft.MODID, "solar_passive");
 		
 	}
 }

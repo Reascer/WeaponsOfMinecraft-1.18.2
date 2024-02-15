@@ -1,7 +1,5 @@
 package reascer.wom.client.particle;
 
-import java.util.Random;
-
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
@@ -13,18 +11,19 @@ import yesman.epicfight.client.particle.HitParticle;
 import yesman.epicfight.main.EpicFightMod;
 
 @OnlyIn(Dist.CLIENT)
-public class SolarCutParticle extends HitParticle {
-	public SolarCutParticle(ClientLevel world, double x, double y, double z, SpriteSet animatedSprite) {
+public class SolarPolvoraParticle extends HitParticle {
+	public SolarPolvoraParticle(ClientLevel world, double x, double y, double z, SpriteSet animatedSprite) {
 		super(world, x, y, z, animatedSprite);
 	    this.rCol = 1.0F;
 	    this.gCol = 1.0F;
 	    this.bCol = 1.0F;
-	    this.quadSize = 1.5F;
-		this.lifetime = 8;
+	    this.quadSize = 2F;
+		this.lifetime = 7;
 		this.setSpriteFromAge(animatedSprite);
 		
-		this.oRoll = 0;
-		this.roll = 0;
+		float angle = 0.0f;
+		this.oRoll = angle;
+		this.roll = angle;
 	}
 	
 	@Override
@@ -49,18 +48,8 @@ public class SolarCutParticle extends HitParticle {
 	    
 		@Override
 		public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
-			SolarCutParticle particle = new SolarCutParticle(worldIn, x, y, z, spriteSet);
-			Float rand = new Random().nextFloat();
-			particle.roll = (float)Math.toRadians(-45.0F + ((rand - 0.5F) * 45F) + (xSpeed == 0 ? 0f : 180f));
-			particle.oRoll = (float)Math.toRadians(-45.0F +((rand - 0.5F) * 45F) + (xSpeed == 0 ? 0f : 180f));
-			if (xSpeed == -90) {
-				particle.oRoll = (float)Math.toRadians(-45.0F - 90F);
-				particle.roll = (float)Math.toRadians(-45.0F - 90F);
-			}
-			if (xSpeed == 90) {
-				particle.oRoll = (float)Math.toRadians(-45.0F + 90F);
-				particle.roll = (float)Math.toRadians(-45.0F + 90F);
-			}
+
+			SolarPolvoraParticle particle = new SolarPolvoraParticle(worldIn, x, y, z, spriteSet);
 			return particle;
 		}
 	}

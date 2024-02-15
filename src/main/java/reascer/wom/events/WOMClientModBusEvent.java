@@ -31,6 +31,8 @@ import reascer.wom.client.particle.RuinePlunderSwordParticle;
 import reascer.wom.client.particle.SolarCutParticle;
 import reascer.wom.client.particle.SolarHitParticle;
 import reascer.wom.client.particle.SolarHitUpParticle;
+import reascer.wom.client.particle.SolarPolvoraHitParticle;
+import reascer.wom.client.particle.SolarPolvoraParticle;
 import reascer.wom.client.particle.WOMGroundSlamParticle;
 import reascer.wom.client.renderer.entity.AntitheusDarknessRenderer;
 import reascer.wom.client.renderer.entity.EnderBlastRenderer;
@@ -76,7 +78,9 @@ public class WOMClientModBusEvent {
     	particleEngine.register(WOMParticles.SOLAR_HIT.get(), new SolarHitParticle.Provider());
     	particleEngine.register(WOMParticles.SOLAR_HIT_UP.get(), new SolarHitUpParticle.Provider());
     	particleEngine.register(WOMParticles.SOLAR_CUT.get(), SolarCutParticle.Provider::new);
-
+    	
+    	particleEngine.register(WOMParticles.SOLAR_POLVORA_HIT.get(), new SolarPolvoraHitParticle.Provider());
+    	particleEngine.register(WOMParticles.SOLAR_POLVORA.get(), SolarPolvoraParticle.Provider::new);
     }
 	
 	@SubscribeEvent
