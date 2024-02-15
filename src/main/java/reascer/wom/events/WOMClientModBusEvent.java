@@ -30,6 +30,8 @@ import reascer.wom.client.particle.RuinePlunderSwordParticle;
 import reascer.wom.client.particle.SolarCutParticle;
 import reascer.wom.client.particle.SolarHitParticle;
 import reascer.wom.client.particle.SolarHitUpParticle;
+import reascer.wom.client.particle.SolarPolvoraHitParticle;
+import reascer.wom.client.particle.SolarPolvoraParticle;
 import reascer.wom.client.particle.WOMGroundSlamParticle;
 import reascer.wom.client.renderer.entity.AntitheusDarknessRenderer;
 import reascer.wom.client.renderer.entity.EnderBlastRenderer;
