@@ -19,8 +19,8 @@ public class SolarCutParticle extends HitParticle {
 	    this.rCol = 1.0F;
 	    this.gCol = 1.0F;
 	    this.bCol = 1.0F;
-	    this.quadSize = 1.5F;
-		this.lifetime = 7;
+	    this.quadSize = 2.0F;
+		this.lifetime = 8;
 		this.setSpriteFromAge(animatedSprite);
 		
 		this.oRoll = 0;
@@ -51,15 +51,15 @@ public class SolarCutParticle extends HitParticle {
 		public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
 			SolarCutParticle particle = new SolarCutParticle(worldIn, x, y, z, spriteSet);
 			Float rand = new Random().nextFloat();
-			particle.roll = (float)Math.toRadians(((rand - 0.5F) * 45F) + (xSpeed == 0 ? 0f : 180f));
-			particle.oRoll = (float)Math.toRadians(((rand - 0.5F) * 45F) + (xSpeed == 0 ? 0f : 180f));
+			particle.roll = (float)Math.toRadians(-45.0F + ((rand - 0.5F) * 45F) + (xSpeed == 0 ? 0f : 180f));
+			particle.oRoll = (float)Math.toRadians(-45.0F + ((rand - 0.5F) * 45F) + (xSpeed == 0 ? 0f : 180f));
 			if (xSpeed == -90) {
-				particle.oRoll = (float)Math.toRadians(-90F);
-				particle.roll = (float)Math.toRadians(-90F);
+				particle.oRoll = (float)Math.toRadians(-45.0F-90F);
+				particle.roll = (float)Math.toRadians(-45.0F-90F);
 			}
 			if (xSpeed == 90) {
-				particle.oRoll = (float)Math.toRadians(90F);
-				particle.roll = (float)Math.toRadians(90F);
+				particle.oRoll = (float)Math.toRadians(-45.0F + 90F);
+				particle.roll = (float)Math.toRadians(-45.0F + 90F);
 			}
 			return particle;
 		}

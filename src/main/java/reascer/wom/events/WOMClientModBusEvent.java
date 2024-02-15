@@ -28,7 +28,9 @@ import reascer.wom.client.particle.OverbloodCutParticle;
 import reascer.wom.client.particle.OverbloodHitParticle;
 import reascer.wom.client.particle.RuinePlunderSwordParticle;
 import reascer.wom.client.particle.SolarCutParticle;
+import reascer.wom.client.particle.SolarHitDownParticle;
 import reascer.wom.client.particle.SolarHitParticle;
+import reascer.wom.client.particle.SolarHitReverseParticle;
 import reascer.wom.client.particle.SolarHitUpParticle;
 import reascer.wom.client.particle.WOMGroundSlamParticle;
 import reascer.wom.client.renderer.entity.AntitheusDarknessRenderer;
@@ -72,6 +74,8 @@ public class WOMClientModBusEvent {
     	event.registerSpecial(WOMParticles.WOM_GROUND_SLAM.get(), new WOMGroundSlamParticle.Provider());
     	
     	event.registerSpecial(WOMParticles.SOLAR_HIT.get(), new SolarHitParticle.Provider());
+    	event.registerSpecial(WOMParticles.SOLAR_HIT_REVERSE.get(), new SolarHitReverseParticle.Provider());
+    	event.registerSpecial(WOMParticles.SOLAR_HIT_DOWN.get(), new SolarHitDownParticle.Provider());
     	event.registerSpecial(WOMParticles.SOLAR_HIT_UP.get(), new SolarHitUpParticle.Provider());
     	event.registerSpriteSet(WOMParticles.SOLAR_CUT.get(), SolarCutParticle.Provider::new);
 
