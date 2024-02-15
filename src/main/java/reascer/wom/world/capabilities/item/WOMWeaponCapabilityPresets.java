@@ -374,6 +374,8 @@ public class WOMWeaponCapabilityPresets {
 						WOMAnimations.SOLAR_AUTO_4, WOMAnimations.SOLAR_AUTO_4_POLVORA,
 						WOMAnimations.TORMENT_AIRSLAM, WOMAnimations.SOLAR_HORNO)
 				.newStyleCombo(Styles.MOUNT, Animations.SWORD_MOUNT_ATTACK)
+				.innateSkill(Styles.TWO_HAND,(itemstack) -> WOMSkills.SOLAR_ARCANO)
+				.passiveSkill(WOMSkills.SOLAR_PASSIVE)
 				.innateSkill(Styles.TWO_HAND,(itemstack) -> EpicFightSkills.STEEL_WHIRLWIND)
 				.comboCancel((style) -> {
 					return false;
