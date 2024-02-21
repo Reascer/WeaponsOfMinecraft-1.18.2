@@ -227,7 +227,7 @@ public class WOMSkills {
 				WeaponsOfMinecraft.MODID,"lunar_eclipse");
 		
 		SkillManager.register(SolarArcanaSkill::new, WeaponInnateSkill.createWeaponInnateBuilder().setActivateType(ActivateType.DURATION_INFINITE),
-				WeaponsOfMinecraft.MODID,"solar_arcana");
+				WeaponsOfMinecraft.MODID,"solar_arcano");
 		
 		//  GUARD --------------------------------------------------------
 		
