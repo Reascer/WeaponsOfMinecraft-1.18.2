@@ -157,7 +157,7 @@ public class VengefulParry extends GuardSkill {
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, VengefulParry.EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get()) > 0) {
-				event.setDamage(container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get()));
+				event.setDamage(event.getDamage() + container.getDataManager().getDataValue(WOMSkillDataKeys.CHARGE.get()));
 			}
 		});
 		
