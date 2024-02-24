@@ -3,7 +3,7 @@
     	"color": [0, 0, 0],
     	"begin_pos": [0.0, 0.0, -0.2],
     	"end_pos": [0.0, 0.1, -2.0],
-    	"lifetime": 3,
+    	"lifetime": 6,
 		"interpolations": 24,
     	"texture_path": "wom:textures/particle/satsujin/weapon_trail/basic.png",
     	"particle_type": "epicfight:swing_trail"
