@@ -27,7 +27,6 @@ public class SatsujinPassive extends PassiveSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
-		container.getDataManager().registerData(WOMSkillDataKeys.SHEATH.get());
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			StaticAnimation[] resetAnimations = {
