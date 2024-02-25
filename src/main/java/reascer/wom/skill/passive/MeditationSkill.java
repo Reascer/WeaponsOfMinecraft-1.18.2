@@ -35,11 +35,6 @@ public class MeditationSkill extends PassiveSkill {
 	
 	@Override
 	public void onInitiate(SkillContainer container) {
-		container.getDataManager().registerData(WOMSkillDataKeys.TIMER.get());
-		container.getDataManager().registerData(WOMSkillDataKeys.ACTIVE.get());
-		container.getDataManager().registerData(WOMSkillDataKeys.DUREE.get());
-		container.getDataManager().registerData(WOMSkillDataKeys.CYCLE.get());
-		container.getDataManager().registerData(WOMSkillDataKeys.STAGE.get());
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.ACTION_EVENT_SERVER, EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(WOMSkillDataKeys.ACTIVE.get()) && container.getDataManager().getDataValue(WOMSkillDataKeys.DUREE.get()) == 0 &&

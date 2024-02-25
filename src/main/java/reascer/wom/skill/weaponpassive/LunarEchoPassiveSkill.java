@@ -34,8 +34,6 @@ public class LunarEchoPassiveSkill extends PassiveSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
-		container.getDataManager().registerData(WOMSkillDataKeys.IDLE.get());
-		container.getDataManager().registerData(WOMSkillDataKeys.VERSO.get());
 	}
 	
 	@Override

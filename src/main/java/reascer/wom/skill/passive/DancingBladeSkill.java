@@ -53,9 +53,6 @@ public class DancingBladeSkill extends PassiveSkill {
 	@Override
 	public void onInitiate(SkillContainer container) {
 		super.onInitiate(container);
-		container.getDataManager().registerData(WOMSkillDataKeys.STEP.get());
-		container.getDataManager().registerData(WOMSkillDataKeys.MELODY_INDEX.get());
-		container.getDataManager().registerData(WOMSkillDataKeys.SAVED_ELAPSED_TIME.get());
 		
 		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID, (event) -> {
 			if (container.getDataManager().getDataValue(WOMSkillDataKeys.STEP.get()) == 3) {
