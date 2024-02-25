@@ -8,7 +8,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.skill.SkillDataManager;
-import yesman.epicfight.skill.SkillDataManager.SkillDataKey;
 import yesman.epicfight.skill.weaponinnate.WeaponInnateSkill;
 import yesman.epicfight.world.capabilities.entitypatch.player.PlayerPatch;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
@@ -18,8 +17,6 @@ import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType
 
 public class SolarArcanaSkill extends WeaponInnateSkill {
 	private static final UUID EVENT_UUID = UUID.fromString("c7a0ee46-56b3-4008-9fba-d2594b1e2676");
-	public static final SkillDataKey<Boolean> PLUNGING = SkillDataKey.createDataKey(SkillDataManager.ValueType.BOOLEAN);
-	public static final SkillDataKey<Integer> STACK = SkillDataKey.createDataKey(SkillDataManager.ValueType.INTEGER);
 	
 	public SolarArcanaSkill(Builder<?> builder) {
 		super(builder);
@@ -27,9 +24,6 @@ public class SolarArcanaSkill extends WeaponInnateSkill {
 	
 	@Override
 	public void onInitiate(SkillContainer container) {
-		container.getDataManager().registerData(PLUNGING);
-		container.getDataManager().registerData(STACK);
-		
 		container.getExecuter().getEventListener().addEventListener(EventType.MODIFY_DAMAGE_EVENT, EVENT_UUID, (event) -> {
 		});
 		

@@ -4532,7 +4532,7 @@ public class WOMAnimations {
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.5F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
 						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT)
-						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER.get())
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.3F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true);
 				
@@ -4550,7 +4550,7 @@ public class WOMAnimations {
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.0F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_POLVORA_HIT)
-						.addProperty(AttackPhaseProperty.HIT_SOUND, WOMSounds.SOLAR_HIT)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, WOMSounds.SOLAR_HIT.get())
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 0.9F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
 						.addEvents(TimeStampedEvent.create(0.40F, ReuseableEvents.SOLAR_POLVORA, Side.CLIENT));
@@ -4560,7 +4560,7 @@ public class WOMAnimations {
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(0.3F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.NONE)
 						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_POLVORA_HIT)
-						.addProperty(AttackPhaseProperty.HIT_SOUND, WOMSounds.SOLAR_HIT)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, WOMSounds.SOLAR_HIT.get())
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.2F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true);
 				
@@ -4569,7 +4569,7 @@ public class WOMAnimations {
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(2.0F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_POLVORA_HIT)
-						.addProperty(AttackPhaseProperty.HIT_SOUND, WOMSounds.SOLAR_HIT)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, WOMSounds.SOLAR_HIT.get())
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.2F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
 						.addEvents(TimeStampedEvent.create(0.15F, ReuseableEvents.SOLAR_POLVORA, Side.CLIENT));
@@ -4579,7 +4579,7 @@ public class WOMAnimations {
 						.addProperty(AttackPhaseProperty.IMPACT_MODIFIER, ValueModifier.multiplier(1.0F))
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.FALL)
 						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT_UP)
-						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER.get())
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.2F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
 						.addEvents(TimeStampedEvent.create(0.35F, ReuseableEvents.SOLAR_CHISPEAR, Side.CLIENT));
@@ -4600,7 +4600,7 @@ public class WOMAnimations {
 						.addProperty(AttackPhaseProperty.STUN_TYPE, StunType.HOLD)
 						.addProperty(AttackPhaseProperty.SOURCE_TAG, Set.of(EpicFightDamageType.WEAPON_INNATE))
 						.addProperty(AttackPhaseProperty.PARTICLE, WOMParticles.SOLAR_HIT_UP)
-						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER)
+						.addProperty(AttackPhaseProperty.HIT_SOUND, EpicFightSounds.BLADE_RUSH_FINISHER.get())
 						.addProperty(AttackAnimationProperty.BASIS_ATTACK_SPEED, 1.2F)
 						.addProperty(AttackAnimationProperty.FIXED_MOVE_DISTANCE, true)
 						.addProperty(ActionAnimationProperty.MOVE_VERTICAL, true)
@@ -5636,20 +5636,20 @@ public class WOMAnimations {
 				);
 			
 			Vec3 weaponEdge = OpenMatrix4f.transform(modelTransform, (new Vec3f(0,0.0F,-2.4F)).toDoubleVector());
-			Level level = entitypatch.getOriginal().level;
+			Level level = entitypatch.getOriginal().level();
 			
 			Vec3 floorPos = getfloor(entitypatch, self,new Vec3f(0,0.0F,-1.4F),Armatures.BIPED.toolR);
-			BlockState blockState = entitypatch.getOriginal().level.getBlockState(new BlockPos(floorPos));
+			BlockState blockState = entitypatch.getOriginal().level().getBlockState(new BlockPos.MutableBlockPos(floorPos.x,floorPos.y,floorPos.z));
 			if (entitypatch instanceof PlayerPatch) {
-				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), blockState.is(Blocks.WATER) ? SoundEvents.GENERIC_SPLASH : EpicFightSounds.GROUND_SLAM , SoundSource.PLAYERS, 1.5F, 1.5F- (new Random().nextFloat()-0.5f) * 0.2F);
+				entitypatch.getOriginal().level().playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), blockState.is(Blocks.WATER) ? SoundEvents.GENERIC_SPLASH : EpicFightSounds.GROUND_SLAM.get() , SoundSource.PLAYERS, 1.5F, 1.5F- (new Random().nextFloat()-0.5f) * 0.2F);
 			}
 			weaponEdge = new Vec3(weaponEdge.x ,floorPos.y, weaponEdge.z);
-			entitypatch.getOriginal().level.addParticle(ParticleTypes.END_ROD,
+			entitypatch.getOriginal().level().addParticle(ParticleTypes.END_ROD,
 					weaponEdge.x,
 					(int) weaponEdge.y,
 					weaponEdge.z,
 					0.0D, 0.0D, 0.0D);
-			entitypatch.getOriginal().level.addParticle(WOMParticles.WOM_GROUND_SLAM.get(),
+			entitypatch.getOriginal().level().addParticle(WOMParticles.WOM_GROUND_SLAM.get(),
 					floorPos.x,
 					(int) floorPos.y + 1,
 					floorPos.z,
@@ -5659,8 +5659,8 @@ public class WOMAnimations {
 		
 		private static final AnimationEvent.AnimationEventConsumer SOLAR_POLVORA = (entitypatch, self, params) -> {
 			if (entitypatch instanceof PlayerPatch) {
-				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.PLAYERS, 0.5F, 0.7F);
-				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 0.5F, 0.7F);
+				entitypatch.getOriginal().level().playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.PLAYERS, 0.5F, 0.7F);
+				entitypatch.getOriginal().level().playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 0.5F, 0.7F);
 			}
 			OpenMatrix4f transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(0.0f), Armatures.BIPED.rootJoint);
 			transformMatrix.translate(new Vec3f(-1.4f,1.0F,-0.5F));
@@ -5691,7 +5691,7 @@ public class WOMAnimations {
 			    OpenMatrix4f.transform3v(rotation, direction, direction);
 			    
 			    // emit the particle in the calculated direction, with some random velocity added
-			    entitypatch.getOriginal().level.addParticle(ParticleTypes.FLAME,
+			    entitypatch.getOriginal().level().addParticle(ParticleTypes.FLAME,
 			        (transformMatrix.m30 + entitypatch.getOriginal().getX()),
 			        (transformMatrix.m31 + entitypatch.getOriginal().getY()),
 			        (transformMatrix.m32 + entitypatch.getOriginal().getZ()),
@@ -5722,7 +5722,7 @@ public class WOMAnimations {
 			    OpenMatrix4f.transform3v(rotation, direction, direction);
 			    
 			    // emit the particle in the calculated direction, with some random velocity added
-			    entitypatch.getOriginal().level.addParticle(ParticleTypes.FLAME,
+			    entitypatch.getOriginal().level().addParticle(ParticleTypes.FLAME,
 			        (transformMatrix.m30 + entitypatch.getOriginal().getX()),
 			        (transformMatrix.m31 + entitypatch.getOriginal().getY()),
 			        (transformMatrix.m32 + entitypatch.getOriginal().getZ()),
@@ -5735,8 +5735,8 @@ public class WOMAnimations {
 		
 		private static final AnimationEvent.AnimationEventConsumer SOLAR_CHISPEAR = (entitypatch, self, params) -> {
 			if (entitypatch instanceof PlayerPatch) {
-				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.PLAYERS, 0.5F, 0.7F);
-				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 0.5F, 0.7F);
+				entitypatch.getOriginal().level().playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.ENDER_DRAGON_SHOOT, SoundSource.PLAYERS, 0.5F, 0.7F);
+				entitypatch.getOriginal().level().playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), SoundEvents.FIRE_EXTINGUISH, SoundSource.PLAYERS, 0.5F, 0.7F);
 			}
 			
 			OpenMatrix4f transformMatrix = entitypatch.getArmature().getBindedTransformFor(entitypatch.getArmature().getPose(1.0f), Armatures.BIPED.rootJoint);
@@ -5769,7 +5769,7 @@ public class WOMAnimations {
 			    OpenMatrix4f.transform3v(rotation, direction, direction);
 			    
 			    // emit the particle in the calculated direction, with some random velocity added
-			    entitypatch.getOriginal().level.addParticle(ParticleTypes.FLAME,
+			    entitypatch.getOriginal().level().addParticle(ParticleTypes.FLAME,
 			        (transformMatrix.m30 + entitypatch.getOriginal().getX()),
 			        (transformMatrix.m31 + entitypatch.getOriginal().getY()),
 			        (transformMatrix.m32 + entitypatch.getOriginal().getZ()),
@@ -5801,7 +5801,7 @@ public class WOMAnimations {
 			    OpenMatrix4f.transform3v(rotation, direction, direction);
 			    
 			    // emit the particle in the calculated direction, with some random velocity added
-			    entitypatch.getOriginal().level.addParticle(ParticleTypes.FLAME,
+			    entitypatch.getOriginal().level().addParticle(ParticleTypes.FLAME,
 			        (transformMatrix.m30 + entitypatch.getOriginal().getX()),
 			        (transformMatrix.m31 + entitypatch.getOriginal().getY()),
 			        (transformMatrix.m32 + entitypatch.getOriginal().getZ()),
@@ -5834,7 +5834,7 @@ public class WOMAnimations {
 			    OpenMatrix4f.transform3v(rotation, direction, direction);
 			    
 			    // emit the particle in the calculated direction, with some random velocity added
-			    entitypatch.getOriginal().level.addParticle(ParticleTypes.LAVA,
+			    entitypatch.getOriginal().level().addParticle(ParticleTypes.LAVA,
 			        (transformMatrix.m30 + entitypatch.getOriginal().getX()),
 			        (transformMatrix.m31 + entitypatch.getOriginal().getY()),
 			        (transformMatrix.m32 + entitypatch.getOriginal().getZ()),
@@ -5854,20 +5854,20 @@ public class WOMAnimations {
 				);
 			
 			Vec3 weaponEdge = OpenMatrix4f.transform(modelTransform, (new Vec3f(0.8f,0.0F,-2.4F)).toDoubleVector());
-			Level level = entitypatch.getOriginal().level;
+			Level level = entitypatch.getOriginal().level();
 			
 			Vec3 floorPos = getfloor(entitypatch, self,new Vec3f(0.8f,0.0F,-2.4F),Armatures.BIPED.rootJoint);
-			BlockState blockState = entitypatch.getOriginal().level.getBlockState(new BlockPos(floorPos));
+			BlockState blockState = entitypatch.getOriginal().level().getBlockState(new BlockPos.MutableBlockPos(floorPos.x,floorPos.y,floorPos.z));
 			if (entitypatch instanceof PlayerPatch) {
-				entitypatch.getOriginal().level.playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), blockState.is(Blocks.WATER) ? SoundEvents.GENERIC_SPLASH : EpicFightSounds.GROUND_SLAM , SoundSource.PLAYERS, 1.5F, 1.5F- (new Random().nextFloat()-0.5f) * 0.2F);
+				entitypatch.getOriginal().level().playSound((Player)entitypatch.getOriginal(), entitypatch.getOriginal(), blockState.is(Blocks.WATER) ? SoundEvents.GENERIC_SPLASH : EpicFightSounds.GROUND_SLAM.get() , SoundSource.PLAYERS, 1.5F, 1.5F- (new Random().nextFloat()-0.5f) * 0.2F);
 			}
 			weaponEdge = new Vec3(weaponEdge.x ,floorPos.y, weaponEdge.z);
-			entitypatch.getOriginal().level.addParticle(ParticleTypes.END_ROD,
+			entitypatch.getOriginal().level().addParticle(ParticleTypes.END_ROD,
 					weaponEdge.x,
 					(int) weaponEdge.y,
 					weaponEdge.z,
 					0.0D, 0.0D, 0.0D);
-			entitypatch.getOriginal().level.addParticle(WOMParticles.WOM_GROUND_SLAM.get(),
+			entitypatch.getOriginal().level().addParticle(WOMParticles.WOM_GROUND_SLAM.get(),
 					weaponEdge.x,
 					(int) floorPos.y + 1,
 					weaponEdge.z,
