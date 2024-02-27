@@ -1321,7 +1321,7 @@ public class WOMAnimations {
 					if (entitypatch instanceof PlayerPatch) {
 						((PlayerPatch<?>)entitypatch).setStamina(((PlayerPatch<?>)entitypatch).getStamina() - 2.0f);
 					}
-				}, Side.CLIENT),
+				}, Side.SERVER),
 				TimeStampedEvent.create(0.6F, ReuseableEvents.TORMENT_GROUNDSLAM, Side.CLIENT));
 		
 		TORMENT_BERSERK_CONVERT = new BasicMultipleAttackAnimation(0.05F, 0.6F, 1.35F, 1.7F, WOMColliders.PLUNDER_PERDITION, biped.rootJoint, "biped/skill/torment_berserk_convert", biped)
